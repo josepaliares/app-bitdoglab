@@ -1,2 +1,2 @@
 # app-bitdoglab
-BigDogLab App
+BitDogLab App
