@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Testando LED</title>
+</head>
+<body>
+    <h2>Selecione um dos 25 LEDS e regule a cor conforme desejar</h2>
+
+    <div id="leds-wrapper"></div>
+    <div id="leds-wrapper2"></div>
+    <div id="leds-wrapper3"></div>
+    <div id="leds-wrapper4"></div>
+    <div id="leds-wrapper5"></div>
+    
+    <!-- Slider -->
+    <div class="slider-container">
+        <label>R: <input type="range" id="rSlider" min="0" max="255" value="0" style = "background: linear-gradient(to right, rgb(0,0,0), rgb(255,0,0));" ></label>
+    </div>
+    <div class="slider-container">
+        <label>G: <input type="range" id="gSlider" min="0" max="255" value="0" style = "background: linear-gradient(to right, rgb(0,0,0), rgb(0,255,0));"></label>
+    </div>
+    <div class="slider-container">
+        <label>B: <input type="range" id="bSlider" min="0" max="255" value="0" style = "background: linear-gradient(to right, rgb(0,0,0), rgb(0,0,255));"></label>
+    </div>
+
+    <button id="limpar">Limpar</button>
+    <button id="enviar">Enviar</button>
+
+    <script>
+        const rSlider = document.getElementById('rSlider');
+        const gSlider = document.getElementById('gSlider');
+        const bSlider = document.getElementById('bSlider');
+
+        let ledSelecionado = null;
+        function loadLed(wrapperId, ledId, width, height) {
+            const wrapper = document.getElementById(wrapperId);
+
+            fetch('LED.svg')
+                .then(res => res.text())
+                .then(svgText => {
+                    const parser = new DOMParser();
+                    const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+                    const svg = svgDoc.querySelector('svg');
+                    const rect = svg.querySelector('#led');
+                
+                    svg.setAttribute('id', ledId);
+                    svg.classList.add('led-svg');
+                    //svg.style.width = `${width}px`;
+                    //svg.style.height = `${height}px`;
+                
+                    const container = document.createElement('div');
+                    container.classList.add('led-container');
+                    container.appendChild(svg);
+                
+                    svg.addEventListener('click', () => {
+                        document.querySelectorAll('.led-container').forEach(c => c.style.border = 'none');
+                        container.style.border = '2px solid black';
+                        ledSelecionado = rect;
+                        updateLEDColor();
+                    });
+                
+                    wrapper.appendChild(container);
+                });
+        }
+
+
+
+        // Cria os LEDs
+        const wrapper = document.getElementById('leds-wrapper');
+        loadLed('leds-wrapper', 'led1', 50, 50);
+        loadLed('leds-wrapper', 'led2', 50, 50);
+        loadLed('leds-wrapper', 'led3', 50, 50);
+        loadLed('leds-wrapper', 'led4', 50, 50);
+        loadLed('leds-wrapper', 'led5', 50, 50);
+
+        const wrapper2 = document.getElementById('leds-wrapper2');
+        loadLed('leds-wrapper2', 'led6', 50, 50);
+        loadLed('leds-wrapper2', 'led7', 50, 50);
+        loadLed('leds-wrapper2', 'led8', 50, 50);
+        loadLed('leds-wrapper2', 'led9', 50, 50);
+        loadLed('leds-wrapper2', 'led10', 50, 50);
+
+        const wrapper3 = document.getElementById('leds-wrapper3');
+        loadLed('leds-wrapper3', 'led11', 50, 50);
+        loadLed('leds-wrapper3', 'led12', 50, 50);
+        loadLed('leds-wrapper3', 'led13', 50, 50);
+        loadLed('leds-wrapper3', 'led14', 50, 50);
+        loadLed('leds-wrapper3', 'led15', 50, 50);
+
+        const wrapper4 = document.getElementById('leds-wrapper4');
+        loadLed('leds-wrapper4', 'led16', 50, 50);
+        loadLed('leds-wrapper4', 'led17', 50, 50);
+        loadLed('leds-wrapper4', 'led18', 50, 50);
+        loadLed('leds-wrapper4', 'led19', 50, 50);
+        loadLed('leds-wrapper4', 'led20', 50, 50);
+
+        const wrapper5 = document.getElementById('leds-wrapper5');
+        loadLed('leds-wrapper5', 'led21', 50, 50);
+        loadLed('leds-wrapper5', 'led22', 50, 50);
+        loadLed('leds-wrapper5', 'led23', 50, 50);
+        loadLed('leds-wrapper5', 'led24', 50, 50);
+        loadLed('leds-wrapper5', 'led25', 50, 50);
+
+        // Atualiza a cor do LED selecionado
+        function updateLEDColor() {
+            if (!ledSelecionado) return;
+        
+            const r = rSlider.value;
+            const g = gSlider.value;
+            const b = bSlider.value;
+            const rgbColor = `rgb(${r}, ${g}, ${b})`;
+        
+            ledSelecionado.setAttribute('fill', rgbColor);
+            ledSelecionado.setAttribute('text', 'on');
+        }
+
+        rSlider.addEventListener('input', () => {
+            updateLEDColor();
+            updateSliderBackgrounds();
+        });
+        gSlider.addEventListener('input', () => {
+            updateLEDColor();
+            updateSliderBackgrounds();
+        });
+        bSlider.addEventListener('input', () => {
+            updateLEDColor();
+            updateSliderBackgrounds();
+        });
+
+        document.getElementById("limpar").addEventListener("click", function() {
+            const leds = document.querySelectorAll('svg #led');
+
+            leds.forEach((led) => {
+                led.setAttribute('fill', 'rgb(0, 0, 0)');
+            });
+        });
+
+        document.getElementById("enviar").addEventListener("click", function () {
+            const leds = document.querySelectorAll('svg');
+            const dados = [];
+
+            leds.forEach(svg => {
+                const id = svg.getAttribute('id');
+                const ledRect = svg.querySelector('#led');
+
+                if (ledRect) {
+                    const cor = ledRect.getAttribute('fill');
+                    const text = ledRect.getAttribute('text');
+                    dados.push({ id, cor, text });
+                }
+            });
+
+            // Criando o json
+            const json = JSON.stringify(dados, null, 3);
+            const blob = new Blob([json], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'infoLEDs.json';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+            
+    </script>
+</body>
+</html>
