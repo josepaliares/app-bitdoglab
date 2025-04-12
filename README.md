@@ -20,7 +20,7 @@ Para mais detalhes sobre o hardware, acesse a [documentação oficial do BitDogL
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/bitdoglab.git
+git clone https://github.com/datasci4citizens/app-bitdoglab.git
 cd bitdoglab
 ```
 
