@@ -10,12 +10,6 @@ svg {
     margin-bottom: 0px;
 }
 
-svgTecla {
-    width: 70px;
-    height: 170px;
-    margin-bottom: 0px;
-}
-
 #leds-wrapper {
     justify-content: center;
     display: flex;
@@ -99,11 +93,11 @@ button {
     width: 60px;
     height: 20px;
     background-color: #e31a8b;
-    margin-top: 5px;
+    margin: 10px;
 }
   
 input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
+    -webkit-appearance: none;
     width: 20px;
     height: 20px;
     border-radius: 50%;

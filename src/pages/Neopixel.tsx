@@ -1,4 +1,3 @@
-import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import './style.css'
 import { useEffect, useRef, useState } from 'react';
@@ -13,11 +12,11 @@ export default function Neopixel() {
     const wrapperRefs4 = useRef<HTMLDivElement>(null);
     const wrapperRefs5 = useRef<HTMLDivElement>(null);
 
-    const rRef = useRef<HTMLInputElement>(null);
-    const gRef = useRef<HTMLInputElement>(null);
-    const bRef = useRef<HTMLInputElement>(null);
+    const [valueR, setValueR] = useState(0);
+    const [valueG, setValueG] = useState(0);
+    const [valueB, setValueB] = useState(0);
 
-    const [ledSelecionado, setLedSelecionado] = useState<Element | null>(null);
+    const [ledSelecionado, setLedSelecionado] = useState<HTMLDivElement | null>(null);
 
     function loadLed(container: HTMLDivElement | null, ledId: string) {
         fetch("../src/pages/LED.svg")
@@ -42,8 +41,8 @@ export default function Neopixel() {
                         (c as HTMLElement).style.border = 'none';
                     });
                     (ledContainer as HTMLElement).style.border = '2px solid red';
-                    setLedSelecionado(rect);
-                    updateLEDColor();
+                    setLedSelecionado(ledContainer);
+                    updateLEDColor('n');
                 });
 
                 if (container) {
@@ -53,22 +52,33 @@ export default function Neopixel() {
     }
 
     // Atualiza a cor do LED selecionado
-    function updateLEDColor() {
-        if (!ledSelecionado || !rRef.current || !gRef.current || !bRef.current) return;
+    const updateLEDColor = (color: 'r' | 'g' | 'b' | 'n') => (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseInt(event.target.value);
+        
+        if (color === 'r') {
+        setValueR(value);
+        } else if (color === 'g') {
+        setValueG(value);
+        } else if (color === 'b') {
+        setValueB(value);
+        }
 
-        const r = rRef.current.defaultValue;
-        const g = gRef.current.defaultValue;
-        const b = bRef.current.defaultValue;
-        const rgbColor = `rgb(${r}, ${g}, ${b})`;
+        // calcula nova cor RGB
+        const rgbColor = `rgb(
+            ${color === 'r' ? value : valueR},
+            ${color === 'g' ? value : valueG},
+            ${color === 'b' ? value : valueB}
+        )`;
 
-        ledSelecionado.setAttribute('fill', rgbColor);
-        ledSelecionado.setAttribute('text', 'on');
+        const svg = ledSelecionado?.querySelector('svg');
+        const rect = svg?.querySelector('rect');
+        rect?.setAttribute('fill', rgbColor);
+        rect?.setAttribute('text', 'on');
     }
 
     useEffect(() => {
         if (hasRun.current) return;
         hasRun.current = true;
-        alert('Paparelepipedo');
         // Cria os LEDs
         loadLed(wrapperRefs.current, 'led1');
         loadLed(wrapperRefs.current, 'led3');
@@ -136,9 +146,6 @@ export default function Neopixel() {
             document.body.removeChild(link);
         });
 
-        rRef.current?.addEventListener('input', updateLEDColor);
-        gRef.current?.addEventListener('input', updateLEDColor);
-        bRef.current?.addEventListener('input', updateLEDColor);
     }, []);
 
     return (
@@ -153,23 +160,23 @@ export default function Neopixel() {
 
         <div className="slider-container">
             <label>R:
-                <input type="range" id="rSlider" min="0" max="255" defaultValue="0"></input>
-                <span id="rValueDisplay">0</span>
+                <input type="range" id="rSlider" min="0" max="255" value={valueR} onChange={updateLEDColor('r')}></input>
+                <span id="rValueDisplay">{valueR}</span>
             </label>
         </div>
         <div className="slider-container">
             <label>G:
-                <input type="range" id="gSlider" min="0" max="255" defaultValue="0"></input>
-                <span id="gValueDisplay">0</span>
+                <input type="range" id="gSlider" min="0" max="255" value={valueG} onChange={updateLEDColor('g')}></input>
+                <span id="gValueDisplay">{valueG}</span>
             </label>
         </div>
         <div className="slider-container">
             <label>B:
-                <input type="range" id="bSlider" min="0" max="255" defaultValue="0"></input>
-                <span id="bValueDisplay">0</span>
+                <input type="range" id="bSlider" min="0" max="255" value={valueB} onChange={updateLEDColor('b')}></input>
+                <span id="bValueDisplay">{valueB}</span>
             </label>
         </div>
-        <Button id="limpar">Limpar</Button><Button id="enviar">Enviar</Button><Button onClick={() => navigate('/components')}>Voltar</Button>
+        <button id="limpar">Limpar</button><button id="enviar">Enviar</button><button onClick={() => navigate('/components')}>Voltar</button>
         </>
 
     );
