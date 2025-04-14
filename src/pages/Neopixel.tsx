@@ -11,6 +11,7 @@ export default function Neopixel() {
     const wrapperRefs3 = useRef<HTMLDivElement>(null);
     const wrapperRefs4 = useRef<HTMLDivElement>(null);
     const wrapperRefs5 = useRef<HTMLDivElement>(null);
+    const textNumbers = useRef<HTMLDivElement>(null);
 
     const [valueR, setValueR] = useState(0);
     const [valueG, setValueG] = useState(0);
@@ -152,11 +153,28 @@ export default function Neopixel() {
         <><h1>Neopixel</h1>
         <h2>Selecione um dos 25 LEDS e regule a cor conforme desejar</h2>
 
-        <div id="leds-wrapper" ref={wrapperRefs}></div>
-        <div id="leds-wrapper2" ref={wrapperRefs2}></div>
-        <div id="leds-wrapper3" ref={wrapperRefs3}></div>
-        <div id="leds-wrapper4" ref={wrapperRefs4}></div>
-        <div id="leds-wrapper5" ref={wrapperRefs5}></div>
+        <div id="leds-wrapper" ref={wrapperRefs}>
+            <h4 id='numberUp'>4</h4>
+        </div>
+        <div id="leds-wrapper2" ref={wrapperRefs2}>
+            <h4 id='numberUp'>3</h4>
+        </div>
+        <div id="leds-wrapper3" ref={wrapperRefs3}>
+            <h4 id='numberUp'>2</h4>
+        </div>
+        <div id="leds-wrapper4" ref={wrapperRefs4}>
+            <h4 id='numberUp'>1</h4>
+        </div>
+        <div id="leds-wrapper5" ref={wrapperRefs5}>
+            <h4 id='numberUp'>0</h4>
+        </div>
+        <div id="leds-wrapper6" ref={textNumbers}>
+            <h5 className='textInLine'>0</h5>
+            <h5 className='textInLine'>1</h5>
+            <h5 className='textInLine'>2</h5>
+            <h5 className='textInLine'>3</h5>
+            <h5 className='textInLine'>4</h5>
+        </div>
 
         <div className="slider-container">
             <label>R:

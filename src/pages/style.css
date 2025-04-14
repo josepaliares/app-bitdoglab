@@ -3,12 +3,27 @@ body {
     text-align: center;
     margin-top: 20px;
 }
+
+#numberUp {
+    text-align: center;
+    width: 10px;
+    height: 62px;
+}
+
+.textInLine {
+    display: inline-block;
+    text-align: center;
+    width: 65px;
+    height: 20px;
+    margin-bottom: 10px;
+}
   
 svg {
     width: 50px;
     height: 50px;
     margin-bottom: 0px;
 }
+
 
 #leds-wrapper {
     justify-content: center;
@@ -47,7 +62,6 @@ svg {
     display: flex;
     flex-wrap: wrap;
     gap: 10px; 
-    margin-bottom: 10px;
 }
 
 .led-container {
@@ -95,15 +109,26 @@ button {
     background-color: #e31a8b;
     margin: 10px;
 }
-  
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: white;
+#bSlider {
+    background: linear-gradient(to right, black, blue);
+}
+
+#gSlider {
+    background: linear-gradient(to right, black, green);
+}
+
+#rSlider {
+    background: linear-gradient(to right, black, red);
+}
+
+input[type="range"] {
+    -webkit-appearance: none; /* remove estilo padrão do Chrome/Safari */
+    width: 250px;
+    height: 15px;
+    border-radius: 6px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     border: 1px solid #ccc;
 }
+
   
