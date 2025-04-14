@@ -11,6 +11,8 @@ import Display from './pages/Display';
 import Joystick from './pages/Joystick';
 import Neopixel from './pages/Neopixel';
 import LedRGB from './pages/LedRGB';
+import BuzzersGravar from './pages/BuzzersGravar';
+import BuzzersTocar from './pages/BuzzersTocar';
 
 export function App() {
   return (
@@ -22,6 +24,8 @@ export function App() {
         <Route path="/components" element={<Components />} />
         <Route path="/botoes" element={<Botoes />} />
         <Route path="/buzzers" element={<Buzzers />} />
+        <Route path="/buzzersGravar" element={<BuzzersGravar />} />
+        <Route path="/buzzersTocar" element={<BuzzersTocar />} />
         <Route path="/microfone" element={<Microfone />} />
         <Route path="/display" element={<Display />} />
         <Route path="/joystick" element={<Joystick />} />

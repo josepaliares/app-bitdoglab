@@ -13,7 +13,7 @@ body {
 .textInLine {
     display: inline-block;
     text-align: center;
-    width: 65px;
+    width: 58px;
     height: 20px;
     margin-bottom: 10px;
 }
@@ -109,6 +109,15 @@ button {
     background-color: #e31a8b;
     margin: 10px;
 }
+
+.bigButton {
+    border-radius: 4px;
+    width: 120px;
+    height: 80px;
+    background-color: #e31a8b;
+    margin: 10px;
+}
+
 #bSlider {
     background: linear-gradient(to right, black, blue);
 }

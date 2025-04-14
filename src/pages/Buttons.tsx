@@ -11,7 +11,7 @@ export default function Buttons() {
         height: '100vh',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '20px'
+        gap: '20px',
         }}>
         <h1>Botões</h1>
     <Button onClick={() => navigate('/components')}>Voltar</Button>

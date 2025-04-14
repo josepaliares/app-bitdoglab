@@ -1,4 +1,4 @@
-import { Button } from '../components/ui/button';
+import './style.css';
 import { useNavigate } from 'react-router-dom';
 
 export default function Buzzers() {
@@ -14,7 +14,9 @@ export default function Buzzers() {
         gap: '20px'
         }}>
         <h1>Buzzers</h1>
-    <Button onClick={() => navigate('/components')}>Voltar</Button>
+    <button onClick={() => navigate('/components')}>Voltar</button>
+    <button className='bigButton' onClick={() => navigate('/buzzersTocar')}>Tocar em tempo real</button>
+    <button className='bigButton' onClick={() => navigate('/buzzersGravar')}>Gravar uma musica</button>
     </div>
     );
 }
