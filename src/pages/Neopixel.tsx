@@ -36,26 +36,36 @@ export default function Neopixel() {
                 const ledContainer = document.createElement('div');
                 ledContainer.classList.add('led-container');
                 ledContainer.appendChild(svg);
-
+                
                 svg.addEventListener('click', () => {
                     document.querySelectorAll('.led-container').forEach(c => {
                         (c as HTMLElement).style.border = 'none';
                     });
                     (ledContainer as HTMLElement).style.border = '2px solid red';
                     setLedSelecionado(ledContainer);
-                    updateLEDColor('n');
+                    painter();
                 });
-
+                
                 if (container) {
                     container.appendChild(ledContainer);
                 }
             });
     }
 
+    function painter() {
+        console.log("veremeio> ==", valueR)
+        const rgbColor = `rgb( ${valueR}, ${valueG}, ${valueB})`;
+        console.log(rgbColor);
+        const svg = ledSelecionado?.querySelector('svg');
+        const rect = svg?.querySelector('rect');
+        rect?.setAttribute('fill', rgbColor);
+        rect?.setAttribute('text', 'on');
+    }
+
     // Atualiza a cor do LED selecionado
-    const updateLEDColor = (color: 'r' | 'g' | 'b' | 'n') => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const updateLEDColor = (color: 'r' | 'g' | 'b') => (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseInt(event.target.value);
-        
+         
         if (color === 'r') {
         setValueR(value);
         } else if (color === 'g') {
