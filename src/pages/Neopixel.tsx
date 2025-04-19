@@ -130,7 +130,7 @@ export default function Neopixel() {
         limparBtn?.addEventListener("click", () => {
             const leds = document.querySelectorAll('svg #led');
             leds.forEach((led) => {
-                led.setAttribute('fill', 'rgb(0, 0, 0)');
+                led.setAttribute('fill', 'rgb(60, 60, 60)');
                 led.setAttribute('text', 'off');
             });
         });
