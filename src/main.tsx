@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './globals.css';
-import '@fontsource-variable/inter';
+import '@fontsource/ubuntu';
 import { App } from './App';
 
 const root = document.getElementById('root');
