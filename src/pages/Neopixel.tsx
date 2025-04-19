@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import './style.css'
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export default function Neopixel() {
     const navigate = useNavigate();
@@ -41,7 +42,9 @@ export default function Neopixel() {
                     document.querySelectorAll('.led-container').forEach(c => {
                         (c as HTMLElement).style.border = 'none';
                     });
-                    (ledContainer as HTMLElement).style.border = '2px solid red';
+                    (ledContainer as HTMLElement).style.border = '4px solid #e31a8b';
+                    (ledContainer as HTMLElement).style.borderRadius = '11px';
+                    
                     setLedSelecionado(ledContainer);
                     painter();
                 });
@@ -160,51 +163,59 @@ export default function Neopixel() {
     }, []);
 
     return (
-        <><h1>Neopixel</h1>
-        <h2>Selecione um dos 25 LEDS e regule a cor conforme desejar</h2>
+        <>
+        <div className="absolute top-5 left-5">
+          <Button variant="blue" onClick={() => navigate('/components')}>
+            Voltar
+          </Button>
+        </div>
+        <h1 className="text-ubuntu font-medium text-lg mt-5">Neopixel</h1>
+        <h2 className="text-ubuntu font-medium text-md mb-5">Selecione um dos 25 LEDS e regule a cor conforme desejar</h2>
 
         <div id="leds-wrapper" ref={wrapperRefs}>
-            <h4 id='numberUp'>4</h4>
+            <h4 className="text-ubuntu font-medium text-md mt-3">4</h4>
         </div>
         <div id="leds-wrapper2" ref={wrapperRefs2}>
-            <h4 id='numberUp'>3</h4>
+            <h4 className="text-ubuntu font-medium text-md mt-3">3</h4>
         </div>
         <div id="leds-wrapper3" ref={wrapperRefs3}>
-            <h4 id='numberUp'>2</h4>
+            <h4 className="text-ubuntu font-medium text-md mt-3">2</h4>
         </div>
         <div id="leds-wrapper4" ref={wrapperRefs4}>
-            <h4 id='numberUp'>1</h4>
+            <h4 className="text-ubuntu font-medium text-md mt-3">1</h4>
         </div>
         <div id="leds-wrapper5" ref={wrapperRefs5}>
-            <h4 id='numberUp'>0</h4>
+            <h4 className="text-ubuntu font-medium text-md mt-3">0</h4>
         </div>
-        <div id="leds-wrapper6" ref={textNumbers}>
-            <h5 className='textInLine'>0</h5>
-            <h5 className='textInLine'>1</h5>
-            <h5 className='textInLine'>2</h5>
-            <h5 className='textInLine'>3</h5>
-            <h5 className='textInLine'>4</h5>
+        <div className="flex flex-row justify-center gap-10 mb-5" ref={textNumbers}>
+            <h5 className='ml-4'>0</h5>
+            <h5 className='ml-3'>1</h5>
+            <h5 className='ml-3'>2</h5>
+            <h5 className='ml-3'>3</h5>
+            <h5 className='ml-3'>4</h5>
         </div>
 
         <div className="slider-container">
-            <label>R:
+            <label className='font-medium font-ubuntu text-md'>R:
                 <input type="range" id="rSlider" min="0" max="255" value={valueR} onChange={updateLEDColor('r')}></input>
                 <span id="rValueDisplay">{valueR}</span>
             </label>
         </div>
         <div className="slider-container">
-            <label>G:
+            <label className='font-medium font-ubuntu text-md'>G:
                 <input type="range" id="gSlider" min="0" max="255" value={valueG} onChange={updateLEDColor('g')}></input>
                 <span id="gValueDisplay">{valueG}</span>
             </label>
         </div>
         <div className="slider-container">
-            <label>B:
+            <label className='font-medium font-ubuntu text-md'>B:
                 <input type="range" id="bSlider" min="0" max="255" value={valueB} onChange={updateLEDColor('b')}></input>
                 <span id="bValueDisplay">{valueB}</span>
             </label>
         </div>
-        <button id="limpar">Limpar</button><button id="enviar">Enviar</button><button onClick={() => navigate('/components')}>Voltar</button>
+        <div className='flex flex-row justify-center gap-3 mt-3'>
+            <Button variant="whitePink" id="limpar">Limpar</Button><Button id="enviar">Enviar</Button>
+        </div>
         </>
 
     );

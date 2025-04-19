@@ -6,9 +6,17 @@ export default function Display() {
     const navigate = useNavigate();
     
     return (
-    <div className='h-screen flex flex-col items-center justify-center gap-3.5'>
-        <h1 className='text-ubuntu font-medium text-lg'>Display</h1>
-        <Button onClick={() => navigate('/components')}>Voltar</Button>
-    </div>
+      <>
+      <div className="absolute top-5 left-5">
+        <Button variant="blue" onClick={() => navigate('/components')}>
+          Voltar
+        </Button>
+      </div>
+
+      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
+        <h1 className="text-ubuntu font-medium text-lg">Display</h1>
+
+      </div>
+    </>
   );
 }

@@ -5,7 +5,7 @@ export default function Components() {
     const navigate = useNavigate();
 
     return (
-    <div className='h-screen flex flex-col items-center justify-center gap-3.5'>
+    <div className='h-screen flex flex-col items-center justify-center gap-4'>
         <h1 className='text-ubuntu font-medium text-lg'>Qual componentes você quer explorar?</h1>
         <Button onClick={()=>navigate('/botoes')}>Botões</Button>
         <Button onClick={()=>navigate('/buzzers')}>Buzzers</Button>

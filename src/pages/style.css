@@ -1,13 +1,6 @@
 body {
     font-family: sans-serif;
     text-align: center;
-    margin-top: 20px;
-}
-
-#numberUp {
-    text-align: center;
-    width: 10px;
-    height: 62px;
 }
 
 .textInLine {
@@ -100,22 +93,6 @@ input[type="range"] {
     background: gray;
     outline: none;
     margin: 5px;
-}
-
-button {
-    border-radius: 4px;
-    width: 60px;
-    height: 20px;
-    background-color: #e31a8b;
-    margin: 10px;
-}
-
-.bigButton {
-    border-radius: 4px;
-    width: 120px;
-    height: 80px;
-    background-color: #e31a8b;
-    margin: 10px;
 }
 
 #bSlider {
