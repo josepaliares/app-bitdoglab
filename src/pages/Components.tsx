@@ -5,15 +5,8 @@ export default function Components() {
     const navigate = useNavigate();
 
     return (
-    <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '20px'
-        }}>
-        <h1>Qual componentes você quer explorar?</h1>
+    <div className='h-screen flex flex-col items-center justify-center gap-4'>
+        <h1 className='text-ubuntu font-medium text-lg'>Qual componentes você quer explorar?</h1>
         <Button onClick={()=>navigate('/botoes')}>Botões</Button>
         <Button onClick={()=>navigate('/buzzers')}>Buzzers</Button>
         <Button onClick={()=>navigate('/microfone')}>Microfone</Button>
@@ -21,7 +14,6 @@ export default function Components() {
         <Button onClick={()=>navigate('/joystick')}>JoyStick</Button>
         <Button onClick={()=>navigate('/neopixel')}>NeoPixel</Button>
         <Button onClick={()=>navigate('/ledrgb')}>Led RGB</Button>
-
     </div>
     );
 }

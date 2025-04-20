@@ -14,16 +14,8 @@ export default function SplashScreen() {
     }, [navigate]);
 
     return (
-    <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '20px'
-        }}>
-        <h1>SplashScreen</h1>
+    <div className='bg-gradient-to-bl from-pink-30 to-blue-30 h-screen flex items-center justify-center'>
+        <h1 className='font-ubuntu font-xl font-bold text-white'>Escola 4.0</h1>
     </div>
-
     );
 }

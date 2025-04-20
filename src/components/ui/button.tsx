@@ -8,7 +8,11 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+				default: 'bg-pink-30 text-white font-ubuntu font-bold font-xl hover:bg-pink-40',
+				blue: 'bg-blue-30 text-white font-ubuntu font-bold font-xl hover:bg-blue-40',
+				whitePink: 'bg-white text-pink-30 font-ubuntu font-bold border-2 border-pink-30 hover:text-pink-40 hover:border-pink-40',
+				whiteBlue: 'bg-white text-blue-30 font-ubuntu font-bold border-2 border-blue-30 hover:text-blue-40 hover:border-blue-40',
+				
 				destructive:
 					'bg-destructive text-destructive-foreground hover:bg-destructive/90',
 				outline:

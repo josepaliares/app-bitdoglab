@@ -6,16 +6,9 @@ export default function Buzzers() {
     const navigate = useNavigate();
 
     return (
-    <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '20px'
-        }}>
-        <h1>Buzzers</h1>
-        <h3>Selecione as notas e toque</h3>
+    <div className='h-screen flex flex-col items-center justify-center gap-3.5'>
+        <h1 className='text-ubuntu font-medium text-lg'>Buzzers</h1>
+        <h3 className='text-ubuntu font-regular text-md'>Selecione as notas e toque</h3>
         <div id="escala">
             <h5 className='textInLine'>1</h5>
             <h5 className='textInLine'>2</h5>

@@ -34,14 +34,7 @@ export default function Buzzers() {
     })
 
     return (
-    <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100vh',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '20px'
-        }}>
+    <div className='h-screen flex flex-col items-center justify-center gap-3.5'>
         <h1>Buzzers</h1>
         <h3>Escolha uma nota e seu tom</h3>
         <div id="escala">
