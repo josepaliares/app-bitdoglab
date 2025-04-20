@@ -1,9 +1,74 @@
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import './style.css'
 
 export default function LedRGB() {
     const navigate = useNavigate();
-    return (
+    const hasRun = useRef(false);
+
+    const wrapperRefs = useRef<HTMLDivElement>(null);
+
+    const [valueR, setValueR] = useState(0);
+    const [valueG, setValueG] = useState(0);
+    const [valueB, setValueB] = useState(0);
+
+    const [led, setLed] = useState<HTMLDivElement | null>(null);
+
+    const updateLEDColor = (color: 'r' | 'g' | 'b') => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseInt(event.target.value);
+       
+      if (color === 'r') {
+      setValueR(value);
+      } else if (color === 'g') {
+      setValueG(value);
+      } else if (color === 'b') {
+      setValueB(value);
+      }
+
+      // calcula nova cor RGB
+      const rgbColor = `rgb(
+          ${color === 'r' ? value : valueR},
+          ${color === 'g' ? value : valueG},
+          ${color === 'b' ? value : valueB}
+      )`;
+
+      const svg = led?.querySelector('svg');
+      const rect = svg?.querySelector('rect');
+      rect?.setAttribute('fill', rgbColor);
+      console.log(rect);
+    }
+
+    useEffect(() => {
+      if (hasRun.current) return;
+      hasRun.current = true;
+      fetch("../src/pages/LED.svg")
+        .then(res => res.text())
+        .then(svgText => {
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+            const svg = svgDoc.querySelector('svg');
+            const rect = svg?.querySelector('#led');
+
+            if (!svg || !rect) return;
+
+            svg.setAttribute('id', '00');
+            svg.classList.add('led-svg');
+
+            const ledContainer = document.createElement('div');
+            ledContainer.classList.add('led-container');
+            ledContainer.appendChild(svg);
+
+            setLed(ledContainer);
+
+            if (wrapperRefs.current) {
+              wrapperRefs.current.appendChild(ledContainer);
+            }
+                
+        });
+    })
+
+  return (
     <>
       <div className="absolute top-5 left-5">
         <Button variant="blue" onClick={() => navigate('/components')}>
@@ -13,8 +78,31 @@ export default function LedRGB() {
   
       <div className="h-screen flex flex-col items-center justify-center gap-3.5">
         <h1 className="text-ubuntu font-medium text-lg">Led RGB</h1>
-
+        <h2 className="text-ubuntu font-medium text-md mb-5">Ajuste a cor do LED com os controles abaixo!</h2>
+        <div id="leds-wrapper" ref={wrapperRefs}></div>
+        <div className="slider-container">
+            <label className='font-medium font-ubuntu text-md'>R:
+                <input type="range" id="rSlider" min="0" max="255" value={valueR} onChange={updateLEDColor('r')}></input>
+                <span id="rValueDisplay">{valueR}</span>
+            </label>
+        </div>
+        <div className="slider-container">
+            <label className='font-medium font-ubuntu text-md'>G:
+                <input type="range" id="gSlider" min="0" max="255" value={valueG} onChange={updateLEDColor('g')}></input>
+                <span id="gValueDisplay">{valueG}</span>
+            </label>
+        </div>
+        <div className="slider-container">
+            <label className='font-medium font-ubuntu text-md'>B:
+                <input type="range" id="bSlider" min="0" max="255" value={valueB} onChange={updateLEDColor('b')}></input>
+                <span id="bValueDisplay">{valueB}</span>
+            </label>
+        </div>
+        <div className='flex flex-row justify-center gap-3 mt-3'>
+            <Button variant="whitePink" id="limpar">Limpar</Button><Button id="enviar">Enviar</Button>
+        </div>
       </div>
+
     </>
     );
 }

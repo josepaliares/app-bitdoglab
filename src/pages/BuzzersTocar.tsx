@@ -9,7 +9,9 @@ export default function Buzzers() {
     const hasRun = useRef(false);
     const wrapperRefs = useRef<HTMLDivElement>(null);
 
-    function loadTeclado(container: HTMLDivElement | null) {
+    useEffect(() => {
+        if (hasRun.current) return;
+        hasRun.current = true;
         fetch("../src/pages/testandoTeclado.svg")
             .then(res => res.text())
             .then(svgText => {
@@ -25,12 +27,6 @@ export default function Buzzers() {
                 wrapperRefs.current!.innerHTML = '';
                 wrapperRefs.current!.appendChild(svg);
             });
-    }
-
-    useEffect(() => {
-        if (hasRun.current) return;
-        hasRun.current = true;
-        loadTeclado(wrapperRefs.current);
     })
 
     return (
