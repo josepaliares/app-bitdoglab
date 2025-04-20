@@ -1,10 +1,37 @@
 import { Button } from '../components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import './style.css'
+import { useEffect, useRef } from 'react';
 
 
 export default function Buzzers() {
     const navigate = useNavigate();
+    const hasRun = useRef(false);
+    const wrapperRefs = useRef<HTMLDivElement>(null);
+
+    function loadTeclado(container: HTMLDivElement | null) {
+        fetch("../src/pages/testandoTeclado.svg")
+            .then(res => res.text())
+            .then(svgText => {
+                const parser = new DOMParser();
+                const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+                const svg = svgDoc.querySelector('svg');
+
+                if (!svg) return;
+
+                svg.setAttribute('id', "teclado");
+                svg.classList.add('teclado-svg');
+
+                wrapperRefs.current!.innerHTML = '';
+                wrapperRefs.current!.appendChild(svg);
+            });
+    }
+
+    useEffect(() => {
+        if (hasRun.current) return;
+        hasRun.current = true;
+        loadTeclado(wrapperRefs.current);
+    })
 
     return (
     <div style={{
@@ -32,6 +59,7 @@ export default function Buzzers() {
                 Agudo
             </label>
         </div>
+        <div id="teclado" ref={wrapperRefs}></div>
     <Button onClick={() => navigate('/buzzers')}>Voltar</Button>
     </div>
     );
