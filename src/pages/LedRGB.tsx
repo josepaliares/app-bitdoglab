@@ -27,11 +27,7 @@ export default function LedRGB() {
       }
 
       // calcula nova cor RGB
-      const rgbColor = `rgb(
-          ${color === 'r' ? value : valueR},
-          ${color === 'g' ? value : valueG},
-          ${color === 'b' ? value : valueB}
-      )`;
+      const rgbColor = `rgb(${color === 'r' ? value : valueR}, ${color === 'g' ? value : valueG}, ${color === 'b' ? value : valueB})`;
 
       const svg = led?.querySelector('svg');
       const rect = svg?.querySelector('rect');
@@ -63,10 +59,32 @@ export default function LedRGB() {
 
             if (wrapperRefs.current) {
               wrapperRefs.current.appendChild(ledContainer);
-            }
-                
-        });
-    })
+            }   
+      });
+
+      const limparBtn = document.getElementById("limpar");
+      const enviarBtn = document.getElementById("enviar");
+
+      limparBtn?.addEventListener("click", () => {
+        const led = document.querySelector('svg #led');
+        led?.setAttribute('fill', 'rgb(60, 60, 60)');
+      });
+
+      enviarBtn?.addEventListener("click", () => {
+        const led = document.querySelector('svg #led');
+        const cor = led?.getAttribute('fill');
+
+        const json = JSON.stringify({ledRGB: cor}, null, 3);
+        const blob = new Blob([json], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'infoLEDs.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+
+    }, []);
 
   return (
     <>
@@ -99,7 +117,7 @@ export default function LedRGB() {
             </label>
         </div>
         <div className='flex flex-row justify-center gap-3 mt-3'>
-            <Button variant="whitePink" id="limpar">Limpar</Button><Button id="enviar">Enviar</Button>
+            <Button variant="whitePink" id="limpar">Limpar</Button> <Button id="enviar">Enviar</Button>
         </div>
       </div>
 

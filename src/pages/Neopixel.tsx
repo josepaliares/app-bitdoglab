@@ -78,11 +78,7 @@ export default function Neopixel() {
         }
 
         // calcula nova cor RGB
-        const rgbColor = `rgb(
-            ${color === 'r' ? value : valueR},
-            ${color === 'g' ? value : valueG},
-            ${color === 'b' ? value : valueB}
-        )`;
+        const rgbColor = `rgb(${color === 'r' ? value : valueR}, ${color === 'g' ? value : valueG}, ${color === 'b' ? value : valueB})`;
 
         const svg = ledSelecionado?.querySelector('svg');
         const rect = svg?.querySelector('rect');
@@ -94,35 +90,35 @@ export default function Neopixel() {
         if (hasRun.current) return;
         hasRun.current = true;
         // Cria os LEDs
-        loadLed(wrapperRefs.current, 'led1');
-        loadLed(wrapperRefs.current, 'led3');
-        loadLed(wrapperRefs.current, 'led4');
-        loadLed(wrapperRefs.current, 'led2');
-        loadLed(wrapperRefs.current, 'led5');
+        loadLed(wrapperRefs.current, '0, 4');
+        loadLed(wrapperRefs.current, '1, 4');
+        loadLed(wrapperRefs.current, '2, 4');
+        loadLed(wrapperRefs.current, '3, 4');
+        loadLed(wrapperRefs.current, '4. 4');
 
-        loadLed(wrapperRefs2.current, 'led6');
-        loadLed(wrapperRefs2.current, 'led7');
-        loadLed(wrapperRefs2.current, 'led8');
-        loadLed(wrapperRefs2.current, 'led9');
-        loadLed(wrapperRefs2.current, 'led10');
+        loadLed(wrapperRefs2.current, '0, 3');
+        loadLed(wrapperRefs2.current, '1, 3');
+        loadLed(wrapperRefs2.current, '2, 3');
+        loadLed(wrapperRefs2.current, '3, 3');
+        loadLed(wrapperRefs2.current, '4. 3');
 
-        loadLed(wrapperRefs3.current, 'led11');
-        loadLed(wrapperRefs3.current, 'led12');
-        loadLed(wrapperRefs3.current, 'led13');
-        loadLed(wrapperRefs3.current, 'led14');
-        loadLed(wrapperRefs3.current, 'led15');
+        loadLed(wrapperRefs3.current, '0, 2');
+        loadLed(wrapperRefs3.current, '1, 2');
+        loadLed(wrapperRefs3.current, '2, 2');
+        loadLed(wrapperRefs3.current, '3, 2');
+        loadLed(wrapperRefs3.current, '4. 2');
 
-        loadLed(wrapperRefs4.current, 'led16');
-        loadLed(wrapperRefs4.current, 'led17');
-        loadLed(wrapperRefs4.current, 'led18');
-        loadLed(wrapperRefs4.current, 'led19');
-        loadLed(wrapperRefs4.current, 'led20');
+        loadLed(wrapperRefs4.current, '0, 1');
+        loadLed(wrapperRefs4.current, '1, 1');
+        loadLed(wrapperRefs4.current, '2, 1');
+        loadLed(wrapperRefs4.current, '3, 1');
+        loadLed(wrapperRefs4.current, '4. 1');
 
-        loadLed(wrapperRefs5.current, 'led21');
-        loadLed(wrapperRefs5.current, 'led22');
-        loadLed(wrapperRefs5.current, 'led23');
-        loadLed(wrapperRefs5.current, 'led24');
-        loadLed(wrapperRefs5.current, 'led25');
+        loadLed(wrapperRefs5.current, '0, 0');
+        loadLed(wrapperRefs5.current, '1, 0');
+        loadLed(wrapperRefs5.current, '2, 0');
+        loadLed(wrapperRefs5.current, '3, 0');
+        loadLed(wrapperRefs5.current, '4. 0');
 
         const limparBtn = document.getElementById("limpar");
         const enviarBtn = document.getElementById("enviar");
@@ -140,17 +136,16 @@ export default function Neopixel() {
             const dados: any[] = [];
 
             leds.forEach(svg => {
-                const id = svg.getAttribute('id');
+                const pos = svg.getAttribute('id');
                 const ledRect = svg.querySelector('#led');
 
                 if (ledRect) {
                     const cor = ledRect.getAttribute('fill');
-                    const text = ledRect.getAttribute('text');
-                    dados.push({ id, cor, text });
+                    dados.push({ pos, cor});
                 }
             });
 
-            const json = JSON.stringify(dados, null, 3);
+            const json = JSON.stringify({ neopixel: dados}, null, 3);
             const blob = new Blob([json], { type: 'application/json' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
