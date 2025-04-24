@@ -90,35 +90,35 @@ export default function Neopixel() {
         if (hasRun.current) return;
         hasRun.current = true;
         // Cria os LEDs
-        loadLed(wrapperRefs.current, '0, 4');
-        loadLed(wrapperRefs.current, '1, 4');
-        loadLed(wrapperRefs.current, '2, 4');
-        loadLed(wrapperRefs.current, '3, 4');
-        loadLed(wrapperRefs.current, '4. 4');
+        loadLed(wrapperRefs.current, '24');
+        loadLed(wrapperRefs.current, '23');
+        loadLed(wrapperRefs.current, '22');
+        loadLed(wrapperRefs.current, '21');
+        loadLed(wrapperRefs.current, '20');
 
-        loadLed(wrapperRefs2.current, '0, 3');
-        loadLed(wrapperRefs2.current, '1, 3');
-        loadLed(wrapperRefs2.current, '2, 3');
-        loadLed(wrapperRefs2.current, '3, 3');
-        loadLed(wrapperRefs2.current, '4. 3');
+        loadLed(wrapperRefs2.current, '15');
+        loadLed(wrapperRefs2.current, '16');
+        loadLed(wrapperRefs2.current, '17');
+        loadLed(wrapperRefs2.current, '18');
+        loadLed(wrapperRefs2.current, '19');
 
-        loadLed(wrapperRefs3.current, '0, 2');
-        loadLed(wrapperRefs3.current, '1, 2');
-        loadLed(wrapperRefs3.current, '2, 2');
-        loadLed(wrapperRefs3.current, '3, 2');
-        loadLed(wrapperRefs3.current, '4. 2');
+        loadLed(wrapperRefs3.current, '14');
+        loadLed(wrapperRefs3.current, '13');
+        loadLed(wrapperRefs3.current, '12');
+        loadLed(wrapperRefs3.current, '11');
+        loadLed(wrapperRefs3.current, '10');
 
-        loadLed(wrapperRefs4.current, '0, 1');
-        loadLed(wrapperRefs4.current, '1, 1');
-        loadLed(wrapperRefs4.current, '2, 1');
-        loadLed(wrapperRefs4.current, '3, 1');
-        loadLed(wrapperRefs4.current, '4. 1');
+        loadLed(wrapperRefs4.current, '5');
+        loadLed(wrapperRefs4.current, '6');
+        loadLed(wrapperRefs4.current, '7');
+        loadLed(wrapperRefs4.current, '8');
+        loadLed(wrapperRefs4.current, '9');
 
-        loadLed(wrapperRefs5.current, '0, 0');
-        loadLed(wrapperRefs5.current, '1, 0');
-        loadLed(wrapperRefs5.current, '2, 0');
-        loadLed(wrapperRefs5.current, '3, 0');
-        loadLed(wrapperRefs5.current, '4. 0');
+        loadLed(wrapperRefs5.current, '4');
+        loadLed(wrapperRefs5.current, '3');
+        loadLed(wrapperRefs5.current, '2');
+        loadLed(wrapperRefs5.current, '1');
+        loadLed(wrapperRefs5.current, '0');
 
         const limparBtn = document.getElementById("limpar");
         const enviarBtn = document.getElementById("enviar");

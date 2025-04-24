@@ -2,11 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   viewBox="0 0 210 297"
+   viewBox="0 0 81823.898 65948.234"
    version="1.1"
    id="svg1"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    sodipodi:docname="testandoTeclado.svg"
+   width="81823.898"
+   height="65948.234"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -22,15 +24,24 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
-     inkscape:zoom="1.3934011"
-     inkscape:cx="97.244071"
-     inkscape:cy="189.8233"
-     inkscape:window-width="1183"
-     inkscape:window-height="755"
-     inkscape:window-x="104"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:zoom="1.9705668"
+     inkscape:cx="98.9563"
+     inkscape:cy="135.24028"
+     inkscape:window-width="1366"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="81823.898"
+       height="65948.234"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
   <defs
      id="defs1">
     <linearGradient
@@ -58,7 +69,7 @@
      id="layer1"
      width="210"
      height="297"
-     transform="matrix(1.0161737,0,0,1.0000254,0.00669046,-0.0033315)"
+     transform="matrix(1.0161737,0,0,1.0000254,18576.745,-6030.2152)"
      style="stroke-width:0.991998">
     <rect
        style="fill:#808080;stroke:url(#linearGradient1);stroke-width:0.650914"
@@ -68,9 +79,9 @@
        x="-86.733818"
        y="20.632015"
        inkscape:label="Fundo"
-       inkscape:export-filename="teclado.svg"
-       inkscape:export-xdpi="73.914841"
-       inkscape:export-ydpi="73.914841" />
+       inkscape:export-filename="fundo.svg"
+       inkscape:export-xdpi="100000"
+       inkscape:export-ydpi="100000" />
     <rect
        style="fill:#f9f9f9;stroke-width:0.38646"
        id="Do"
