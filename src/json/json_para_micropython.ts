@@ -21,6 +21,7 @@ function parseNeopixel(instrucoes: { id: string, cor: string }[]): string[] {
 		const rgb: string = rgbMatch.join(', ');
 		res.push(`np[${dict.id}] = (${rgb})`);
 	});
+	res.push(`np.write()`);
 	return res;
 }
 
