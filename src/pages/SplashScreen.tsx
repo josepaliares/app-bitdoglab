@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logo from '../assets/imgs/logoEscola4.png';
+// Depois use: <img src={logo} alt="Logo" />
+
 
 export default function SplashScreen() {
 
@@ -14,8 +17,13 @@ export default function SplashScreen() {
     }, [navigate]);
 
     return (
-    <div className='bg-gradient-to-bl from-pink-30 to-blue-30 h-screen flex items-center justify-center'>
-        <h1 className='font-ubuntu font-xl font-bold text-white'>Escola 4.0</h1>
+    <div className='bg-gradient-to-bl from-pink-30 to-blue-30 h-screen flex flex-col items-center justify-center'>
+        <img 
+            src={logo} 
+            alt="Logo Escola 4.0"
+            className="w-1/2 mb-4"
+        />
+        <h1 className='font-ubuntu text-xl font-bold text-white'>Escola 4.0</h1>
     </div>
     );
 }

@@ -6,7 +6,7 @@ export default function Connection() {
 
     return (
     <div className='h-screen flex flex-col items-center justify-center gap-3.5'>
-        <h1 className='text-ubuntu font-medium text-lg'>Conecte-se a placa para começar</h1>
+        <h1 className='text-ubuntu px-8 font-medium text-lg'>Antes de começar, primeiro conecte-se com a placa</h1>
         <Button onClick={()=>navigate('/components')}>Conectar</Button>
     </div>
     );
