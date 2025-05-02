@@ -8,18 +8,18 @@ function parse(json: string): [string, object[]] {
 function micropython(app: string, instrucoes: object[]): string[] {
 	switch (app) {
 		case 'neopixel':
-			return parseNeopixel(instrucoes as { id: string, cor: string }[]);
+			return parseNeopixel(instrucoes as { pos: string, cor: string }[]);
 		default: // isso será retirado após todos os apps serem feitos
 			return ["em contrução..."]
 	}
 }
 
-function parseNeopixel(instrucoes: { id: string, cor: string }[]): string[] {
+function parseNeopixel(instrucoes: { pos: string, cor: string }[]): string[] {
 	const res: string[] = [];
 	instrucoes.forEach(dict => {
 		const rgbMatch: string[] = dict.cor.match(/\d+/g) as string[];
 		const rgb: string = rgbMatch.join(', ');
-		res.push(`np[${dict.id}] = (${rgb})`);
+		res.push(`np[${dict.pos}] = (${rgb})`);
 	});
 	res.push(`np.write()`);
 	return res;
