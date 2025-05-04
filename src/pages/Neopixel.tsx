@@ -160,16 +160,15 @@ export default function Neopixel() {
         // Converte para comandos MicroPython
         const micropythonCommands = toMicropython(json);
 
-        // Envia cada comando para a placa
-        for (const command of micropythonCommands) {
-          await sendCommand(command);
-          // Pequeno delay entre comandos para evitar sobrecarga
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        }
+        // Junta todos os comandos em uma única string, separados por nova linha
+        const fullCommand = micropythonCommands.join("\n");
 
-        console.log("Comandos enviados com sucesso!");
+        // Envia todo o código como um único comando
+        await sendCommand(fullCommand);
+
+        console.log("Código MicroPython enviado com sucesso!");
       } catch (error) {
-        console.error("Erro ao enviar comandos:", error);
+        console.error("Erro ao enviar código:", error);
       }
     });
   }, [sendCommand]);
