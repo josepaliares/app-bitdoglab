@@ -135,9 +135,14 @@ export default function Neopixel() {
     limparBtn?.addEventListener("click", () => {
       const leds = document.querySelectorAll("svg #led");
       leds.forEach((led) => {
-        led.setAttribute("fill", "rgb(60, 60, 60)");
+        led.setAttribute("fill", "rgb(0, 0, 0)"); // Mudando para preto (LED apagado)
         led.setAttribute("text", "off");
       });
+
+      // Resetar os valores dos sliders
+      setValueR(0);
+      setValueG(0);
+      setValueB(0);
     });
 
     enviarBtn?.addEventListener("click", async () => {
