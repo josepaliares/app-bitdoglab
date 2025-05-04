@@ -3,12 +3,13 @@ import "./style.css";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useConnection } from "../contexts/ConnectionContext";
-import { toMicropython } from "../json/json_para_micropython";
+import { NeopixelController } from "../utils/neopixelController";
 
 export default function Neopixel() {
   const navigate = useNavigate();
   const hasRun = useRef(false);
   const { sendCommand } = useConnection();
+  const neopixelController = useRef<NeopixelController | null>(null);
 
   const wrapperRefs = useRef<HTMLDivElement>(null);
   const wrapperRefs2 = useRef<HTMLDivElement>(null);
@@ -98,6 +99,9 @@ export default function Neopixel() {
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
+
+    neopixelController.current = new NeopixelController(sendCommand);
+
     // Cria os LEDs
     loadLed(wrapperRefs.current, "24");
     loadLed(wrapperRefs.current, "23");
@@ -147,46 +151,10 @@ export default function Neopixel() {
 
     enviarBtn?.addEventListener("click", async () => {
       const leds = document.querySelectorAll("svg");
-      const dados: any[] = [];
-
-      leds.forEach((svg) => {
-        const pos = svg.getAttribute("id");
-        const ledRect = svg.querySelector("#led");
-
-        if (ledRect) {
-          const cor = ledRect.getAttribute("fill");
-          dados.push({ pos, cor });
-        }
-      });
-
-      const json = JSON.stringify({ neopixel: dados }, null, 3);
-
       try {
-        // Primeiro, enviar comandos de configuração
-        const setupCommands = [
-          "\x03\r\n", // Ctrl+C para interromper qualquer execução anterior
-          "from machine import Pin",
-          "import neopixel",
-          "np = neopixel.NeoPixel(Pin(7), 25)",
-          "print('NeoPixel inicializado')",
-        ];
-
-        // Envia cada comando de setup
-        for (const cmd of setupCommands) {
-          await sendCommand(cmd);
-          await new Promise((resolve) => setTimeout(resolve, 300)); // Delay maior para setup
-        }
-
-        // Depois, converte e envia os comandos dos LEDs
-        const micropythonCommands = toMicropython(json);
-        for (const command of micropythonCommands) {
-          await sendCommand(command);
-          await new Promise((resolve) => setTimeout(resolve, 100));
-        }
-
-        console.log("Comandos enviados com sucesso!");
+        await neopixelController.current?.sendLEDConfigurations(leds);
       } catch (error) {
-        console.error("Erro ao enviar comandos:", error);
+        console.error("Erro ao configurar LEDs:", error);
       }
     });
   }, [sendCommand]);
