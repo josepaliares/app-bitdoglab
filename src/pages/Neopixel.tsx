@@ -157,18 +157,31 @@ export default function Neopixel() {
       const json = JSON.stringify({ neopixel: dados }, null, 3);
 
       try {
-        // Converte para comandos MicroPython
+        // Primeiro, enviar comandos de configuração
+        const setupCommands = [
+          "\x03\r\n", // Ctrl+C para interromper qualquer execução anterior
+          "from machine import Pin",
+          "import neopixel",
+          "np = neopixel.NeoPixel(Pin(7), 25)",
+          "print('NeoPixel inicializado')",
+        ];
+
+        // Envia cada comando de setup
+        for (const cmd of setupCommands) {
+          await sendCommand(cmd);
+          await new Promise((resolve) => setTimeout(resolve, 300)); // Delay maior para setup
+        }
+
+        // Depois, converte e envia os comandos dos LEDs
         const micropythonCommands = toMicropython(json);
+        for (const command of micropythonCommands) {
+          await sendCommand(command);
+          await new Promise((resolve) => setTimeout(resolve, 100));
+        }
 
-        // Junta todos os comandos em uma única string, separados por nova linha
-        const fullCommand = micropythonCommands.join("\n");
-
-        // Envia todo o código como um único comando
-        await sendCommand(fullCommand);
-
-        console.log("Código MicroPython enviado com sucesso!");
+        console.log("Comandos enviados com sucesso!");
       } catch (error) {
-        console.error("Erro ao enviar código:", error);
+        console.error("Erro ao enviar comandos:", error);
       }
     });
   }, [sendCommand]);
