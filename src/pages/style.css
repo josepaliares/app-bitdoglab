@@ -52,6 +52,14 @@ g {
     margin-bottom: 10px;
 }
 
+#ledsContainerRef{
+    justify-content: center;
+    display: 'grid';
+    gap: '5px';
+     width: 210px;
+    height: 297px;
+}
+
 #leds-wrapper3 {
     justify-content: center;
     display: flex;
