@@ -146,7 +146,7 @@ export default function Neopixel() {
       </div>
       <div className="h-screen flex flex-col items-center justify-center gap-3.5">
         <h1 className="text-ubuntu font-medium text-lg mt-5">Neopixel</h1>
-        <h2 className="text-ubuntu font-medium text-md mb-5">
+        <h2 className="text-ubuntu font-medium text-md mb-2">
             Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
@@ -157,12 +157,11 @@ export default function Neopixel() {
               display: 'grid',
               gridTemplateColumns: 'auto repeat(5, 1fr)', // the first number in "repeat" will indicate the number of leds in the line
               gap: '10px',
-              paddingLeft: '20px',
               alignItems: 'center' // Alinha verticalmente
             }}
         />
         <div
-            className="flex flex-row justify-center gap-10 mb-5"
+            className="flex flex-row justify-center gap-10"
             ref={textNumbers}
         >
             <h5 className="ml-4">0</h5>
@@ -182,7 +181,7 @@ export default function Neopixel() {
                 max="255"
                 value={valueR}
                 onChange={updateLEDColor("r")}
-                className="w-full mt-2 bg-gradient-red h-2 rounded-full appearance-none"
+                className="w-full bg-gradient-red h-2 rounded-full appearance-none"
             ></input>
             <span id="rValueDisplay">{valueR}</span>
             </label>
@@ -217,7 +216,7 @@ export default function Neopixel() {
             <span id="bValueDisplay">{valueB}</span>
             </label>
         </div>
-        <div className="flex flex-row justify-center gap-3 mt-3">
+        <div className="flex flex-row justify-center gap-3">
             <Button variant="whitePink" id="limpar">
             Limpar
             </Button>
