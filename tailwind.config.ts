@@ -1,13 +1,4 @@
 import type { Config } from 'tailwindcss';
-import {
-	blue,
-	green,
-	orange,
-	red,
-	stone,
-	white,
-	yellow,
-} from 'tailwindcss/colors';
 
 export default {
 	content: [
@@ -26,7 +17,19 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				sans: ['"Inter Variable"', 'sans-serif'],
+				ubuntu: ['Ubuntu', 'sans-serif'],
+			},
+			fontWeight: {
+				regular: '400',
+				medium: '500',
+				bold: '700',
+			},
+			fontSize: {
+				xs: '0.75rem',  // 12px
+				sm: '0.875rem', // 14px
+				md: '1rem',     // 16px
+				lg: '1.25rem',  // 20px
+				xl: '1.5rem',   // 24px
 			},
 			keyframes: {
 				'accordion-down': {
@@ -43,60 +46,33 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 			},
 			colors: {
-				border: stone[200],
-				input: stone[200],
-				background: white,
-				foreground: stone[950],
-				card: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: white,
-					foreground: stone[950],
+
+				input: 'gray-10',
+				border: 'gray-20',
+				foreground: 'black',
+				background: 'white',
+
+				white: '#FFFFFF',
+				black: '#000000',
+				gray: {
+					10: '#e6e6e6',
+					20: '#8a8a8a',
+					30: '#4d4d4d',
 				},
-				popover: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: white,
-					foreground: stone[950],
+				pink: {
+					10: '#f7badd',
+					20: '#ed54aa',
+					30: '#e31a8b',
+					40: '#a01262',
+					50: '#720d46',
 				},
-				primary: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: orange[500],
-					foreground: orange[50],
-				},
-				secondary: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: stone[100],
-					foreground: stone[900],
-				},
-				muted: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: stone[100],
-					foreground: stone[500],
-				},
-				accent: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: orange[100],
-					foreground: orange[900],
-				},
-				destructive: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: red[500],
-					foreground: red[50],
-				},
-				success: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: green[500],
-					foreground: green[50],
-				},
-				warning: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: yellow[500],
-					foreground: yellow[50],
-				},
-				info: {
-					// biome-ignore lint/style/useNamingConvention: external naming
-					DEFAULT: blue[500],
-					foreground: blue[50],
-				},
+				blue: {
+					10: '#a8cadf',
+					20: '#5d9dc4',
+					30: '#3f84af',
+					40: '#244b64',
+					50: '#162f3e',
+				},			  
 			},
 		},
 		plugins: [require('tailwindcss-animate')],
