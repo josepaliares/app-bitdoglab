@@ -18,7 +18,7 @@ export default function Neopixel() {
   const [valueB, setValueB] = useState(0);
 
   const [ledSelecionado, setLedSelecionado] = useState<HTMLDivElement | null>(null);
-  const numbLEDs = 25;
+  const numbLEDs = 25; //numbLEDs will indicate the number of leds you want
 
   function loadLed(container: HTMLDivElement | null, ledId: string) {
     fetch("../src/pages/LED.svg")
@@ -86,8 +86,29 @@ export default function Neopixel() {
     neopixelController.current = new NeopixelController(sendCommand);
 
     // Cria os LEDs
-    for (let i = 0; i < numbLEDs; i++) {
-        loadLed(ledsContainerRef.current, i.toString());
+    let line = 4;
+    for (let row = 0; row < Math.ceil(numbLEDs / 5); row++) {
+      // Crie um container para cada linha
+      const rowContainer = document.createElement('div');
+      rowContainer.className = 'contents'; // Faz com que o grid ignore este elemento
+      
+      // Adicione o número da linha
+      const label = document.createElement('div');
+      label.className = 'text-ubuntu font-medium text-md mt-3';
+      label.textContent = `${line}`;
+      rowContainer.appendChild(label);
+      line--;
+      
+      // Adicione os LEDs desta linha (5 por linha)
+      for (let col = 0; col < 5; col++) {
+        const ledIndex = row * 5 + col;
+        if (ledIndex < numbLEDs) {
+          loadLed(rowContainer, ledIndex.toString());
+        }
+      }
+      
+      // Adicione a linha completa ao container principal
+      ledsContainerRef.current?.appendChild(rowContainer);
     }
 
     const limparBtn = document.getElementById("limpar");
@@ -133,10 +154,11 @@ export default function Neopixel() {
             className="ledsContainerRef"
             ref={ledsContainerRef}
             style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(5, 1fr)', // 5 LEDs por linha
-                gap: '10px',
-                paddingLeft: '20px',
+              display: 'grid',
+              gridTemplateColumns: 'auto repeat(5, 1fr)', // the first number in "repeat" will indicate the number of leds in the line
+              gap: '10px',
+              paddingLeft: '20px',
+              alignItems: 'center' // Alinha verticalmente
             }}
         />
         <div
