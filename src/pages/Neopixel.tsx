@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useConnection } from "../contexts/ConnectionContext";
 import { NeopixelController } from "../utils/neopixelController";
+import idea from "../assets/imgs/lampada.png";
 
 export default function Neopixel() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function Neopixel() {
   const LEDsInline = 5; //LEDInline define  the number of leds in one line, remember to change this number in the ledsContainerRef too
 
   function loadLed(container: HTMLDivElement | null, ledId: string) {
-    fetch("../src/pages/LED.svg")
+    fetch("/assets/LED.svg")
       .then((res) => res.text())
       .then((svgText) => {
         const parser = new DOMParser();
@@ -144,12 +145,15 @@ export default function Neopixel() {
         <Button variant="blue" onClick={() => navigate("/components")}>
           Voltar
         </Button>
-        <Button variant="blue" onClick={() => navigate("/ideaneopixel")}>
-          Ideia
-        </Button>
       </div>
+      <img
+      src={idea}
+      alt="Como funciona?"
+      className="absolute top-5 right-5 w-1/8 mb-4"
+      onClick={()=> navigate("/components/neopixel/como-funciona")}
+      />
       <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <h1 className="text-ubuntu font-medium text-lg mt-5">Neopixel</h1>
+        <h1 className="text-ubuntu font-bold text-lg mt-5">Neopixel</h1>
         <h2 className="text-ubuntu font-medium text-md mb-2">
             Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>

@@ -15,6 +15,7 @@ import IdeaNeopixel from "./pages/IdeaNeopixel";
 import LedRGB from "./pages/LedRGB";
 import BuzzersGravar from "./pages/BuzzersGravar";
 import BuzzersTocar from "./pages/BuzzersTocar";
+import Rgb from "./pages/Rgb";
 import { ConnectionStatus } from "./components/ConnectionStatus"; // Adjusted path to match file naming conventions
 
 export function App() {
@@ -27,16 +28,17 @@ export function App() {
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/connection" element={<Connection />} />
           <Route path="/components" element={<Components />} />
-          <Route path="/botoes" element={<Botoes />} />
-          <Route path="/buzzers" element={<Buzzers />} />
-          <Route path="/buzzersGravar" element={<BuzzersGravar />} />
-          <Route path="/buzzersTocar" element={<BuzzersTocar />} />
-          <Route path="/microfone" element={<Microfone />} />
-          <Route path="/display" element={<Display />} />
-          <Route path="/joystick" element={<Joystick />} />
-          <Route path="/neopixel" element={<Neopixel />} />
-          <Route path="/ideaneopixel" element={<IdeaNeopixel />} />
-          <Route path="/ledrgb" element={<LedRGB />} />
+          <Route path="/components/botoes" element={<Botoes />} />
+          <Route path="/components/buzzers" element={<Buzzers />} />
+          <Route path="/components/buzzers/buzzersGravar" element={<BuzzersGravar />} />
+          <Route path="/components/buzzers/buzzersTocar" element={<BuzzersTocar />} />
+          <Route path="/components/microfone" element={<Microfone />} />
+          <Route path="/components/display" element={<Display />} />
+          <Route path="/components/joystick" element={<Joystick />} />
+          <Route path="/components/neopixel" element={<Neopixel />} />
+          <Route path="/components/neopixel/como-funciona" element={<IdeaNeopixel />} />
+          <Route path="/components/neopixel/rgb" element={<Rgb />} />
+          <Route path="/components/ledrgb" element={<LedRGB />} />
         </Routes>
       </BrowserRouter>
     </ConnectionProvider>
