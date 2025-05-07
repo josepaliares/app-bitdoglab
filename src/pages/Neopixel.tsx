@@ -19,6 +19,7 @@ export default function Neopixel() {
 
   const [ledSelecionado, setLedSelecionado] = useState<HTMLDivElement | null>(null);
   const numbLEDs = 25; //numbLEDs will indicate the number of leds you want
+  const LEDsInline = 5; //LEDInline define  the number of leds in one line, remember to change this number in the ledsContainerRef too
 
   function loadLed(container: HTMLDivElement | null, ledId: string) {
     fetch("../src/pages/LED.svg")
@@ -86,8 +87,8 @@ export default function Neopixel() {
     neopixelController.current = new NeopixelController(sendCommand);
 
     // Cria os LEDs
-    let line = 4;
-    for (let row = 0; row < Math.ceil(numbLEDs / 5); row++) {
+    let line = Math.ceil(numbLEDs / LEDsInline) - 1;
+    for (let row = 0; row < Math.ceil(numbLEDs / LEDsInline); row++) {
       // Crie um container para cada linha
       const rowContainer = document.createElement('div');
       rowContainer.className = 'contents'; // Faz com que o grid ignore este elemento
@@ -99,9 +100,9 @@ export default function Neopixel() {
       rowContainer.appendChild(label);
       line--;
       
-      // Adicione os LEDs desta linha (5 por linha)
-      for (let col = 0; col < 5; col++) {
-        const ledIndex = row * 5 + col;
+      // Adicione os LEDs desta linha
+      for (let col = 0; col < LEDsInline; col++) {
+        const ledIndex = row * LEDsInline + col;
         if (ledIndex < numbLEDs) {
           loadLed(rowContainer, ledIndex.toString());
         }
@@ -142,6 +143,9 @@ export default function Neopixel() {
       <div className="absolute top-5 left-5">
         <Button variant="blue" onClick={() => navigate("/components")}>
           Voltar
+        </Button>
+        <Button variant="blue" onClick={() => navigate("/ideaneopixel")}>
+          Ideia
         </Button>
       </div>
       <div className="h-screen flex flex-col items-center justify-center gap-3.5">

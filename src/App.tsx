@@ -11,6 +11,7 @@ import Microfone from "./pages/Microphone";
 import Display from "./pages/Display";
 import Joystick from "./pages/Joystick";
 import Neopixel from "./pages/Neopixel";
+import IdeaNeopixel from "./pages/IdeaNeopixel";
 import LedRGB from "./pages/LedRGB";
 import BuzzersGravar from "./pages/BuzzersGravar";
 import BuzzersTocar from "./pages/BuzzersTocar";
@@ -34,6 +35,7 @@ export function App() {
           <Route path="/display" element={<Display />} />
           <Route path="/joystick" element={<Joystick />} />
           <Route path="/neopixel" element={<Neopixel />} />
+          <Route path="/ideaneopixel" element={<IdeaNeopixel />} />
           <Route path="/ledrgb" element={<LedRGB />} />
         </Routes>
       </BrowserRouter>
