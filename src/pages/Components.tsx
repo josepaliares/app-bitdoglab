@@ -18,43 +18,43 @@ export default function Components() {
       <div className="flex flex-wrap justify-center gap-4 w-full max-w-md px-8">
         <Button
           className="flex-1 min-w-[calc(50%-0.5rem)]"
-          onClick={() => navigate("/botoes")}
+          onClick={() => navigate("/components/botoes")}
         >
           Botões
         </Button>
         <Button
           className="flex-1 min-w-[calc(50%-0.5rem)]"
-          onClick={() => navigate("/buzzers")}
+          onClick={() => navigate("/components/buzzers")}
         >
           Buzzers
         </Button>
         <Button
           className="flex-1 min-w-[calc(50%-0.5rem)]"
-          onClick={() => navigate("/microfone")}
+          onClick={() => navigate("/components/microfone")}
         >
           Microfone
         </Button>
         <Button
           className="flex-1 min-w-[calc(50%-0.5rem)]"
-          onClick={() => navigate("/display")}
+          onClick={() => navigate("/components/display")}
         >
           Display
         </Button>
         <Button
           className="flex-1 min-w-[calc(50%-0.5rem)]"
-          onClick={() => navigate("/joystick")}
+          onClick={() => navigate("/components/joystick")}
         >
           JoyStick
         </Button>
         <Button
           className="flex-1 min-w-[calc(50%-0.5rem)]"
-          onClick={() => navigate("/neopixel")}
+          onClick={() => navigate("/components/neopixel")}
         >
           NeoPixel
         </Button>
         <Button
           className="flex-1 min-w-[calc(50%-0.5rem)]"
-          onClick={() => navigate("/ledrgb")}
+          onClick={() => navigate("/components/ledrgb")}
         >
           Led RGB
         </Button>

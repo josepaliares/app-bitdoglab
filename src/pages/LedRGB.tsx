@@ -38,7 +38,7 @@ export default function LedRGB() {
     useEffect(() => {
       if (hasRun.current) return;
       hasRun.current = true;
-      fetch("../src/pages/LED.svg")
+      fetch("/assets/LED.svg")
         .then(res => res.text())
         .then(svgText => {
             const parser = new DOMParser();

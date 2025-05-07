@@ -5,7 +5,7 @@ export const ConnectionStatus = () => {
 
   return (
     <div
-      className="fixed top-2 right-2 px-2 py-1 rounded-full text-xs font-medium z-50"
+      className="fixed top-2 left-1/2 -translate-x-1/2 px-2 py-1 rounded-full text-xs font-medium z-50"
       style={{
         backgroundColor: isConnected
           ? "rgba(0, 200, 0, 0.2)"

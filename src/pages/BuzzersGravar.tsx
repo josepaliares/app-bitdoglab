@@ -24,7 +24,7 @@ export default function Buzzers() {
                 Agudo
             </label>
         </div>
-    <Button onClick={() => navigate('/buzzers')}>Voltar</Button>
+    <Button onClick={() => navigate('/components/buzzers')}>Voltar</Button>
     </div>
     );
 }

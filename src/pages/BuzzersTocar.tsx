@@ -49,7 +49,7 @@ export default function Buzzers() {
             </label>
         </div>
         <div id="teclado" ref={wrapperRefs}></div>
-    <Button onClick={() => navigate('/buzzers')}>Voltar</Button>
+    <Button onClick={() => navigate('/components/buzzers')}>Voltar</Button>
     </div>
     );
 }

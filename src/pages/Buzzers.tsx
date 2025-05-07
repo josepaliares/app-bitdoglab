@@ -15,8 +15,8 @@ export default function Buzzers() {
 
       <div className="h-screen flex flex-col items-center justify-center gap-3.5">
         <h1 className="text-ubuntu font-medium text-lg">Buzzers</h1>
-        <Button onClick={() => navigate('/buzzersTocar')}>Tocar em tempo real</Button>
-        <Button onClick={() => navigate('/buzzersGravar')}>Gravar uma musica</Button>
+        <Button onClick={() => navigate('/components/buzzers/buzzersTocar')}>Tocar em tempo real</Button>
+        <Button onClick={() => navigate('/components/buzzers/buzzersGravar')}>Gravar uma musica</Button>
       </div>
     </>
   );
