@@ -1,0 +1,156 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.textInLine {
+    display: inline-block;
+    text-align: center;
+    width: 58px;
+    height: 20px;
+    margin-bottom: 10px;
+}
+
+.tecla-container {
+    width: 100%;
+    height: auto;
+    max-width: 300px;
+    display: block;
+}
+  
+svg {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 0px;
+}
+
+g {
+    width: 210px;
+    height: 297px
+}
+
+#svg1 {
+    width: 210px;
+    height: 297px;
+    margin-bottom: 0px;
+}
+
+
+#leds-wrapper {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    margin-bottom: 10px;
+}
+
+#leds-wrapper2 {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    margin-bottom: 10px;
+}
+
+#ledsContainerRef{
+    justify-content: center;
+    display: 'grid';
+    gap: '5px';
+     width: 210px;
+    height: 297px;
+}
+
+#leds-wrapper3 {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    margin-bottom: 10px;
+}
+
+#leds-wrapper4 {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    margin-bottom: 10px;
+}
+
+#leds-wrapper5 {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+}
+
+.led-container {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#teclas-cinzas {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    margin-bottom: 10px;
+}
+
+.tecla-container {
+    width: 70px;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#teclado {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    margin-bottom: 10px;
+    width: 300px;
+    height: 100px;
+}
+
+.slider-container {
+    margin: 0px 0;
+}
+  
+input[type="range"] {
+    width: 300px;
+    height: 10px;
+    border-radius: 5px;
+    appearance: none;
+    background: gray;
+    outline: none;
+    margin: 5px;
+}
+
+#bSlider {
+    background: linear-gradient(to right, black, blue);
+}
+
+#gSlider {
+    background: linear-gradient(to right, black, green);
+}
+
+#rSlider {
+    background: linear-gradient(to right, black, red);
+}
+
+input[type="range"] {
+    -webkit-appearance: none; /* remove estilo padrão do Chrome/Safari */
+    width: 250px;
+    height: 15px;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+
+  
