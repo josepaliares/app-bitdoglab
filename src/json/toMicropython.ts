@@ -1,25 +1,36 @@
 function parse(json: string): [string, object[]] {
-	const parseado: { string: unknown } = JSON.parse(json);
-	const app: string = Object.keys(parseado)[0] as string;
-	const instrucoes: object[] = Object.values(parseado)[0] as object[];
-	return [app, instrucoes];
+	const parsed: { string: unknown } = JSON.parse(json);
+	const app: string = Object.keys(parsed)[0] as string;
+	const instructions: object[] = Object.values(parsed)[0] as object[];
+	return [app, instructions];
 }
 
-function micropython(app: string, instrucoes: object[]): string[] {
+function micropython(app: string, instructions: object[]): string[] {
 	switch (app) {
 		case 'neopixel':
-			return parseNeopixel(instrucoes as { pos: string, cor: string }[]);
+			return parseNeopixel(instructions as { pos: string, cor: string }[]);
 		default: // isso será retirado após todos os apps serem feitos
 			return ["em contrução..."]
 	}
 }
 
-function parseNeopixel(instrucoes: { pos: string, cor: string }[]): string[] {
+function parseNeopixel(instructions: { pos: string, cor: string }[]): string[] {
+	function transformNumber(num: number): number {
+		const swapMap: Record<number, number> = {
+			5: 9, 9: 5,
+			6: 8, 8: 6,
+			15: 19, 19: 15,
+			16: 18, 18: 16
+		};
+
+		return swapMap[num] ?? num;
+	}
 	const res: string[] = [];
-	instrucoes.forEach(dict => {
+	instructions.forEach(dict => {
 		const rgbMatch: string[] = dict.cor.match(/\d+/g) as string[];
 		const rgb: string = rgbMatch.join(', ');
-		res.push(`np[${dict.pos}] = (${rgb})`);
+		const pos: number = transformNumber(24 - parseInt(dict.pos));
+		res.push(`np[` + pos + `] = (${rgb})`);
 	});
 	res.push(`np.write()`);
 	return res;
