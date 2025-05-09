@@ -1,4 +1,4 @@
-import { toMicropython } from "../json/json_para_micropython";
+import { toMicropython } from "../json/toMicropython";
 
 export interface NeopixelData {
   pos: string;
@@ -14,7 +14,7 @@ export class NeopixelController {
 
   async setupNeopixel() {
     const setupCommands = [
-      "\x03\r\n",
+      "\x03\r\n", // Creio que isso  deva rodar assim que iniciarmos a placa
       "from machine import Pin",
       "import neopixel",
       "np = neopixel.NeoPixel(Pin(7), 25)",
@@ -41,6 +41,7 @@ export class NeopixelController {
     });
 
     const json = JSON.stringify({ neopixel: dados }, null, 3);
+      console.log(json);
 
     try {
       // Setup inicial
