@@ -41,7 +41,6 @@ export class NeopixelController {
     });
 
     const json = JSON.stringify({ neopixel: dados }, null, 3);
-      console.log(json);
 
     try {
       // Setup inicial
