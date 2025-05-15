@@ -145,92 +145,106 @@ export default function Neopixel() {
 
   return (
     <>
-      <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate("/components")}>
-          Voltar
-        </Button>
-      </div>
-      <img
-        src={idea}
-        alt="Como funciona?"
-        className="absolute top-5 right-5 w-1/8 mb-4"
-        onClick={() => navigate("/components/neopixel/como-funciona")}
-      />
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <h1 className="text-ubuntu font-bold text-lg mt-5">Neopixel</h1>
-        <h2 className="text-ubuntu font-medium text-md mb-2">
-          Selecione um dos 25 LEDS e regule a cor conforme desejar
-        </h2>
-
-        <div
-          className="ledsContainerRef"
-          ref={ledsContainerRef}
-          style={{
-            display: "grid",
-            gridTemplateColumns: "auto repeat(5, 1fr)", // the first number in "repeat" will indicate the number of leds in the line
-            gap: "10px",
-            alignItems: "center", // Alinha verticalmente
-          }}
-        />
-        <div className="flex flex-row justify-center gap-10" ref={textNumbers}>
-          <h5 className="ml-4">0</h5>
-          <h5 className="ml-3">1</h5>
-          <h5 className="ml-3">2</h5>
-          <h5 className="ml-3">3</h5>
-          <h5 className="ml-3">4</h5>
-        </div>
-
-        <div>
-          <label className="font-medium font-ubuntu text-md">
-            R:
-            <input
-              type="range"
-              id="rSlider"
-              min="0"
-              max="255"
-              value={valueR}
-              onChange={updateLEDColor("r")}
-              className="w-full bg-gradient-red h-2 rounded-full appearance-none"
-            ></input>
-            <span id="rValueDisplay">{valueR}</span>
-          </label>
-        </div>
-        <div>
-          <label className="font-medium font-ubuntu text-md">
-            G:
-            <input
-              type="range"
-              id="gSlider"
-              min="0"
-              max="255"
-              value={valueG}
-              onChange={updateLEDColor("g")}
-              className="w-full mt-2 bg-gradient-green h-2 rounded-full appearance-none"
-            ></input>
-            <span id="gValueDisplay">{valueG}</span>
-          </label>
-        </div>
-        <div>
-          <label className="font-medium font-ubuntu text-md">
-            B:
-            <input
-              type="range"
-              id="bSlider"
-              min="0"
-              max="255"
-              value={valueB}
-              onChange={updateLEDColor("b")}
-              className="w-full mt-2 bg-gradient-blue h-2 rounded-full appearance-none"
-            ></input>
-            <span id="bValueDisplay">{valueB}</span>
-          </label>
-        </div>
-        <div className="flex flex-row justify-center gap-3">
-          <Button variant="whitePink" id="limpar">
-            Limpar
+      <div className="min-h-screen flex flex-col p-4 max-w-4xl mx-auto">
+        <header className="flex items-center justify-between mb-2">
+          <Button variant="blue" onClick={() => navigate("/components")}>
+            Voltar
           </Button>
-          <Button id="enviar">Enviar</Button>
-        </div>
+          <h1 className="text-ubuntu font-bold text-xl md:text-2xl">
+            Neopixel
+          </h1>
+          <button
+            onClick={() => navigate("/components/neopixel/como-funciona")}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <img
+              src={idea}
+              alt="Como funciona?"
+              className="w-8 h-auto md:w-10 md:h-10"
+            />
+          </button>
+        </header>
+        <main className="flex-1 flex flex-col items-center gap-4">
+          <h2 className="text-ubuntu font-medium text-center mb-2">
+            Selecione um dos 25 LEDs e regule a cor conforme desejar
+          </h2>
+          <div className="h-screen flex flex-col items-center gap-2">
+            <div
+              className="ledsContainerRef"
+              ref={ledsContainerRef}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "auto repeat(5, 1fr)", // the first number in "repeat" will indicate the number of leds in the line
+                gap: "10px",
+                alignItems: "center", // Alinha verticalmente
+              }}
+            />
+            <div
+              className="flex flex-row justify-center gap-10"
+              ref={textNumbers}
+            >
+              <h5 className="ml-4">0</h5>
+              <h5 className="ml-3">1</h5>
+              <h5 className="ml-3">2</h5>
+              <h5 className="ml-3">3</h5>
+              <h5 className="ml-3">4</h5>
+            </div>
+            <div className="color-selector-component">
+              <div>
+                <label className="font-medium font-ubuntu text-md">
+                  R:
+                  <input
+                    type="range"
+                    id="rSlider"
+                    min="0"
+                    max="255"
+                    value={valueR}
+                    onChange={updateLEDColor("r")}
+                    className="w-full bg-gradient-red h-2 rounded-full appearance-none"
+                  ></input>
+                  <span id="rValueDisplay">{valueR}</span>
+                </label>
+              </div>
+              <div>
+                <label className="font-medium font-ubuntu text-md">
+                  G:
+                  <input
+                    type="range"
+                    id="gSlider"
+                    min="0"
+                    max="255"
+                    value={valueG}
+                    onChange={updateLEDColor("g")}
+                    className="w-full mt-2 bg-gradient-green h-2 rounded-full appearance-none"
+                  ></input>
+                  <span id="gValueDisplay">{valueG}</span>
+                </label>
+              </div>
+              <div>
+                <label className="font-medium font-ubuntu text-md">
+                  B:
+                  <input
+                    type="range"
+                    id="bSlider"
+                    min="0"
+                    max="255"
+                    value={valueB}
+                    onChange={updateLEDColor("b")}
+                    className="w-full mt-2 bg-gradient-blue h-2 rounded-full appearance-none"
+                  ></input>
+                  <span id="bValueDisplay">{valueB}</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="flex flex-row justify-center gap-3">
+              <Button variant="whitePink" id="limpar">
+                Limpar
+              </Button>
+              <Button id="enviar">Enviar</Button>
+            </div>
+          </div>
+        </main>
       </div>
     </>
   );
