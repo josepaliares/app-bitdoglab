@@ -18,7 +18,9 @@ export default function Neopixel() {
   const [valueG, setValueG] = useState(0);
   const [valueB, setValueB] = useState(0);
 
-  const [ledSelecionado, setLedSelecionado] = useState<HTMLDivElement | null>(null);
+  const [ledSelecionado, setLedSelecionado] = useState<HTMLDivElement | null>(
+    null
+  );
   const numbLEDs = 25; //numbLEDs will indicate the number of leds you want
   const LEDsInline = 5; //LEDInline define  the number of leds in one line, remember to change this number in the ledsContainerRef too
 
@@ -37,16 +39,18 @@ export default function Neopixel() {
         svg.classList.add("led-svg");
 
         const ledContainer = document.createElement("div");
-        ledContainer.className = "w-[50px] h-[50px] flex items-center justify-center";
+        ledContainer.className =
+          "w-[50px] h-[50px] flex items-center justify-center led-container";
         ledContainer.appendChild(svg);
 
         svg.addEventListener("click", () => {
+          // Remove all selection
           document.querySelectorAll(".led-container").forEach((c) => {
-            (c as HTMLElement).style.border = "none";
+            c.classList.remove("led-selected");
           });
-          (ledContainer as HTMLElement).style.border = "4px solid #e31a8b";
-          (ledContainer as HTMLElement).style.borderRadius = "11px";
 
+          // Add selection by click
+          ledContainer.classList.add("led-selected");
           setLedSelecionado(ledContainer);
         });
 
@@ -91,16 +95,16 @@ export default function Neopixel() {
     let line = Math.ceil(numbLEDs / LEDsInline) - 1;
     for (let row = 0; row < Math.ceil(numbLEDs / LEDsInline); row++) {
       // Crie um container para cada linha
-      const rowContainer = document.createElement('div');
-      rowContainer.className = 'contents'; // Faz com que o grid ignore este elemento
-      
+      const rowContainer = document.createElement("div");
+      rowContainer.className = "contents"; // Faz com que o grid ignore este elemento
+
       // Adicione o número da linha
-      const label = document.createElement('div');
-      label.className = 'text-ubuntu font-medium text-md mt-3';
+      const label = document.createElement("div");
+      label.className = "text-ubuntu font-medium text-md mt-3";
       label.textContent = `${line}`;
       rowContainer.appendChild(label);
       line--;
-      
+
       // Adicione os LEDs desta linha
       for (let col = 0; col < LEDsInline; col++) {
         const ledIndex = row * LEDsInline + col;
@@ -108,7 +112,7 @@ export default function Neopixel() {
           loadLed(rowContainer, ledIndex.toString());
         }
       }
-      
+
       // Adicione a linha completa ao container principal
       ledsContainerRef.current?.appendChild(rowContainer);
     }
@@ -147,92 +151,87 @@ export default function Neopixel() {
         </Button>
       </div>
       <img
-      src={idea}
-      alt="Como funciona?"
-      className="absolute top-5 right-5 w-1/8 mb-4"
-      onClick={()=> navigate("/components/neopixel/como-funciona")}
+        src={idea}
+        alt="Como funciona?"
+        className="absolute top-5 right-5 w-1/8 mb-4"
+        onClick={() => navigate("/components/neopixel/como-funciona")}
       />
       <div className="h-screen flex flex-col items-center justify-center gap-3.5">
         <h1 className="text-ubuntu font-bold text-lg mt-5">Neopixel</h1>
         <h2 className="text-ubuntu font-medium text-md mb-2">
-            Selecione um dos 25 LEDS e regule a cor conforme desejar
+          Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
-        <div 
-            className="ledsContainerRef"
-            ref={ledsContainerRef}
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'auto repeat(5, 1fr)', // the first number in "repeat" will indicate the number of leds in the line
-              gap: '10px',
-              alignItems: 'center' // Alinha verticalmente
-            }}
-        />
         <div
-            className="flex flex-row justify-center gap-10"
-            ref={textNumbers}
-        >
-            <h5 className="ml-4">0</h5>
-            <h5 className="ml-3">1</h5>
-            <h5 className="ml-3">2</h5>
-            <h5 className="ml-3">3</h5>
-            <h5 className="ml-3">4</h5>
+          className="ledsContainerRef"
+          ref={ledsContainerRef}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "auto repeat(5, 1fr)", // the first number in "repeat" will indicate the number of leds in the line
+            gap: "10px",
+            alignItems: "center", // Alinha verticalmente
+          }}
+        />
+        <div className="flex flex-row justify-center gap-10" ref={textNumbers}>
+          <h5 className="ml-4">0</h5>
+          <h5 className="ml-3">1</h5>
+          <h5 className="ml-3">2</h5>
+          <h5 className="ml-3">3</h5>
+          <h5 className="ml-3">4</h5>
         </div>
 
         <div>
-            <label className="font-medium font-ubuntu text-md">
+          <label className="font-medium font-ubuntu text-md">
             R:
             <input
-                type="range"
-                id="rSlider"
-                min="0"
-                max="255"
-                value={valueR}
-                onChange={updateLEDColor("r")}
-                className="w-full bg-gradient-red h-2 rounded-full appearance-none"
+              type="range"
+              id="rSlider"
+              min="0"
+              max="255"
+              value={valueR}
+              onChange={updateLEDColor("r")}
+              className="w-full bg-gradient-red h-2 rounded-full appearance-none"
             ></input>
             <span id="rValueDisplay">{valueR}</span>
-            </label>
+          </label>
         </div>
         <div>
-            <label className="font-medium font-ubuntu text-md">
+          <label className="font-medium font-ubuntu text-md">
             G:
             <input
-                type="range"
-                id="gSlider"
-                min="0"
-                max="255"
-                value={valueG}
-                onChange={updateLEDColor("g")}
-                className="w-full mt-2 bg-gradient-green h-2 rounded-full appearance-none"
+              type="range"
+              id="gSlider"
+              min="0"
+              max="255"
+              value={valueG}
+              onChange={updateLEDColor("g")}
+              className="w-full mt-2 bg-gradient-green h-2 rounded-full appearance-none"
             ></input>
             <span id="gValueDisplay">{valueG}</span>
-            </label>
+          </label>
         </div>
-        <div >
-            <label className="font-medium font-ubuntu text-md">
+        <div>
+          <label className="font-medium font-ubuntu text-md">
             B:
             <input
-                type="range"
-                id="bSlider"
-                min="0"
-                max="255"
-                value={valueB}
-                onChange={updateLEDColor("b")}
-                className="w-full mt-2 bg-gradient-blue h-2 rounded-full appearance-none"
+              type="range"
+              id="bSlider"
+              min="0"
+              max="255"
+              value={valueB}
+              onChange={updateLEDColor("b")}
+              className="w-full mt-2 bg-gradient-blue h-2 rounded-full appearance-none"
             ></input>
             <span id="bValueDisplay">{valueB}</span>
-            </label>
+          </label>
         </div>
         <div className="flex flex-row justify-center gap-3">
-            <Button variant="whitePink" id="limpar">
+          <Button variant="whitePink" id="limpar">
             Limpar
-            </Button>
-            <Button id="enviar">Enviar</Button>
+          </Button>
+          <Button id="enviar">Enviar</Button>
         </div>
       </div>
-
-      
     </>
   );
 }
