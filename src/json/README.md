@@ -1,0 +1,19 @@
+# Pasta `json` - Conversor JSON para MicroPython
+
+Este módulo é responsável por converter instruções em formato JSON para código MicroPython, adaptando-se a diferentes aplicações. Abaixo está a documentação técnica e arquitetural.
+
+---
+
+## 📋 Visão Geral
+O arquivo `toMicropython.ts` contém funções para transformar JSON em comandos MicroPython executáveis no client (app ou browser). A arquitetura é modular, permitindo a extensão para novas aplicações.
+
+---
+
+## 🛠️ Arquitetura
+A estrutura segue um fluxo linear e modular:
+1. **Parsing do JSON**: Extrai o nome da aplicação e suas instruções.
+2. **Roteamento**: Direciona para o parser específico da aplicação.
+3. **Transformação**: Gera código MicroPython personalizado para cada aplicação.
+
+### Diagrama Simplificado:
+![Representação visual da arquitetura](arquiteturaJson.png "Representação visual da arquitetura")
