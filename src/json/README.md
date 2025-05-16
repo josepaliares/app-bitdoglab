@@ -21,6 +21,6 @@ A estrutura segue um fluxo linear e modular:
 ---
 ✨ Contribuindo com Novas Aplicações
 
-1. Adicione um Caso: Em micropython(), inclua um case para sua aplicação.
-2. Crie um Parser: Implemente uma função no estilo parseNomeDaApp(instructions).
-3. Teste: Garanta que o código gerado seja compatível com o hardware alvo.
+1. **Adicione um Caso**: Em micropython(), inclua um case para sua aplicação.
+2. **Crie um Parser**: Implemente uma função no estilo parseNomeDaApp(instructions).
+3. **Teste**: Garanta que o código gerado seja compatível com o hardware alvo.
