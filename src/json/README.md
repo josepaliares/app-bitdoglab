@@ -17,3 +17,10 @@ A estrutura segue um fluxo linear e modular:
 
 ### Diagrama Simplificado:
 ![Representação visual da arquitetura](arquiteturaJson.png "Representação visual da arquitetura")
+
+---
+✨ Contribuindo com Novas Aplicações
+
+1. Adicione um Caso: Em micropython(), inclua um case para sua aplicação.
+2. Crie um Parser: Implemente uma função no estilo parseNomeDaApp(instructions).
+3. Teste: Garanta que o código gerado seja compatível com o hardware alvo.
