@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { useConnection } from "../../contexts/ConnectionContext";
 import { NeopixelController } from "../../utils/neopixelController";
 import idea from "@/assets/imgs/lampada.png";
+import ColorPicker from "@/components/ColorPicker";
+import LEDMatrix from "@/components/LEDMatrix";
 
 export default function Neopixel() {
   const navigate = useNavigate();
@@ -11,136 +13,80 @@ export default function Neopixel() {
   const { sendCommand } = useConnection();
   const neopixelController = useRef<NeopixelController | null>(null);
 
-  const ledsContainerRef = useRef<HTMLDivElement>(null);
-  const textNumbers = useRef<HTMLDivElement>(null);
-
   const [valueR, setValueR] = useState(0);
   const [valueG, setValueG] = useState(0);
   const [valueB, setValueB] = useState(0);
-
-  const [ledSelecionado, setLedSelecionado] = useState<HTMLDivElement | null>(
-    null
+  const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);
+  
+  // Store all LED colors (initialized to black)
+  const [ledColors, setLedColors] = useState<string[]>(
+    Array(25).fill('rgb(0, 0, 0)')
   );
-  const numbLEDs = 25; //numbLEDs will indicate the number of leds you want
-  const LEDsInline = 5; //LEDInline define  the number of leds in one line, remember to change this number in the ledsContainerRef too
 
-  function loadLed(container: HTMLDivElement | null, ledId: string) {
-    fetch("/assets/LED.svg")
-      .then((res) => res.text())
-      .then((svgText) => {
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
-        const svg = svgDoc.querySelector("svg");
-        const rect = svg?.querySelector("#led");
+  const numbLEDs = 25; // Number of LEDs
+  const LEDsInline = 5// LEDs per row
 
-        if (!svg || !rect) return;
-
-        svg.setAttribute("id", ledId);
-        svg.classList.add("led-svg");
-
-        const ledContainer = document.createElement("div");
-        ledContainer.className =
-          "w-[50px] h-[50px] flex items-center justify-center";
-        ledContainer.appendChild(svg);
-
-        svg.addEventListener("click", () => {
-          document.querySelectorAll(".led-container").forEach((c) => {
-            (c as HTMLElement).style.border = "none";
-          });
-          (ledContainer as HTMLElement).style.border = "4px solid #e31a8b";
-          (ledContainer as HTMLElement).style.borderRadius = "11px";
-
-          setLedSelecionado(ledContainer);
-        });
-
-        if (container) {
-          container.appendChild(ledContainer);
-        }
+  // Update the selected LED's color
+  useEffect(() => {
+    if (selectedLEDIndex !== null) {
+      const newColor = `rgb(${valueR}, ${valueG}, ${valueB})`;
+      setLedColors(prev => {
+        const newColors = [...prev];
+        newColors[selectedLEDIndex] = newColor;
+        return newColors;
       });
-  }
+    }
+  }, [valueR, valueG, valueB, selectedLEDIndex]);
 
-  // Atualiza a cor do LED selecionado
-  const updateLEDColor =
-    (color: "r" | "g" | "b") =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = parseInt(event.target.value);
-
-      if (color === "r") {
-        setValueR(value);
-      } else if (color === "g") {
-        setValueG(value);
-      } else if (color === "b") {
-        setValueB(value);
-      }
-
-      // calcula nova cor RGB
-      const rgbColor = `rgb(${color === "r" ? value : valueR}, ${
-        color === "g" ? value : valueG
-      }, ${color === "b" ? value : valueB})`;
-
-      const svg = ledSelecionado?.querySelector("svg");
-      const rect = svg?.querySelector("rect");
-      rect?.setAttribute("fill", rgbColor);
-      rect?.setAttribute("text", "on");
-    };
-
+  // Initialize the NeopixelController
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
 
     neopixelController.current = new NeopixelController(sendCommand);
-
-    // Cria os LEDs
-    let line = Math.ceil(numbLEDs / LEDsInline) - 1;
-    for (let row = 0; row < Math.ceil(numbLEDs / LEDsInline); row++) {
-      // Crie um container para cada linha
-      const rowContainer = document.createElement("div");
-      rowContainer.className = "contents"; // Faz com que o grid ignore este elemento
-
-      // Adicione o número da linha
-      const label = document.createElement("div");
-      label.className = "text-ubuntu font-medium text-md mt-3";
-      label.textContent = `${line}`;
-      rowContainer.appendChild(label);
-      line--;
-
-      // Adicione os LEDs desta linha
-      for (let col = 0; col < LEDsInline; col++) {
-        const ledIndex = row * LEDsInline + col;
-        if (ledIndex < numbLEDs) {
-          loadLed(rowContainer, ledIndex.toString());
-        }
-      }
-
-      // Adicione a linha completa ao container principal
-      ledsContainerRef.current?.appendChild(rowContainer);
-    }
-
-    const limparBtn = document.getElementById("limpar");
-    const enviarBtn = document.getElementById("enviar");
-
-    limparBtn?.addEventListener("click", () => {
-      const leds = document.querySelectorAll("svg #led");
-      leds.forEach((led) => {
-        led.setAttribute("fill", "rgb(0, 0, 0)"); // Mudando para preto (LED apagado)
-        led.setAttribute("text", "off");
-      });
-
-      // Resetar os valores dos sliders
-      setValueR(0);
-      setValueG(0);
-      setValueB(0);
-    });
-
-    enviarBtn?.addEventListener("click", async () => {
-      const leds = document.querySelectorAll("svg");
-      try {
-        await neopixelController.current?.sendLEDConfigurations(leds);
-      } catch (error) {
-        console.error("Erro ao configurar LEDs:", error);
-      }
-    });
   }, [sendCommand]);
+
+  // Handle LED selection
+  const handleLEDSelected = (index: number) => {
+    setSelectedLEDIndex(index);
+    
+    // Update color slider values based on the selected LED's current color
+    const color = ledColors[index];
+    if (color) {
+      // Parse the RGB values from the color string with proper type checking
+      const rgbMatch = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+      if (rgbMatch && rgbMatch.length === 4) { // Full match + 3 groups
+        // Use non-null assertion (!) since we checked length
+        setValueR(parseInt(rgbMatch[1]!));
+        setValueG(parseInt(rgbMatch[2]!));
+        setValueB(parseInt(rgbMatch[3]!));
+      } else {
+        // Handle invalid color format (fallback to black)
+        setValueR(0);
+        setValueG(0);
+        setValueB(0);
+      }
+    }
+  };
+
+  // Handle the Clear button click
+  const handleClear = () => {
+    setLedColors(Array(numbLEDs).fill('rgb(0, 0, 0)'));
+    setValueR(0);
+    setValueG(0);
+    setValueB(0);
+  };
+
+  // Handle the Send button click
+  const handleSend = async () => {
+    try {
+      // Get all LED SVG elements
+      const ledElements = document.querySelectorAll("svg.led-svg");
+      await neopixelController.current?.sendLEDConfigurations(ledElements);
+    } catch (error) {
+      console.error("Erro ao configurar LEDs:", error);
+    }
+  };
 
   return (
     <>
@@ -161,79 +107,31 @@ export default function Neopixel() {
           Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
-        <div
-          className="ledsContainerRef"
-          ref={ledsContainerRef}
-          style={{
-            display: "grid",
-            gridTemplateColumns: "auto repeat(5, 1fr)", // the first number in "repeat" will indicate the number of leds in the line
-            gap: "10px",
-            alignItems: "center", // Alinha verticalmente
-          }}
+        {/* LED Matrix Component */}
+        <LEDMatrix 
+          numLEDs={numbLEDs}
+          ledsPerRow={LEDsInline}
+          onLEDSelected={handleLEDSelected}
+          ledColors={ledColors}
         />
-        <div className="flex flex-row justify-center gap-10" ref={textNumbers}>
-          <h5 className="ml-4">0</h5>
-          <h5 className="ml-3">1</h5>
-          <h5 className="ml-3">2</h5>
-          <h5 className="ml-3">3</h5>
-          <h5 className="ml-3">4</h5>
-        </div>
 
-        <div>
-          {/* Slider R */}
-          <div className="flex items-center gap-3 mt-2">
-            <label className="w-6 text-right font-medium font-ubuntu text-md">
-              R:
-            </label>
-            <input
-              type="range"
-              value={valueR}
-              onChange={updateLEDColor("r")}
-              min={0}
-              max={255}
-              className="w-[250px] h-[10px] rounded-lg appearance-none outline-none cursor-pointer bg-gradient-to-r from-black to-rgb-red"
-            />
-            <span className="w-8 text-left">{valueR}</span>
-          </div>
+        {/* Color Picker Component */}
+        <ColorPicker
+          valueR={valueR}
+          valueG={valueG}
+          valueB={valueB}
+          onChangeR={setValueR}
+          onChangeG={setValueG}
+          onChangeB={setValueB}
+          showLabels={true}
+          showValues={true}
+        />
 
-          {/* Slider G */}
-          <div className="flex items-center gap-3 mt-2">
-            <label className="w-6 text-right font-medium font-ubuntu text-md">
-              G:
-            </label>
-            <input
-              type="range"
-              value={valueG}
-              onChange={updateLEDColor("g")}
-              min={0}
-              max={255}
-              className="w-[250px] h-[10px] rounded-lg appearance-none outline-none cursor-pointer bg-gradient-to-r from-black to-rgb-green"
-            />
-            <span className="w-8 text-left">{valueG}</span>
-          </div>
-
-          {/* Slider B */}
-          <div className="flex items-center gap-3 mt-2">
-            <label className="w-6 text-right font-medium font-ubuntu text-md">
-              B:
-            </label>
-            <input
-              type="range"
-              value={valueB}
-              onChange={updateLEDColor("b")}
-              min={0}
-              max={255}
-              className="w-[250px] h-[10px] rounded-lg appearance-none outline-none cursor-pointer bg-gradient-to-r from-black to-rgb-blue"
-            />
-            <span className="w-8 text-left">{valueB}</span>
-          </div>
-        </div>
-
-        <div className="flex flex-row justify-center gap-3">
-          <Button variant="whitePink" id="limpar">
+        <div className="flex flex-row justify-center gap-3 mt-4">
+          <Button variant="whitePink" onClick={handleClear}>
             Limpar
           </Button>
-          <Button id="enviar">Enviar</Button>
+          <Button onClick={handleSend}>Enviar</Button>
         </div>
       </div>
     </>
