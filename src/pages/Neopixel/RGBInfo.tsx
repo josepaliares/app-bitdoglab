@@ -174,7 +174,7 @@ export default function RGBInfo() {
           ref={wrapperRefs}
         ></div>
         <h3 className="text-ubuntu font-regular text-sm mt-10 mb-10">Todas as cores podem ser vistas como uma "mistura" de vermelho, verde e azul!</h3>
-        <Button onClick={()=>navigate("/components/neopixel")}>Teste você mesmo!</Button>
+        <Button onClick={()=>navigate(-2)}>Teste você mesmo!</Button>
       </div>
     </>
   );
