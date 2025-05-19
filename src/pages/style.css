@@ -117,4 +117,7 @@ g {
     height: 100px;
 }
 
-  
+.led-selected {
+    border: 4px solid #e31a8b !important;
+    border-radius: 11px !important;
+}  

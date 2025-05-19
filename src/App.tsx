@@ -16,6 +16,7 @@ import LedRGB from "./pages/LedRGB/LedRGB";
 import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
+import NotFound from "./pages/NotFound";
 import { ConnectionStatus } from "./components/ConnectionStatus"; // Adjusted path to match file naming conventions
 import './pages/style.css'
 
@@ -40,6 +41,7 @@ export function App() {
           <Route path="/components/neopixel/info" element={<NeopixelInfo />} />
           <Route path="/components/neopixel/rgb-info" element={<RGBInfo />} />
           <Route path="/components/ledrgb" element={<LedRGB />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </ConnectionProvider>
