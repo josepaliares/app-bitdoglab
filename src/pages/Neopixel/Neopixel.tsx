@@ -18,13 +18,13 @@ export default function Neopixel() {
   const [valueB, setValueB] = useState(0);
   const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);
   
+  const LEDsInline = 5; // LEDs per row
+  const LEDSInCol = 5;  //LEDS per column
+
   // Store all LED colors (initialized to black)
   const [ledColors, setLedColors] = useState<string[]>(
-    Array(25).fill('rgb(0, 0, 0)')
+     Array(LEDSInCol * LEDsInline).fill('rgb(0, 0, 0)')
   );
-
-  const numbLEDs = 25; // Number of LEDs
-  const LEDsInline = 5// LEDs per row
 
   // Update the selected LED's color
   useEffect(() => {
@@ -71,7 +71,7 @@ export default function Neopixel() {
 
   // Handle the Clear button click
   const handleClear = () => {
-    setLedColors(Array(numbLEDs).fill('rgb(0, 0, 0)'));
+    setLedColors(Array(LEDsInline * LEDSInCol).fill('rgb(0, 0, 0)'));
     setValueR(0);
     setValueG(0);
     setValueB(0);
@@ -109,7 +109,7 @@ export default function Neopixel() {
 
         {/* LED Matrix Component */}
         <LEDMatrix 
-          numLEDs={numbLEDs}
+          ledsPerCol={LEDSInCol}
           ledsPerRow={LEDsInline}
           onLEDSelected={handleLEDSelected}
           ledColors={ledColors}

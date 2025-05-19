@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import LED from './LED';
 
 interface LEDMatrixProps {
-  numLEDs: number;
+  ledsPerCol: number;
   ledsPerRow: number;
   onLEDSelected: (index: number) => void;
   ledColors: string[];
@@ -15,18 +15,18 @@ interface LEDMatrixProps {
  * @returns {JSX.Element} - The rendered LED matrix component
  */
 const LEDMatrix: React.FC<LEDMatrixProps> = ({
-  numLEDs,
+  ledsPerCol,
   ledsPerRow,
   onLEDSelected,
   ledColors
 }) => {
   const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);
   
-  // Calculate number of rows needed
-  const numRows = Math.ceil(numLEDs / ledsPerRow);
+  // Calculate number of  total leds
+  const numLEDs = Math.ceil(ledsPerCol * ledsPerRow);
   
   // Create an array of row indices (from high to low, for reverse order display)
-  const rowIndices = Array.from({ length: numRows }, (_, i) => numRows - i - 1);
+  const rowIndices = Array.from({ length: ledsPerCol }, (_, i) => ledsPerCol - i - 1);
   
   // Create an array of column indices
   const colIndices = Array.from({ length: ledsPerRow }, (_, i) => i);
