@@ -1,7 +1,15 @@
-import { useConnection } from "../contexts/ConnectionContext";
+import { useConnection, ConnectionType } from "../contexts/ConnectionContext";
 
 export const ConnectionStatus = () => {
-  const { isConnected } = useConnection();
+  const { isConnected, connectionType } = useConnection();
+
+  // Get connection label based on type
+  const getConnectionLabel = () => {
+    if (!isConnected) return "Desconectado";
+    return connectionType === ConnectionType.BLUETOOTH
+      ? "Conectado via Bluetooth"
+      : "Conectado via Cabo";
+  };
 
   return (
     <div
@@ -13,7 +21,7 @@ export const ConnectionStatus = () => {
         color: isConnected ? "rgb(0, 100, 0)" : "rgb(100, 0, 0)",
       }}
     >
-      {isConnected ? "Conectado" : "Desconectado"}
+      {getConnectionLabel()}
     </div>
   );
 };
