@@ -13,6 +13,7 @@ import Joystick from "./pages/Joystick/Joystick";
 import Neopixel from "./pages/Neopixel/Neopixel";
 import NeopixelInfo from "./pages/Neopixel/NeopixelInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
+import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
 import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
@@ -41,6 +42,7 @@ export function App() {
           <Route path="/components/neopixel/info" element={<NeopixelInfo />} />
           <Route path="/components/neopixel/rgb-info" element={<RGBInfo />} />
           <Route path="/components/ledrgb" element={<LedRGB />} />
+          <Route path="/components/ledrgb/info" element={<LedRGBInfo />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

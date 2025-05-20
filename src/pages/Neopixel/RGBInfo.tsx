@@ -26,7 +26,7 @@ export default function RGBInfo() {
   return (
     <>
       <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate("/components/neopixel/info")}>
+        <Button variant="blue" onClick={() => navigate(-1)}>
           Voltar
         </Button>
       </div>
