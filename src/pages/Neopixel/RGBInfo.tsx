@@ -70,7 +70,6 @@ export default function RGBInfo() {
           <LED 
             id="combined-led" 
             color={combinedColor} 
-            selected={true} // Adiciona uma borda para destacar o LED resultante
           />
         </div>
 
