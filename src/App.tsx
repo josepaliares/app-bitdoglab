@@ -22,6 +22,7 @@ import Neopixel from "./pages/Neopixel/Neopixel";
 import NeopixelInfo from "./pages/Neopixel/NeopixelInfo";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
+import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
 
 export function App() {
   return (
@@ -54,7 +55,11 @@ export function App() {
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
             
-            <Route path="ledrgb" element={<LedRGB />} />
+            <Route path="ledrgb">
+              <Route index element={<LedRGB />} />
+              <Route path="info" element={<LedRGBInfo />} />
+              <Route path="rgb-info" element={<RGBInfo />} />
+            </Route>
           </Route>
           
           <Route path="*" element={<NotFound />} />

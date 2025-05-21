@@ -7,7 +7,6 @@ export interface NeopixelData {
 
 export class NeopixelController {
   private sendCommand: (command: string) => Promise<void>;
-
   constructor(sendCommand: (command: string) => Promise<void>) {
     this.sendCommand = sendCommand;
   }
