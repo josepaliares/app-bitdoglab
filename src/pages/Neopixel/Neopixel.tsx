@@ -19,13 +19,13 @@ export default function Neopixel() {
   const [valueB, setValueB] = useState(0);
   const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);
 
+  const LEDsInline = 5; // LEDs per row
+  const LEDSInCol = 5;  //LEDS per column
+
   // Store all LED colors (initialized to black)
   const [ledColors, setLedColors] = useState<string[]>(
-    Array(25).fill("rgb(0, 0, 0)")
+     Array(LEDSInCol * LEDsInline).fill('rgb(0, 0, 0)')
   );
-
-  const numbLEDs = 25; // Number of LEDs
-  const LEDsInline = 5; // LEDs per row
 
   // Update the selected LED's color
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function Neopixel() {
 
   // Handle the Clear button click
   const handleClear = () => {
-    setLedColors(Array(numbLEDs).fill("rgb(0, 0, 0)"));
+    setLedColors(Array(LEDsInline * LEDSInCol).fill('rgb(0, 0, 0)'));
     setValueR(0);
     setValueG(0);
     setValueB(0);
@@ -92,33 +92,18 @@ export default function Neopixel() {
 
   return (
     <div className="flex flex-col">
-      {/* <header className="text-ubuntu flex items-center p-4">
-        <div className="text-ubuntu flex-1 flex justify-start">
-          <Button variant="blue" onClick={() => navigate("/components")}>
-            Voltar
-          </Button>
-        </div>
-        <h1 className="text-ubuntu font-bold text-xl flex-1 text-center p-6">Neopixel</h1>
-        <div className="flex-1 flex justify-end">
-          <button
-            onClick={() => navigate("/components/neopixel/como-funciona")}
-          >
-            <img src={idea} alt="Como funciona?" className="w-10" />
-          </button>
-        </div>
-      </header> */}
       <Header 
-      title="Neopixel" 
-      showIdeaButton={true}
-      ideaButtonPath="/components/neopixel/como-funciona"
+        title="Neopixel" 
+        showIdeaButton={true}
+        ideaButtonPath="/components/neopixel/como-funciona"
       />
       <main className="h-screen flex flex-col items-center justify-center gap-3.5">
         <h2 className="text-ubuntu font-bold text-md mb-5">
           Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
-        <LEDMatrix
-          numLEDs={numbLEDs}
+        <LEDMatrix 
+          ledsPerCol={LEDSInCol}
           ledsPerRow={LEDsInline}
           onLEDSelected={handleLEDSelected}
           ledColors={ledColors}
