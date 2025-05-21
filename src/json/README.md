@@ -28,12 +28,12 @@ A estrutura segue um fluxo linear e modular:
 ---
 #### 📲 Módulos existentes:
 1. 🟦 **NeoPixel**: Processa um lote de dados contido em um único JSON no formato:
-``` json
+```
 {
    "neopixel": [
       {
-         "pos": 'string com um número indicando a posição',
-         "cor": "rgb('número de 0 a 255', 'número de 0 a 255', 'número de 0 a 255')"
+         "pos": <string com um número indicando a posição>,
+         "cor": "rgb(<número de 0 a 255>, <número de 0 a 255>, <número de 0 a 255>)"
       }
    ]
 }
