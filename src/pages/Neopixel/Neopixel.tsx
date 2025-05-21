@@ -4,7 +4,7 @@ import { useConnection } from "../../contexts/ConnectionContext";
 import idea from "@/assets/imgs/lampada.png";
 import ColorPicker from "@/components/ColorPicker";
 import LEDMatrix from "@/components/LEDMatrix";
-import { useNeopixelController } from "@/hooks/useNeopixel";
+import { useNeopixel } from "@/hooks/useNeopixel";
 
 export default function Neopixel() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function Neopixel() {
     handleLEDSelected,
     handleClear,
     handleSend
-  } = useNeopixelController(sendCommand, totalLEDs);
+  } = useNeopixel(sendCommand, totalLEDs);
 
   return (
     <>

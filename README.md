@@ -120,3 +120,51 @@ npx cap open android
   - No seu celular conectado por **USB** ou **Wi-Fi** com a **depuração ativada**
 
 ---
+
+## Como expandir o app
+
+### Para criar uma nova tela para um componente da placa:
+
+1. **Criar pasta nova na `/pages` com o nome do componente**
+   - Adicionar o arquivo da tela `.tsx` com o layout e UI do componente
+   - Adicionar arquivo `.tsx` com o fluxograma explicativo da tela
+
+2. **Criar um hook na pasta `/hooks`**
+   - Implementar a lógica, estado e handlers para a tela
+   - Usar esse hook dentro da tela para conectar UI e lógica
+
+3. **Criar um controlador na pasta `/utils`**
+   - Implementar a conversão de dados da interface para JSON
+   - Enviar os comandos ao backend para comunicação com a placa
+
+4. **Criar os componentes visuais reutilizáveis na pasta `/components`**
+   - Componentes simples para pequenas partes visuais
+   - Componentes composites para agrupamentos que serão usados na tela
+
+### Para criar novos componentes composite:
+
+- Combine componentes folha já existentes ou novos
+- Implemente a lógica necessária para controlar o comportamento agregado
+- Exponha props para personalização e comunicação com o hook
+- Use esse componente composite nas telas ou em outros composites
+
+---
+
+## Onde encontrar mais informações?
+
+- Leia o README específico em cada pasta para detalhes e exemplos:
+  - `/pages/README.md` — estrutura e uso das telas
+  - `/hooks/README.md` — exemplos e organização dos hooks
+  - `/utils/README.md` — controladores e comunicação com o backend/placa
+  - `/components/README.md` — como criar componentes folha e composite
+
+---
+
+## Boas práticas
+
+- Separe visual (UI) da lógica usando hooks personalizados
+- Mantenha a comunicação com a placa isolada em controladores (`utils`)
+- Reutilize componentes React para manter a consistência visual
+- Documente sempre cada novo componente e hook para facilitar manutenção
+
+---

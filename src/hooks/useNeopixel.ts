@@ -10,7 +10,7 @@ import { rgbToString, stringToRgb } from "@/types/rgb";
  * @param totalLEDs - Total number of LEDs in the matrix
  * @returns All necessary state and handlers for the Neopixel component
  */
-export const useNeopixelController = (
+export const useNeopixel = (
   sendCommand: (command: string) => Promise<void>,
   totalLEDs: number
 ) => {
