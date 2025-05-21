@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useConnection } from "../../contexts/ConnectionContext";
 import { NeopixelController } from "../../utils/neopixelController";
-import idea from "@/assets/imgs/lampada.png";
+import { Header } from "@/components/Header"
+// import idea from "@/assets/imgs/lampada.png";
 import ColorPicker from "@/components/ColorPicker";
 import LEDMatrix from "@/components/LEDMatrix";
 
@@ -17,7 +18,7 @@ export default function Neopixel() {
   const [valueG, setValueG] = useState(0);
   const [valueB, setValueB] = useState(0);
   const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);
-  
+
   const LEDsInline = 5; // LEDs per row
   const LEDSInCol = 5;  //LEDS per column
 
@@ -30,7 +31,7 @@ export default function Neopixel() {
   useEffect(() => {
     if (selectedLEDIndex !== null) {
       const newColor = `rgb(${valueR}, ${valueG}, ${valueB})`;
-      setLedColors(prev => {
+      setLedColors((prev) => {
         const newColors = [...prev];
         newColors[selectedLEDIndex] = newColor;
         return newColors;
@@ -49,13 +50,14 @@ export default function Neopixel() {
   // Handle LED selection
   const handleLEDSelected = (index: number) => {
     setSelectedLEDIndex(index);
-    
+
     // Update color slider values based on the selected LED's current color
     const color = ledColors[index];
     if (color) {
       // Parse the RGB values from the color string with proper type checking
       const rgbMatch = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-      if (rgbMatch && rgbMatch.length === 4) { // Full match + 3 groups
+      if (rgbMatch && rgbMatch.length === 4) {
+        // Full match + 3 groups
         // Use non-null assertion (!) since we checked length
         setValueR(parseInt(rgbMatch[1]!));
         setValueG(parseInt(rgbMatch[2]!));
@@ -89,25 +91,17 @@ export default function Neopixel() {
   };
 
   return (
-    <>
-      <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate("/components")}>
-          Voltar
-        </Button>
-      </div>
-      <img
-        src={idea}
-        alt="Como funciona?"
-        className="absolute top-5 right-5 w-1/8 mb-4"
-        onClick={() => navigate("/components/neopixel/info")}
+    <div className="flex flex-col">
+      <Header 
+        title="Neopixel" 
+        showIdeaButton={true}
+        ideaButtonPath="/components/neopixel/como-funciona"
       />
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <h1 className="text-ubuntu font-bold text-lg mt-5">Neopixel</h1>
-        <h2 className="text-ubuntu font-medium text-md mb-2">
+      <main className="h-screen flex flex-col items-center justify-center gap-3.5">
+        <h2 className="text-ubuntu font-bold text-md mb-5">
           Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
-        {/* LED Matrix Component */}
         <LEDMatrix 
           ledsPerCol={LEDSInCol}
           ledsPerRow={LEDsInline}
@@ -115,7 +109,6 @@ export default function Neopixel() {
           ledColors={ledColors}
         />
 
-        {/* Color Picker Component */}
         <ColorPicker
           valueR={valueR}
           valueG={valueG}
@@ -133,7 +126,7 @@ export default function Neopixel() {
           </Button>
           <Button onClick={handleSend}>Enviar</Button>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }
