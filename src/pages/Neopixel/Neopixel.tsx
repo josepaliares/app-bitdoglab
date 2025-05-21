@@ -1,15 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useConnection } from "../../contexts/ConnectionContext";
 import { NeopixelController } from "../../utils/neopixelController";
-import { Header } from "@/components/Header"
+import { Header } from "@/components/Header";
 // import idea from "@/assets/imgs/lampada.png";
 import ColorPicker from "@/components/ColorPicker";
 import LEDMatrix from "@/components/LEDMatrix";
 
 export default function Neopixel() {
-  const navigate = useNavigate();
   const hasRun = useRef(false);
   const { sendCommand } = useConnection();
   const neopixelController = useRef<NeopixelController | null>(null);
@@ -20,11 +18,11 @@ export default function Neopixel() {
   const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);
 
   const LEDsInline = 5; // LEDs per row
-  const LEDSInCol = 5;  //LEDS per column
+  const LEDSInCol = 5; //LEDS per column
 
   // Store all LED colors (initialized to black)
   const [ledColors, setLedColors] = useState<string[]>(
-     Array(LEDSInCol * LEDsInline).fill('rgb(0, 0, 0)')
+    Array(LEDSInCol * LEDsInline).fill("rgb(0, 0, 0)")
   );
 
   // Update the selected LED's color
@@ -73,7 +71,7 @@ export default function Neopixel() {
 
   // Handle the Clear button click
   const handleClear = () => {
-    setLedColors(Array(LEDsInline * LEDSInCol).fill('rgb(0, 0, 0)'));
+    setLedColors(Array(LEDsInline * LEDSInCol).fill("rgb(0, 0, 0)"));
     setValueR(0);
     setValueG(0);
     setValueB(0);
@@ -92,8 +90,8 @@ export default function Neopixel() {
 
   return (
     <div className="flex flex-col">
-      <Header 
-        title="Neopixel" 
+      <Header
+        title="Neopixel"
         showIdeaButton={true}
         ideaButtonPath="/components/neopixel/como-funciona"
       />
@@ -102,7 +100,7 @@ export default function Neopixel() {
           Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
-        <LEDMatrix 
+        <LEDMatrix
           ledsPerCol={LEDSInCol}
           ledsPerRow={LEDsInline}
           onLEDSelected={handleLEDSelected}
