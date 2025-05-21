@@ -141,13 +141,6 @@ npx cap open android
    - Componentes simples para pequenas partes visuais
    - Componentes composites para agrupamentos que serão usados na tela
 
-### Para criar novos componentes composite:
-
-- Combine componentes folha já existentes ou novos
-- Implemente a lógica necessária para controlar o comportamento agregado
-- Exponha props para personalização e comunicação com o hook
-- Use esse componente composite nas telas ou em outros composites
-
 ---
 
 ## Onde encontrar mais informações?
