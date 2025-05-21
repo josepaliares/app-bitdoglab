@@ -54,7 +54,7 @@ export default function NeopixelInfo(): React.ReactElement {
         {/* Usando o componente FlowDiagram para renderizar o fluxograma */}
         <FlowDiagram steps={flowSteps} />
         
-        <Button className="mt-2" onClick={() => navigate("/components/neopixel/rgb-info")}>
+        <Button className="mt-2" onClick={() => navigate("/components/ledrgb/rgb-info")}>
           Como funciona o RGB?
         </Button>
       </div>

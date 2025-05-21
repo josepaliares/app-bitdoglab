@@ -43,6 +43,8 @@ export function App() {
           <Route path="/components/neopixel/rgb-info" element={<RGBInfo />} />
           <Route path="/components/ledrgb" element={<LedRGB />} />
           <Route path="/components/ledrgb/info" element={<LedRGBInfo />} />
+          <Route path="/components/ledrgb/rgb-info" element={<RGBInfo />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
