@@ -32,8 +32,8 @@ A estrutura segue um fluxo linear e modular:
 {
    "neopixel": [
       {
-         "pos": <string com um número indicando a posição>,
-         "cor": "rgb(<número de 0 a 255>, <número de 0 a 255>, <número de 0 a 255>)"
+         "pos": 'string com um número indicando a posição',
+         "cor": "rgb('número de 0 a 255', 'número de 0 a 255', 'número de 0 a 255')"
       }
    ]
 }
