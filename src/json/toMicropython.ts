@@ -24,10 +24,12 @@ function toMicropython(json: string): string[] {
 function interpreterNeopixel(instructions: { pos: string, cor: string }[]): string[] {
 	function transformNumber(num: number): number {
 		const swapMap: Record<number, number> = {
-			5: 9, 9: 5,
-			6: 8, 8: 6,
-			15: 19, 19: 15,
-			16: 18, 18: 16
+			0: 4, 4: 0,
+			1: 3, 3: 1,
+			10: 14, 14: 10,
+			11: 13, 13: 11,
+			20: 24, 24: 20,
+			21: 23, 23: 21
 		};
 
 		return swapMap[num] ?? num;
@@ -36,7 +38,7 @@ function interpreterNeopixel(instructions: { pos: string, cor: string }[]): stri
 	instructions.forEach(dict => {
 		const rgbMatch: string[] = dict.cor.match(/\d+/g) as string[];
 		const rgb: string = rgbMatch.join(', ');
-		const pos: number = transformNumber(24 - parseInt(dict.pos));
+		const pos: number = transformNumber(parseInt(dict.pos));
 		res.push(`np[` + pos + `] = (${rgb})`);
 	});
 	res.push(`np.write()`);

@@ -1,13 +1,11 @@
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useConnection } from "../../contexts/ConnectionContext";
-import idea from "@/assets/imgs/lampada.png";
+import { Header } from "@/components/Header";
 import ColorPicker from "@/components/ColorPicker";
 import LEDMatrix from "@/components/LEDMatrix";
 import { useNeopixel } from "@/hooks/useNeopixel";
 
 export default function Neopixel() {
-  const navigate = useNavigate();
   const { sendCommand } = useConnection();
   
   // Definição da matriz de LEDs
@@ -32,33 +30,24 @@ export default function Neopixel() {
   } = useNeopixel(sendCommand, totalLEDs);
 
   return (
-    <>
-      <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate("/components")}>
-          Voltar
-        </Button>
-      </div>
-      <img
-        src={idea}
-        alt="Como funciona?"
-        className="absolute top-5 right-5 w-1/8 mb-4"
-        onClick={() => navigate("/components/neopixel/info")}
+    <div className="flex flex-col">
+      <Header
+        title="Neopixel"
+        showIdeaButton={true}
+        ideaButtonPath="/components/neopixel/info"
       />
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <h1 className="text-ubuntu font-bold text-lg mt-5">Neopixel</h1>
-        <h2 className="text-ubuntu font-medium text-md mb-2">
+      <main className="h-screen flex flex-col items-center justify-center gap-3.5">
+        <h2 className="text-ubuntu font-bold text-md mb-5">
           Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
-        {/* LED Matrix Component */}
-        <LEDMatrix 
+        <LEDMatrix
           ledsPerCol={LEDSInCol}
           ledsPerRow={LEDsInline}
           onLEDSelected={handleLEDSelected}
           ledColors={ledColors}
         />
 
-        {/* Color Picker Component */}
         <ColorPicker
           valueR={valueR}
           valueG={valueG}
@@ -76,7 +65,7 @@ export default function Neopixel() {
           </Button>
           <Button onClick={handleSend}>Enviar</Button>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

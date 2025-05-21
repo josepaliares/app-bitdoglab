@@ -1,22 +1,12 @@
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { Header } from "@/components/Header";
 
 export default function Display() {
-
-    const navigate = useNavigate();
-    
-    return (
-      <>
-      <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate('/components')}>
-          Voltar
-        </Button>
-      </div>
-
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <h1 className="text-ubuntu font-medium text-lg">Display</h1>
-
-      </div>
-    </>
+  return (
+    <div className="flex flex-col">
+      <Header title="Display" showIdeaButton={false} />
+      <main className="h-screen flex flex-col items-center justify-center gap-3.5">
+        <h2 className="text-ubuntu font-bold text-md mb-5">Em construção!</h2>
+      </main>
+    </div>
   );
 }
