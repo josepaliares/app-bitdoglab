@@ -1,4 +1,11 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useRef,
+} from "react";
+import { BleClient } from "@capacitor-community/bluetooth-le";
 
 // Tipagem para o navigator.serial
 declare global {
@@ -27,7 +34,7 @@ interface ConnectionContextType {
   serialPort: any;
   availableDevices: BluetoothDevice[];
   connectCable: () => Promise<void>;
-  connectBluetooth: (deviceAddress: string) => Promise<void>;
+  connectBluetooth: (deviceId: string) => Promise<void>;
   disconnect: () => Promise<void>;
   sendCommand: (command: string) => Promise<void>;
   scanBluetoothDevices: () => Promise<void>;
@@ -36,6 +43,9 @@ interface ConnectionContextType {
 const ConnectionContext = createContext<ConnectionContextType | undefined>(
   undefined
 );
+
+// UUID do serviço Bluetooth Serial Port Profile (SPP)
+const SPP_SERVICE_UUID = "00001101-0000-1000-8000-00805F9B34FB";
 
 export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -49,9 +59,43 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
   const [availableDevices, setAvailableDevices] = useState<BluetoothDevice[]>(
     []
   );
+  const [connectedDeviceId, setConnectedDeviceId] = useState<string | null>(
+    null
+  );
+  const [bleInitialized, setBleInitialized] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
+  const initializePromise = useRef<Promise<void> | null>(null);
 
-  // Cleanup on unmount
+  const initializeBLE = async () => {
+    if (bleInitialized) return;
+    if (isInitializing) {
+      await initializePromise.current;
+      return;
+    }
+
+    setIsInitializing(true);
+    initializePromise.current = (async () => {
+      try {
+        console.log("Iniciando BLE...");
+        await BleClient.initialize();
+        console.log("BLE inicializado com sucesso!");
+        setBleInitialized(true);
+      } catch (error) {
+        console.error("Erro ao inicializar BLE:", error);
+        setBleInitialized(false);
+        throw error;
+      } finally {
+        setIsInitializing(false);
+      }
+    })();
+
+    await initializePromise.current;
+  };
+
+  // Initialize BLE on component mount
   useEffect(() => {
+    initializeBLE();
+
     return () => {
       if (isConnected) {
         disconnect();
@@ -73,7 +117,6 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       setConnectionType(ConnectionType.CABLE);
       setIsConnected(true);
 
-      // Start reading from the port
       readFromSerial(port);
     } catch (error) {
       console.error("Cable connection error:", error);
@@ -105,61 +148,97 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
   // Bluetooth functions
   const scanBluetoothDevices = async () => {
     try {
-      if (!window.bluetoothSerial) {
-        throw new Error("Bluetooth Serial not available");
-      }
+      await initializeBLE();
 
-      // Check if Bluetooth is enabled
-      try {
-        await window.bluetoothSerial.isEnabled();
-      } catch (error) {
-        // If not enabled, try to enable it
-        await window.bluetoothSerial.enable();
-      }
+      // Limpa a lista de dispositivos antes de iniciar nova busca
+      setAvailableDevices([]);
 
-      const { devices } = await window.bluetoothSerial.list();
-      setAvailableDevices(
-        devices.map(
-          (device: { id: string; name: string; address: string }) => ({
-            id: device.id,
-            name: device.name,
-            address: device.address,
-          })
-        )
+      console.log("Iniciando busca por dispositivos...");
+      // Removendo a restrição de services para encontrar mais dispositivos inicialmente
+      await BleClient.requestLEScan(
+        {
+          allowDuplicates: false,
+          // Removido o filtro de services para encontrar todos os dispositivos
+          namePrefix: "", // Aceita qualquer prefixo de nome
+        },
+        (result) => {
+          console.log("Dispositivo encontrado:", result);
+          if (result.device && result.device.deviceId) {
+            const newDevice = {
+              id: result.device.deviceId,
+              name: result.device.name || "Dispositivo Desconhecido",
+              address: result.device.deviceId,
+            };
+
+            setAvailableDevices((prev) => {
+              const exists = prev.some((device) => device.id === newDevice.id);
+              if (!exists) {
+                console.log("Adicionando novo dispositivo:", newDevice);
+                return [...prev, newDevice];
+              }
+              return prev;
+            });
+          }
+        }
       );
+
+      // Aumentando o tempo de scan para 10 segundos
+      setTimeout(async () => {
+        try {
+          await BleClient.stopLEScan();
+          console.log("Busca por dispositivos finalizada");
+        } catch (stopError) {
+          console.error("Erro ao parar busca:", stopError);
+        }
+      }, 10000);
     } catch (error) {
-      console.error("Bluetooth scan error:", error);
+      console.error("Erro na busca Bluetooth:", error);
       throw error;
     }
   };
 
-  const connectBluetooth = async (deviceAddress: string) => {
+  const connectBluetooth = async (deviceId: string) => {
     try {
-      if (!window.bluetoothSerial) {
-        throw new Error("Bluetooth Serial not available");
-      }
+      await initializeBLE();
 
       // Disconnect if already connected
       if (isConnected) {
         await disconnect();
       }
 
-      await window.bluetoothSerial.connect(deviceAddress);
+      console.log("Conectando ao dispositivo:", deviceId);
+      await BleClient.connect(deviceId);
+      console.log("Conexão estabelecida!");
+
+      // Descobrir serviços disponíveis
+      console.log("Descobrindo serviços...");
+      const services = await BleClient.getServices(deviceId);
+      console.log("Serviços disponíveis:", services);
+
+      // Tenta usar o serviço SPP se disponível
+      const hasSppService = services.some(
+        (service) =>
+          service.uuid.toLowerCase() === SPP_SERVICE_UUID.toLowerCase()
+      );
+
+      if (!hasSppService) {
+        console.log(
+          "Aviso: Serviço SPP não encontrado. UUIDs disponíveis:",
+          services.map((s) => s.uuid)
+        );
+      }
+
+      // Se encontrou o serviço, considera conectado
+      setConnectedDeviceId(deviceId);
       setConnectionType(ConnectionType.BLUETOOTH);
       setIsConnected(true);
-
-      // Subscribe to receive data
-      await window.bluetoothSerial.subscribe("\n", (data: string) => {
-        console.log("Received from Bluetooth:", data);
-      });
     } catch (error) {
-      console.error("Bluetooth connection error:", error);
+      console.error("Erro na conexão Bluetooth:", error);
       setIsConnected(false);
       throw error;
     }
   };
 
-  // Disconnect from any connection type
   const disconnect = async () => {
     try {
       if (connectionType === ConnectionType.CABLE) {
@@ -175,8 +254,9 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         setSerialPort(null);
         setReader(null);
       } else if (connectionType === ConnectionType.BLUETOOTH) {
-        if (window.bluetoothSerial) {
-          await window.bluetoothSerial.disconnect();
+        if (connectedDeviceId) {
+          await BleClient.disconnect(connectedDeviceId);
+          setConnectedDeviceId(null);
         }
       }
 
@@ -188,7 +268,6 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  // Unified command sending function
   const sendCommand = async (command: string) => {
     if (!isConnected) {
       throw new Error("Not connected to any device");
@@ -196,7 +275,6 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
 
     try {
       if (connectionType === ConnectionType.CABLE) {
-        // Send command via serial
         const writer = serialPort.writable.getWriter();
         const encoder = new TextEncoder();
 
@@ -205,12 +283,21 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         } finally {
           writer.releaseLock();
         }
-      } else if (connectionType === ConnectionType.BLUETOOTH) {
-        // Send command via Bluetooth
-        if (!window.bluetoothSerial) {
-          throw new Error("Bluetooth Serial not available");
-        }
-        await window.bluetoothSerial.write(command + "\r\n");
+      } else if (
+        connectionType === ConnectionType.BLUETOOTH &&
+        connectedDeviceId
+      ) {
+        console.log("Enviando comando via Bluetooth:", command);
+        const encoder = new TextEncoder();
+        const data = encoder.encode(command + "\r\n");
+
+        // Tenta enviar direto pelo serviço SPP
+        await BleClient.write(
+          connectedDeviceId,
+          SPP_SERVICE_UUID,
+          SPP_SERVICE_UUID, // Usando o mesmo UUID como característica
+          new DataView(data.buffer)
+        );
       }
     } catch (error) {
       console.error("Command send error:", error);
