@@ -5,16 +5,6 @@ import React, {
   useEffect,
   useRef,
 } from "react";
-import { BleClient } from "@capacitor-community/bluetooth-le";
-
-// Tipagem para o navigator.serial
-declare global {
-  interface Navigator {
-    serial?: {
-      requestPort: () => Promise<any>;
-    };
-  }
-}
 
 export enum ConnectionType {
   CABLE = "cable",
@@ -44,9 +34,6 @@ const ConnectionContext = createContext<ConnectionContextType | undefined>(
   undefined
 );
 
-// UUID do serviço Bluetooth Serial Port Profile (SPP)
-const SPP_SERVICE_UUID = "00001101-0000-1000-8000-00805F9B34FB";
-
 export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -59,59 +46,39 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
   const [availableDevices, setAvailableDevices] = useState<BluetoothDevice[]>(
     []
   );
-  const [connectedDeviceId, setConnectedDeviceId] = useState<string | null>(
-    null
-  );
-  const [bleInitialized, setBleInitialized] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(false);
-  const initializePromise = useRef<Promise<void> | null>(null);
 
-  const initializeBLE = async () => {
-    if (bleInitialized) return;
-    if (isInitializing) {
-      await initializePromise.current;
-      return;
-    }
-
-    setIsInitializing(true);
-    initializePromise.current = (async () => {
-      try {
-        console.log("Iniciando BLE...");
-        await BleClient.initialize();
-        console.log("BLE inicializado com sucesso!");
-        setBleInitialized(true);
-      } catch (error) {
-        console.error("Erro ao inicializar BLE:", error);
-        setBleInitialized(false);
-        throw error;
-      } finally {
-        setIsInitializing(false);
-      }
-    })();
-
-    await initializePromise.current;
+  // Função auxiliar para promisificar callbacks do bluetoothSerial
+  const promisifyBluetoothCall = <T,>(
+    fn: (...args: any[]) => void,
+    ...args: any[]
+  ): Promise<T> => {
+    return new Promise((resolve, reject) => {
+      fn(...args, resolve, reject);
+    });
   };
 
-  // Initialize BLE on component mount
-  useEffect(() => {
-    initializeBLE();
-
-    return () => {
-      if (isConnected) {
-        disconnect();
+  // Função para verificar se o Bluetooth está ativo
+  const ensureBluetoothEnabled = async () => {
+    try {
+      await promisifyBluetoothCall(window.bluetoothSerial.isEnabled);
+    } catch (error) {
+      try {
+        await promisifyBluetoothCall(window.bluetoothSerial.enable);
+      } catch (error) {
+        throw new Error("Por favor, ative o Bluetooth do dispositivo");
       }
-    };
-  }, []);
+    }
+  };
 
-  // Serial connection (via cable)
+  // Cable connection functions
   const connectCable = async () => {
     try {
       if (!navigator.serial) {
-        throw new Error("Web Serial API not supported in this browser");
+        throw new Error("Web Serial API não é suportada neste navegador");
       }
 
       const port = await navigator.serial.requestPort();
-      await port.open({ baudRate: 115200 });
+      await port.open({ baudRate: 9600 }); // HC-05 geralmente usa 9600 baud rate por padrão
 
       setSerialPort(port);
       setConnectionType(ConnectionType.CABLE);
@@ -119,7 +86,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
 
       readFromSerial(port);
     } catch (error) {
-      console.error("Cable connection error:", error);
+      console.error("Erro na conexão Serial:", error);
       setIsConnected(false);
       throw error;
     }
@@ -136,106 +103,60 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        console.log("Received from serial:", decoder.decode(value));
+        console.log("Recebido da Serial:", decoder.decode(value));
       }
     } catch (error) {
-      console.error("Serial read error:", error);
+      console.error("Erro na leitura Serial:", error);
     } finally {
       reader.releaseLock();
     }
   };
 
-  // Bluetooth functions
   const scanBluetoothDevices = async () => {
     try {
-      await initializeBLE();
+      await ensureBluetoothEnabled();
 
-      // Limpa a lista de dispositivos antes de iniciar nova busca
-      setAvailableDevices([]);
-
-      console.log("Iniciando busca por dispositivos...");
-      // Removendo a restrição de services para encontrar mais dispositivos inicialmente
-      await BleClient.requestLEScan(
-        {
-          allowDuplicates: false,
-          // Removido o filtro de services para encontrar todos os dispositivos
-          namePrefix: "", // Aceita qualquer prefixo de nome
-        },
-        (result) => {
-          console.log("Dispositivo encontrado:", result);
-          if (result.device && result.device.deviceId) {
-            const newDevice = {
-              id: result.device.deviceId,
-              name: result.device.name || "Dispositivo Desconhecido",
-              address: result.device.deviceId,
-            };
-
-            setAvailableDevices((prev) => {
-              const exists = prev.some((device) => device.id === newDevice.id);
-              if (!exists) {
-                console.log("Adicionando novo dispositivo:", newDevice);
-                return [...prev, newDevice];
-              }
-              return prev;
-            });
-          }
-        }
+      const devices = await promisifyBluetoothCall<BluetoothDevice[]>(
+        window.bluetoothSerial.list
       );
 
-      // Aumentando o tempo de scan para 10 segundos
-      setTimeout(async () => {
-        try {
-          await BleClient.stopLEScan();
-          console.log("Busca por dispositivos finalizada");
-        } catch (stopError) {
-          console.error("Erro ao parar busca:", stopError);
-        }
-      }, 10000);
+      console.log("Dispositivos encontrados:", devices);
+      setAvailableDevices(devices);
     } catch (error) {
       console.error("Erro na busca Bluetooth:", error);
-      throw error;
+      throw new Error("Falha ao buscar dispositivos Bluetooth");
     }
   };
 
   const connectBluetooth = async (deviceId: string) => {
     try {
-      await initializeBLE();
-
-      // Disconnect if already connected
       if (isConnected) {
         await disconnect();
       }
 
+      await ensureBluetoothEnabled();
+
       console.log("Conectando ao dispositivo:", deviceId);
-      await BleClient.connect(deviceId);
-      console.log("Conexão estabelecida!");
+      await promisifyBluetoothCall(window.bluetoothSerial.connect, deviceId);
 
-      // Descobrir serviços disponíveis
-      console.log("Descobrindo serviços...");
-      const services = await BleClient.getServices(deviceId);
-      console.log("Serviços disponíveis:", services);
-
-      // Tenta usar o serviço SPP se disponível
-      const hasSppService = services.some(
-        (service) =>
-          service.uuid.toLowerCase() === SPP_SERVICE_UUID.toLowerCase()
+      // Configurar recebimento de dados
+      window.bluetoothSerial.subscribe(
+        "\n",
+        (data: string) => {
+          console.log("Recebido do Bluetooth:", data);
+        },
+        (error: any) => {
+          console.error("Erro ao receber dados:", error);
+        }
       );
 
-      if (!hasSppService) {
-        console.log(
-          "Aviso: Serviço SPP não encontrado. UUIDs disponíveis:",
-          services.map((s) => s.uuid)
-        );
-      }
-
-      // Se encontrou o serviço, considera conectado
-      setConnectedDeviceId(deviceId);
+      console.log("Conexão estabelecida!");
       setConnectionType(ConnectionType.BLUETOOTH);
       setIsConnected(true);
     } catch (error) {
       console.error("Erro na conexão Bluetooth:", error);
       setIsConnected(false);
-      throw error;
+      throw new Error("Falha ao conectar ao dispositivo Bluetooth");
     }
   };
 
@@ -254,23 +175,28 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         setSerialPort(null);
         setReader(null);
       } else if (connectionType === ConnectionType.BLUETOOTH) {
-        if (connectedDeviceId) {
-          await BleClient.disconnect(connectedDeviceId);
-          setConnectedDeviceId(null);
+        try {
+          // Primeiro tenta cancelar a subscrição
+          await promisifyBluetoothCall(window.bluetoothSerial.unsubscribe);
+        } catch (error) {
+          console.warn("Erro ao cancelar subscrição:", error);
         }
+
+        // Então desconecta
+        await promisifyBluetoothCall(window.bluetoothSerial.disconnect);
       }
 
       setIsConnected(false);
       setConnectionType(ConnectionType.NONE);
     } catch (error) {
-      console.error("Disconnection error:", error);
-      throw error;
+      console.error("Erro ao desconectar:", error);
+      throw new Error("Falha ao desconectar do dispositivo");
     }
   };
 
   const sendCommand = async (command: string) => {
     if (!isConnected) {
-      throw new Error("Not connected to any device");
+      throw new Error("Não conectado a nenhum dispositivo");
     }
 
     try {
@@ -283,27 +209,26 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         } finally {
           writer.releaseLock();
         }
-      } else if (
-        connectionType === ConnectionType.BLUETOOTH &&
-        connectedDeviceId
-      ) {
-        console.log("Enviando comando via Bluetooth:", command);
-        const encoder = new TextEncoder();
-        const data = encoder.encode(command + "\r\n");
-
-        // Tenta enviar direto pelo serviço SPP
-        await BleClient.write(
-          connectedDeviceId,
-          SPP_SERVICE_UUID,
-          SPP_SERVICE_UUID, // Usando o mesmo UUID como característica
-          new DataView(data.buffer)
+      } else if (connectionType === ConnectionType.BLUETOOTH) {
+        await promisifyBluetoothCall(
+          window.bluetoothSerial.write,
+          command + "\r\n"
         );
       }
     } catch (error) {
-      console.error("Command send error:", error);
-      throw error;
+      console.error("Erro ao enviar comando:", error);
+      throw new Error("Falha ao enviar comando ao dispositivo");
     }
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (isConnected) {
+        disconnect();
+      }
+    };
+  }, []);
 
   return (
     <ConnectionContext.Provider
