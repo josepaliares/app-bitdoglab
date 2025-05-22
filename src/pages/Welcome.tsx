@@ -20,7 +20,7 @@ export default function Welcome() {
                 Venha traçar uma jornada de aprendizado e de criatividade
             </h2>
             
-            <Button onClick={() => navigate('/connection')} className='mt-4'>
+            <Button onClick={() => navigate('/components')} className='mt-4'>
                 Começar
             </Button>
         </div>

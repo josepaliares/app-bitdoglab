@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ConnectionProvider } from "./contexts/ConnectionContext";
 import { ConnectionStatus } from "./components/ConnectionStatus";
-import './pages/style.css'
 
 // Importações das páginas
 import SplashScreen from "./pages/SplashScreen";
