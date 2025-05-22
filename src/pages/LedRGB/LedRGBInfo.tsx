@@ -14,18 +14,6 @@ export default function NeopixelInfo(): React.ReactElement {
   // Definindo os passos do fluxograma com tipagem
   const flowSteps: FlowStep[] = [
     {
-      icon: (
-        <div
-          className="w-12 aspect-square bg-black mask mask-center mask-no-repeat mask-contain"
-          style={{
-            WebkitMaskImage: `url(${LED})`,
-            maskImage: `url(${LED})`,
-          }}
-        />
-      ),
-      text: "Usuário toca no LED(x,y)"
-    },
-    {
       icon: <img src={touch} alt="imagem touch"/>,
       text: "Seleciona uma cor"
     },
@@ -48,14 +36,14 @@ export default function NeopixelInfo(): React.ReactElement {
           }}
         />
       ),
-      text: "LED(x,y) muda para a cor selecionada"
+      text: "LED muda para a cor selecionada"
     }
   ];
 
   return (
     <>
       <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate("/components/neopixel")}>
+        <Button variant="blue" onClick={() => navigate("/components/ledrgb")}>
           Voltar
         </Button>
       </div>
@@ -66,7 +54,7 @@ export default function NeopixelInfo(): React.ReactElement {
         {/* Usando o componente FlowDiagram para renderizar o fluxograma */}
         <FlowDiagram steps={flowSteps} />
         
-        <Button className="mt-2" onClick={() => navigate("/components/neopixel/rgb-info")}>
+        <Button className="mt-2" onClick={() => navigate("/components/ledrgb/rgb-info")}>
           Como funciona o RGB?
         </Button>
       </div>

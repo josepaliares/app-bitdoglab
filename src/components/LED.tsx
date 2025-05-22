@@ -60,7 +60,8 @@ const LED: React.FC<LedProps> = ({
       containerRef.current.style.border = "4px solid #e31a8b";
       containerRef.current.style.borderRadius = "11px";
     } else {
-      containerRef.current.style.border = "none";
+      containerRef.current.style.border = "2px solid #e6e6e6";
+      containerRef.current.style.borderRadius = "11px";
     }
   }, [selected]);
   
