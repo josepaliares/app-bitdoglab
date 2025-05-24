@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
 import LED from '@/components/LED';
-import idea from "@/assets/imgs/lampada.png";
+import { Header } from "@/components/Header";
 import ColorPicker from '@/components/ColorPicker';
 
 /**
@@ -11,7 +10,6 @@ import ColorPicker from '@/components/ColorPicker';
  * @returns {JSX.Element} - O componente LEDRgb renderizado
  */
 export default function LEDRgb() {
-  const navigate = useNavigate();
   
   // Estados para controlar os valores RGB
   const [valueR, setValueR] = useState(0);
@@ -42,20 +40,13 @@ export default function LEDRgb() {
 
   return (
     <>
-      <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate('/components')}>
-          Voltar
-        </Button>
-      </div>
-      <img
-        src={idea}
-        alt="Como funciona?"
-        className="absolute top-5 right-5 w-1/8 mb-4"
-        onClick={() => navigate("/components/ledrgb/info")}
+      <Header
+        title="Led RGB"
+        showIdeaButton={true}
+        ideaButtonPath="/components/ledrgb/info"
       />
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <h1 className="text-ubuntu font-medium text-lg">Led RGB</h1>
-        <h2 className="text-ubuntu font-medium text-md mb-5">
+      <div className="h-screen flex flex-col items-center gap-5">
+        <h2 className="text-ubuntu font-medium text-md mb-10">
           Ajuste a cor do LED com os controles abaixo!
         </h2>
         

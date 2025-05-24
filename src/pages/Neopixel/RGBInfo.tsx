@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { Header } from "@/components/Header";
 import LED from "@/components/LED";
 import ColorPicker from "@/components/ColorPicker";
 
@@ -25,13 +26,12 @@ export default function RGBInfo() {
 
   return (
     <>
-      <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate(-1)}>
-          Voltar
-        </Button>
-      </div>
+      <Header
+        title=""
+        showIdeaButton={false}
+      />
 
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
+      <div className="h-screen flex flex-col items-center gap-3.5">
         <h1 className="text-ubuntu font-bold text-lg">Como a cor é formada?</h1>
         
         {/* ColorPicker para ajustar os valores RGB */}
@@ -47,7 +47,7 @@ export default function RGBInfo() {
         />
 
         {/* Demonstração visual dos LEDs */}
-        <div className="flex flex-row gap-4 mt-6 items-center">
+        <div className="flex flex-row gap-3 mt-6 items-center">
           {/* LED Vermelho */}
           <LED id="red-led" color={redColor} />
           
@@ -73,7 +73,7 @@ export default function RGBInfo() {
           />
         </div>
 
-        <h3 className="text-ubuntu font-regular text-sm mt-10 mb-10">
+        <h3 className="text-ubuntu font-regular text-sm text-center mt-10 mb-10 pl-2 pr-2">
           Todas as cores podem ser vistas como uma "mistura" de vermelho, verde e azul!
         </h3>
         
