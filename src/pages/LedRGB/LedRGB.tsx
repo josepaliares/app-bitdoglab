@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import LED from '@/components/LED';
 import { Header } from "@/components/Header";
 import ColorPicker from '@/components/ColorPicker';
+import { useLedRGB } from '@/hooks/useLedRGB';
 
 /**
  * LEDRgb - Um componente para controlar um único LED RGB
@@ -11,32 +11,19 @@ import ColorPicker from '@/components/ColorPicker';
  */
 export default function LEDRgb() {
   
-  // Estados para controlar os valores RGB
-  const [valueR, setValueR] = useState(0);
-  const [valueG, setValueG] = useState(0);
-  const [valueB, setValueB] = useState(0);
-  
-  // Calcular a cor atual baseada nos valores RGB
-  const currentColor = `rgb(${valueR}, ${valueG}, ${valueB})`;
-  
-  // Função para limpar a cor (definir para preto)
-  const handleClear = () => {
-    setValueR(0);
-    setValueG(0);
-    setValueB(0);
-  };
-  
-  // Função para exportar a configuração atual
-  const handleSend = () => {
-    const json = JSON.stringify({ ledRGB: currentColor }, null, 3);
-    const blob = new Blob([json], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'infoLEDs.json';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  const {
+      // Valores individuais de RGB e seus setters (mantidos para compatibilidade)
+      valueR,
+      valueG,
+      valueB,
+      setValueR,
+      setValueG,
+      setValueB,
+      // Estado e manipuladores dos LED
+      currentColor,
+      handleClear,
+      handleSend
+    } = useLedRGB();
 
   return (
     <>
