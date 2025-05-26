@@ -39,10 +39,10 @@ export default function Buttons() {
     { id: "bigx", icon: <img src={bigx} alt="imagem bigx"/>, text: "X grande"},
     { id: "smalx", icon: <img src={smalx} alt="imagem smalx"/>, text: "X pequeno"},
     { id: "bigheart", icon: <img src={bigheart} alt="imagem bigheart"/>, text: "Coração grande"},
-    { id: "smalheart", icon: <img src={smalheart} alt="imagem smalheart"/>, text: "Coração grande"},
-    { id: "smilley", icon: <img src={smilley} alt="imagem smilley"/>, text: "Coração grande"},
-    { id: "sad", icon: <img src={sad} alt="imagem sad"/>, text: "Coração grande"},
-    { id: "giraffe", icon: <img src={giraffe} alt="imagem giraffe"/>, text: "Coração grande"}
+    { id: "smalheart", icon: <img src={smalheart} alt="imagem smalheart"/>, text: "Coração pequeno"},
+    { id: "smilley", icon: <img src={smilley} alt="imagem smilley"/>, text: "Carinha feliz"},
+    { id: "sad", icon: <img src={sad} alt="imagem sad"/>, text: "Carinha triste"},
+    { id: "giraffe", icon: <img src={giraffe} alt="imagem giraffe"/>, text: "Girafa"}
   ];
 
   const buttonscomponents = [
@@ -61,9 +61,7 @@ export default function Buttons() {
   const [valueV, onChangeV] = useState(0);
 
   const handleClear = () => {
-    if (selectedComponent === "neopixel") {
-      setSelectedCard("");
-    } else if (selectedComponent === "ledrgb") {
+    if (selectedComponent === "ledrgb") {
       handleClearL();
     } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
       onChangeN(0);
@@ -73,7 +71,7 @@ export default function Buttons() {
 
   const handleSend = () => {
     if(selectedButton === ""){
-      return console.log("Botão não selecionado");
+      return console.log("Botão não selecionado"); // arrumar para fazer uma telinha indicando que precisa selecionar um botão
     }
     let json;
     if (selectedComponent === "neopixel") {
@@ -103,7 +101,6 @@ export default function Buttons() {
           />
           {/* Botões de ação */}
           <div className='flex flex-row justify-center gap-3 mt-3'>
-            <Button variant="whitePink" onClick={handleClear}>Limpar</Button>
             <Button onClick={handleSend}>Enviar</Button>
           </div>
         </div>
@@ -149,8 +146,9 @@ export default function Buttons() {
             variant="numeric" 
             value={valueN} 
             onChange={onChangeN}
-            label={true ? '' : undefined}
+            label={true ? 'Hz' : undefined}
             showValue={true}
+            width='w-250'
             min={0}
             max={5000}
           />
@@ -158,8 +156,9 @@ export default function Buttons() {
             variant="volume" 
             value={valueV} 
             onChange={onChangeV}
-            label={true ? 'Volume' : undefined}
+            label={true ? 'Vol' : undefined}
             showValue={true}
+            width='w-250'
             min={0}
             max={100}
           />
@@ -185,8 +184,10 @@ export default function Buttons() {
       <Header title="Botões" 
         showIdeaButton={true}
         ideaButtonPath="/components/botoes/info" />
-      <main className="h-screen flex flex-col items-center gap-3.5">
-        <h2 className="text-ubuntu text-md mb-5">  Escolha um  botão e defina o que ele faz quando for pressionado</h2>
+      <main className="h-screen flex flex-col items-center gap-1">
+        <h2 className="text-ubuntu text-md mb-5 text-center">
+          Escolha um  botão e defina o que ele faz quando for pressionado
+        </h2>
         <Selecter
           options={buttonscomponents}
           onSelect={setSelectedButton}

@@ -32,7 +32,7 @@ const Selecter: React.FC<SelecterProps> = ({
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1">
         {options.map((component) => (
           <div
             key={component.id}
@@ -50,7 +50,7 @@ const Selecter: React.FC<SelecterProps> = ({
           >
             <div className="flex items-center justify-between">
               <div className={`
-                w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3
+                w-3 h-3 rounded-full border-2 flex items-center justify-center mr-3
                 ${selectedComponent === component.id
                   ? 'border-blue-500'
                   : 'border-gray-300'
@@ -61,11 +61,11 @@ const Selecter: React.FC<SelecterProps> = ({
                 backgroundColor: selectedComponent === component.id ? '#3f84af' : undefined
               }}>
                 {selectedComponent === component.id && (
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                  <div className="w-1 h-1 bg-white rounded-full"></div>
                 )}
               </div>
               <div className="flex-1">
-                <h3 className={`text-lg font-semibold ${
+                <h3 className={`text-md ${
                   selectedComponent === component.id ? 'text-gray-800' : 'text-gray-800'
                 }`}
                 style={{

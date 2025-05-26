@@ -11,6 +11,8 @@ interface DropdownSelectorProps {
   onSelect: (value: string) => void;
   value: string;
   className?: string;
+  width?: string;
+  height?: string;
 }
 
 /**
@@ -24,7 +26,9 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
   placeholder = "Selecione uma opção",
   onSelect,
   value,
-  className = ""
+  className = "",
+  width = "w-64", // Largura padrão (256px)
+  height = "h-10" // Altura padrão (48px)
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,7 +52,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
     <div className={`relative ${className || ''}`}>
       <div
         onClick={toggleDropdown}
-        className="w-full px-4 py-3 bg-white border border-gray-300 rounded cursor-pointer flex justify-between items-center hover:border-gray-400 transition-colors"
+        className={`${width} ${height} px-4 py-3 bg-white border border-gray-300 rounded cursor-pointer flex justify-between items-center hover:border-gray-400 transition-colors`}
       >
         <span className={value ? "text-gray-900" : "text-gray-500"}>
           {getDisplayText()}
