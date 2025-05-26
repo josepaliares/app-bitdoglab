@@ -25,11 +25,13 @@ import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
 
-useEffect(() => {
-  ScreenOrientation.lock({ orientation: 'portrait' });
-}, []);
 
 export function App() {
+
+  useEffect(() => {
+    ScreenOrientation.lock({ orientation: 'portrait' });
+  }, []);
+  
   return (
     <ConnectionProvider>
       <BrowserRouter>
