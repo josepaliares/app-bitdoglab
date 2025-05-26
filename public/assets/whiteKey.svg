@@ -5,8 +5,10 @@
     y="0" 
     width="50" 
     height="120" 
-    rx="15" 
-    ry="15" 
+    rx="8" 
+    ry="8" 
     fill="white" 
+    stroke="#ccc"
+    strokeWidth="1"
   />
 </svg>

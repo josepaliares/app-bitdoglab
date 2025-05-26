@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { ScreenOrientation } from "@capacitor/screen-orientation";
 import { BuzzersTocarController } from "../utils/buzzersTocarController";
+import type { Note } from "../types/notes";
+import { noteToFrequency } from "../types/notes";
 
 /**
  * Custom hook to manage Piano Buzzer state and control
@@ -8,12 +10,12 @@ import { BuzzersTocarController } from "../utils/buzzersTocarController";
  * @returns All necessary state and handlers for the BuzzersTocar component
  */
 export const useBuzzersTocar = (
-  sendCommand: (command: string) => Promise<void>,
+  sendCommand: (command: string) => Promise<void>
 ) => {
   const buzzersTocarController = useRef<BuzzersTocarController | null>(null);
   const hasInitialized = useRef(false);
 
-  const [tom, setTom] = useState(1);
+  const [octave, setOctave] = useState(4);
 
   // Initialize the BuzzersTocarController once
   useEffect(() => {
@@ -32,8 +34,17 @@ export const useBuzzersTocar = (
     };
   }, []);
 
+  const handleNotePress = (note: Note, duration: number) => {
+    const selectedOctave = octave;
+    const frequency = noteToFrequency(note, selectedOctave);
+    console.log(
+      `note: ${note}, octave: ${octave}, frequency: ${frequency.toFixed(2)}hz, duration: ${duration}ms`
+    );
+  };
+
   return {
-    tom,
-    setTom,
+    octave,
+    setOctave,
+    handleNotePress,
   };
 };

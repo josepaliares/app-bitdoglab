@@ -48,7 +48,7 @@ const Slider: React.FC<SliderProps> = ({
     return (
       <div className="flex flex-col items-center w-full max-w-[250px]">
         {/* Labels alinhadas com o slider */}
-        <div className="flex justify-between w-full mb-1 text-sm text-muted-foreground">
+        <div className="flex justify-between w-full mb-1 text-sm text-muted-foreground mr-1">
           {labels.map((label, index) => (
             <span key={index} className="text-center w-4">
               {label}

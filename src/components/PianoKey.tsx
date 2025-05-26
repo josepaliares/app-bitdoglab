@@ -1,15 +1,105 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
+// Componente PianoKey que carrega SVGs externos baseado na variante
 interface PianoKeyProps {
   id: string;
-  isBlack: boolean;
+  variant: 'white' | 'black';
   onClick?: (duration: number) => void;
   style?: React.CSSProperties;
 }
 
-const PianoKey: React.FC<PianoKeyProps> = ({ id, isBlack, onClick, style }) => {
+const PianoKey: React.FC<PianoKeyProps> = ({
+  id,
+  variant,
+  onClick,
+  style
+}) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
   const [isPressed, setIsPressed] = useState(false);
   const pressStart = useRef<number | null>(null);
+
+  // Configurações baseadas na variante
+  const keyConfig = {
+    white: {
+      svgPath: '/assets/whiteKey.svg',
+      defaultColor: 'white',
+      activeColor: '#ddd'
+    },
+    black: {
+      svgPath: '/assets/blackKey.svg',
+      defaultColor: 'black',
+      activeColor: '#444'
+    }
+  };
+
+  const config = keyConfig[variant];
+  const isBlack = variant === 'black';
+
+  // Carregar SVG baseado na variante
+  useEffect(() => {
+    fetch(config.svgPath)
+      .then((res) => res.text())
+      .then((svgText) => {
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+        const svg = svgDoc.querySelector("svg");
+        const rect = svg?.querySelector("rect");
+        
+        if (!svg || !rect || !containerRef.current) return;
+
+        svg.setAttribute("id", `${variant}-key-${id}`);
+        svg.classList.add("piano-key-svg");
+        
+        // Cor inicial
+        rect.setAttribute("fill", config.defaultColor);
+        
+        // Adicionar estilos CSS para transições e hover
+        svg.style.transition = 'all 0.075s ease';
+        svg.style.cursor = 'pointer';
+        
+        // Aplicar classes do Tailwind baseadas na variante
+        if (isBlack) {
+          svg.style.width = '28px';
+          svg.style.height = '72px';
+          svg.style.filter = 'drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))';
+        } else {
+          svg.style.width = '48px';
+          svg.style.height = '120px';
+          svg.style.filter = 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))';
+        }
+        
+        // Limpar container e adicionar SVG
+        containerRef.current.innerHTML = "";
+        containerRef.current.appendChild(svg);
+        svgRef.current = svg;
+      })
+      .catch((error) => {
+        console.error(`Erro ao carregar SVG ${config.svgPath}:`, error);
+      });
+  }, [id, variant, config.svgPath, config.defaultColor, isBlack]);
+
+  // Atualizar cor quando pressionado
+  useEffect(() => {
+    if (!svgRef.current) return;
+    const rect = svgRef.current.querySelector("rect");
+    if (rect) {
+      rect.setAttribute("fill", isPressed ? config.activeColor : config.defaultColor);
+      
+      // Efeito visual adicional
+      if (isPressed) {
+        svgRef.current.style.transform = 'scale(0.98)';
+        svgRef.current.style.filter = isBlack 
+          ? 'drop-shadow(0 2px 4px rgb(0 0 0 / 0.2)) brightness(0.8)'
+          : 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.2)) brightness(0.9)';
+      } else {
+        svgRef.current.style.transform = 'scale(1)';
+        svgRef.current.style.filter = isBlack
+          ? 'drop-shadow(0 4px 6px rgb(0 0 0 / 0.1))'
+          : 'drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))';
+      }
+    }
+  }, [isPressed, config.activeColor, config.defaultColor, isBlack]);
 
   const handleMouseDown = () => {
     setIsPressed(true);
@@ -35,61 +125,20 @@ const PianoKey: React.FC<PianoKeyProps> = ({ id, isBlack, onClick, style }) => {
     }
   };
 
-  // Cores das teclas
-  const whiteKeyColor = isPressed ? '#ddd' : 'white';
-  const blackKeyColor = isPressed ? '#444' : '#1a1a1a';
-  
   return (
     <div
-      className="cursor-pointer select-none transition-all duration-75"
+      className="cursor-pointer select-none relative transition-all duration-75"
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
       data-key-id={id}
+      data-variant={variant}
       style={style}
     >
-      {isBlack ? (
-        // Tecla preta - SVG inline
-        <svg 
-          viewBox="0 0 30 72" 
-          className="w-7 h-18 drop-shadow-md hover:drop-shadow-lg"
-          style={{ filter: isPressed ? 'brightness(0.8)' : 'none' }}
-        >
-          <rect
-            x="0"
-            y="0"
-            width="30"
-            height="72"
-            rx="6"
-            ry="6"
-            fill={blackKeyColor}
-            stroke="#000"
-            strokeWidth="1"
-          />
-        </svg>
-      ) : (
-        // Tecla branca - SVG inline
-        <svg 
-          viewBox="0 0 50 120" 
-          className="w-12 h-30 drop-shadow-sm hover:drop-shadow-md"
-          style={{ filter: isPressed ? 'brightness(0.9)' : 'none' }}
-        >
-          <rect
-            x="0"
-            y="0"
-            width="50"
-            height="120"
-            rx="8"
-            ry="8"
-            fill={whiteKeyColor}
-            stroke="#ccc"
-            strokeWidth="1"
-          />
-        </svg>
-      )}
-      
-      {/* Labels das notas */}
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs font-medium">
+      <div ref={containerRef} />
+
+      {/* Label da nota */}
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-xs font-medium pointer-events-none z-10">
         {isBlack ? (
           // Label branca para teclas pretas
           <span className="text-white drop-shadow-sm">{id}</span>

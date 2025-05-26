@@ -7,12 +7,7 @@ import Piano from "@/components/Piano";
 export default function Buzzers() {
   const { sendCommand } = useConnection();
 
-  const { tom, setTom } = useBuzzersTocar(sendCommand);
-
-  const handleNotePress = (note: string, duration: number) => {
-    console.log(`Pressed: ${note} for ${duration}ms`);
-    // Aqui você pode integrar com seu sistema de buzzers
-  };
+  const { octave, setOctave, handleNotePress } = useBuzzersTocar(sendCommand);
 
   return (
     <>
@@ -25,8 +20,8 @@ export default function Buzzers() {
         <h3>Escolha uma nota e seu tom</h3>
         <Slider
           variant="pianoTones"
-          value={tom}
-          onChange={setTom}
+          value={octave}
+          onChange={setOctave}
           showValue={false}
         />
         <Piano onKeyPress={handleNotePress} />
