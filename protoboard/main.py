@@ -1,7 +1,7 @@
 from machine import UART
 
-# Configuração do UART para HC-05 (ajuste os pinos conforme sua conexão)
-uart = UART(0, baudrate=9600)  # UART2 é geralmente TX=17, RX=16 no ESP32
+# Configuração do UART para HC-05
+uart = UART(0, baudrate=9600)
 uart.init(9600, bits=8, parity=None, stop=1)
 
 def process_command(cmd):
