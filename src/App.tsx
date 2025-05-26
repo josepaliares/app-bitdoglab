@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ConnectionProvider } from "./contexts/ConnectionContext";
 import { ConnectionStatus } from "./components/ConnectionStatus";
+import { useEffect } from "react";
+import { ScreenOrientation } from "@capacitor/screen-orientation";
 
 // Importações das páginas
 import SplashScreen from "./pages/SplashScreen";
@@ -22,6 +24,10 @@ import NeopixelInfo from "./pages/Neopixel/NeopixelInfo";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
+
+useEffect(() => {
+  ScreenOrientation.lock({ orientation: 'portrait' });
+}, []);
 
 export function App() {
   return (
