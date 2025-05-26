@@ -21,8 +21,8 @@ export default function LEDRgb() {
       setValueB,
       // Estado e manipuladores dos LED
       currentColor,
-      handleClear,
-      handleSend
+      handleClearL,
+      handleSendL
     } = useLedRGB();
 
   return (
@@ -60,8 +60,8 @@ export default function LEDRgb() {
         
         {/* Botões de ação */}
         <div className='flex flex-row justify-center gap-3 mt-3'>
-          <Button variant="whitePink" onClick={handleClear}>Limpar</Button>
-          <Button onClick={handleSend}>Enviar</Button>
+          <Button variant="whitePink" onClick={handleClearL}>Limpar</Button>
+          <Button onClick={handleSendL}>Enviar</Button>
         </div>
       </div>
     </>

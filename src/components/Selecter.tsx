@@ -1,4 +1,4 @@
-import { useState, type SetStateAction } from "react";
+import { useState } from "react";
 
 interface SelecterOption {
   id: string;
@@ -7,6 +7,8 @@ interface SelecterOption {
 
 interface SelecterProps {
   options: SelecterOption[];
+  onSelect: (value: string) => void;
+  value: string;
 }
 
 /**
@@ -16,12 +18,17 @@ interface SelecterProps {
  * @returns {JSX.Element} - The rendered dropdown component
  */
 const Selecter: React.FC<SelecterProps> = ({
-  options
+  options,
+  onSelect,
+  value
 }) => {
-  const [selectedComponent, setSelectedComponent] = useState("");
+  const [selectedComponent, setSelectedComponent] = useState(value || "");
 
-  const handleSelect = (componentId: SetStateAction<string>) => {
+  const handleSelect = (componentId: string) => {
     setSelectedComponent(componentId);
+    if (onSelect) {
+      onSelect(componentId);
+    }
   };
 
   return (

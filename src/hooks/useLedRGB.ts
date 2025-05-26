@@ -18,7 +18,7 @@ export const useLedRGB = (
   /**
    * Reset the color to black (off state)
    */
-  const handleClear = () => {
+  const handleClearL = () => {
     setRgb({ r: 0, g: 0, b: 0 });
   };
 
@@ -36,15 +36,10 @@ export const useLedRGB = (
   };
   
   // Função para exportar a configuração atual
-  const handleSend = () => {
+  const handleSendL = () => {
     const json = JSON.stringify({ ledRGB: currentColor }, null, 3);
-    const blob = new Blob([json], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'infoLEDs.json';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    console.log(json);
+    return json;
   };
 
   return {
@@ -56,7 +51,7 @@ export const useLedRGB = (
     setValueG: (value: number) => updateRgbComponent('g', value),
     setValueB: (value: number) => updateRgbComponent('b', value),
     currentColor,
-    handleClear,
-    handleSend
+    handleClearL,
+    handleSendL
   };
 };

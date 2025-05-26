@@ -6,9 +6,11 @@ import LED from "@/components/LED";
 import ColorPicker from "@/components/ColorPicker";
 import { Button } from "@/components/ui/button";
 import { useLedRGB } from "@/hooks/useLedRGB";
+import Slider from "@/components/Slider";
 
 export default function Buttons() {
   const [selectedComponent, setSelectedComponent] = useState("");
+  const [selectedButton, setSelectedButton] = useState("");
 
   const {
     // Valores individuais de RGB e seus setters (mantidos para compatibilidade)
@@ -20,8 +22,8 @@ export default function Buttons() {
     setValueB,
     // Estado e manipuladores dos LED
     currentColor,
-    handleClear,
-    handleSend
+    handleClearL,
+    handleSendL
   } = useLedRGB();
 
   const buttonscomponents = [
@@ -36,73 +38,124 @@ export default function Buttons() {
     { id: "buzzerb", label: "Buzzer B" }
   ];
 
-  const renderDynamicContent = () => {
-    switch (selectedComponent) {
-      case "neopixel":
-        return (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              Primeira opção selecionada
-            </h3>
-          </div>
-        );
+  const [valueN, onChangeN] = useState(0);
+  const [valueV, onChangeV] = useState(0);
 
-      case "ledrgb":
-        return (
-          <div className="h-screen flex flex-col items-center gap-5">
-            <div className="mb-4">
-              <LED 
-                id="single-led" 
-                color={currentColor}
-                selected={false}
-              />
-            </div>
-            
-            {/* ColorPicker para ajustar os valores RGB */}
-            <ColorPicker
-              valueR={valueR}
-              valueG={valueG}
-              valueB={valueB}
-              onChangeR={setValueR}
-              onChangeG={setValueG}
-              onChangeB={setValueB}
-              showLabels={true}
-              showValues={true}
-            />
-            
-            {/* Botões de ação */}
-            <div className='flex flex-row justify-center gap-3 mt-3'>
-              <Button onClick={handleClear}>Limpar</Button>
-              <Button onClick={handleSend}>Enviar</Button>
-            </div>
-          </div>
-        );
+  const handleClearB = () => {
+    onChangeN(0);
+    onChangeV(0);
+  };
 
-      case "buzzera":
-        return (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              Terceira Opção Selecionada
-            </h3>
-          </div>
-        );
-
-      case "buzzerb":
-        return (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4 text-gray-800">
-              Quarta Opção Selecionada
-            </h3>
-          </div>
-        );
-
-      default:
-        return (
-          <div className="mt-6 p-4 bg-gray-100 rounded-lg text-center">
-            <p className="text-gray-500">Selecione uma opção acima para ver o conteúdo</p>
-          </div>
-        );
+  const handleClear = () => {
+    if (selectedComponent === "neopixel") {
+      console.log("limpou");
+    } else if (selectedComponent === "ledrgb") {
+      handleClearL();
+    } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
+      handleClearB();
     }
+  }
+
+  const handleSend = () => {
+    if(selectedButton === ""){
+      return console.log("Botão não selecionado");
+    }
+    let json;
+    if (selectedComponent === "neopixel") {
+      json = 0;
+    } else if (selectedComponent === "ledrgb") {
+      json = handleSendL();
+    } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
+      json = JSON.stringify({ [selectedComponent]: [valueN, valueV] }, null, 3);
+    } else{
+      //component isn't select
+      json = null;
+    }
+    const jsonCompletB = JSON.stringify({
+      "botões": { [selectedButton]: [json] }
+    }, null, 3)
+    console.log(jsonCompletB);
+  }
+
+  const renderDynamicContent = () => {
+    if (selectedComponent === "neopixel") {
+      return (
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold mb-4 text-gray-800">
+            Primeira opção selecionada
+          </h3>
+        </div>
+      );
+    }
+    
+    if (selectedComponent === "ledrgb") {
+      return (
+        <div className="h-screen flex flex-col items-center gap-5">
+          <div className="mb-4">
+            <LED 
+              id="single-led" 
+              color={currentColor}
+              selected={false}
+            />
+          </div>
+          
+          {/* ColorPicker para ajustar os valores RGB */}
+          <ColorPicker
+            valueR={valueR}
+            valueG={valueG}
+            valueB={valueB}
+            onChangeR={setValueR}
+            onChangeG={setValueG}
+            onChangeB={setValueB}
+            showLabels={true}
+            showValues={true}
+          />
+          
+          {/* Botões de ação */}
+          <div className='flex flex-row justify-center gap-3 mt-3'>
+            <Button variant="whitePink" onClick={handleClear}>Limpar</Button>
+            <Button onClick={handleSend}>Enviar</Button>
+          </div>
+        </div>
+      );
+    }
+    
+    if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
+      return (
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg items-center">
+          <Slider 
+            variant="numeric" 
+            value={valueN} 
+            onChange={onChangeN}
+            label={true ? '' : undefined}
+            showValue={true}
+            min={0}
+            max={5000}
+          />
+          <Slider 
+            variant="volume" 
+            value={valueV} 
+            onChange={onChangeV}
+            label={true ? 'Volume' : undefined}
+            showValue={true}
+            min={0}
+            max={100}
+          />
+          {/* Botões de ação */}
+          <div className='flex flex-row justify-center gap-3 mt-3'>
+            <Button variant="whitePink" onClick={handleClear}>Limpar</Button>
+            <Button onClick={handleSend}>Enviar</Button>
+          </div>
+        </div>
+      );
+    }
+    
+    // Default case - quando nenhuma opção válida é selecionada
+    return (
+      <div className="mt-6 p-4 bg-gray-100 rounded-lg text-center">
+        <p className="text-gray-500">Selecione uma opção acima para ver o conteúdo</p>
+      </div>
+    );
   };
   
   return (
@@ -114,6 +167,8 @@ export default function Buttons() {
         <h2 className="text-ubuntu text-md mb-5">  Escolha um  botão e defina o que ele faz quando for pressionado</h2>
         <Selecter
           options={buttonscomponents}
+          onSelect={setSelectedButton}
+          value={selectedButton}
         />
         <DropdownSelector
           options={components}
