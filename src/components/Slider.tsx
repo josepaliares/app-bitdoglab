@@ -1,7 +1,11 @@
-import React from 'react';
+import React from "react";
 
-// Define available slider variants
-export type SliderVariant = 'red' | 'green' | 'blue' | 'default';
+export type SliderVariant =
+  | "red"
+  | "green"
+  | "blue"
+  | "default"
+  | "pianoTones";
 
 interface SliderProps {
   value: number;
@@ -17,53 +21,105 @@ interface SliderProps {
   customThumbClass?: string;
 }
 
-/**
- * CustomSlider - A reusable slider component that supports multiple variants
- * 
- * @param {SliderProps} props - Component properties
- * @returns {JSX.Element} - The rendered slider component
- */
 const Slider: React.FC<SliderProps> = ({
   value,
   onChange,
   label,
-  variant = 'default',
-  min = 0,
-  max = 255,
-  step = 1,
-  width = 'w-[250px]',
+  variant = "default",
+  min,
+  max,
+  step,
+  width = "w-[250px]",
   showValue = true,
-  customThumbClass
+  customThumbClass,
+  customTrackClass,
 }) => {
-  // Default label is generated based on variant if not provided
+  if (variant === "pianoTones") {
+    const minVal = 1;
+    const maxVal = 7;
+    const stepVal = 1;
+    const labels = ["1", "2", "3", "4", "5", "6", "7"];
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(parseInt(e.target.value));
+    };
+
+    return (
+      <div className="flex flex-col items-center w-full max-w-[250px]">
+        {/* Labels alinhadas com o slider */}
+        <div className="flex justify-between w-full mb-1 text-sm text-muted-foreground mr-1">
+          {labels.map((label, index) => (
+            <span key={index} className="text-center w-4">
+              {label}
+            </span>
+          ))}
+        </div>
+
+        {/* Slider com texto Grave e Agudo */}
+        <div className="flex flex-row items-center gap-2">
+          <span className="text-ubuntu font-medium text-md">Grave</span>
+
+          <input
+            type="range"
+            min={minVal}
+            max={maxVal}
+            step={stepVal}
+            value={value}
+            onChange={handleChange}
+            className={`${width} h-[10px] rounded-lg appearance-none outline-none cursor-pointer ${
+              customTrackClass ?? "bg-gray-300"
+            } ${customThumbClass ?? ""}`}
+            aria-label="Buzzer 7 steps slider"
+          />
+
+          <span className="text-ubuntu font-medium text-md">Agudo</span>
+
+          {/* Valor numérico */}
+          {showValue && (
+            <span className="ml-2 font-ubuntu text-md">{value}</span>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const finalMin = min ?? 0;
+  const finalMax = max ?? 255;
+  const finalStep = step ?? 1;
+
   const getDefaultLabel = () => {
     switch (variant) {
-      case 'red': return 'R';
-      case 'green': return 'G';
-      case 'blue': return 'B';
-      default: return '';
+      case "red":
+        return "R";
+      case "green":
+        return "G";
+      case "blue":
+        return "B";
+      default:
+        return "";
     }
   };
 
   const displayLabel = label ?? getDefaultLabel();
 
-  // Get the appropriate track gradient based on the variant
   const getTrackGradient = () => {
     switch (variant) {
-      case 'red': return 'bg-gradient-to-r from-black to-rgb-red';
-      case 'green': return 'bg-gradient-to-r from-black to-rgb-green';
-      case 'blue': return 'bg-gradient-to-r from-black to-rgb-blue';
-      default: return 'bg-gray-30';
+      case "red":
+        return "bg-gradient-to-r from-black to-rgb-red";
+      case "green":
+        return "bg-gradient-to-r from-black to-rgb-green";
+      case "blue":
+        return "bg-gradient-to-r from-black to-rgb-blue";
+      default:
+        return "bg-gray-30";
     }
   };
 
-  // Handle the change event from the input slider
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = parseFloat(event.target.value);
-    onChange(newValue);
+    onChange(parseFloat(event.target.value));
   };
 
-  // Generate an accessible label for screen readers
   const getAriaLabel = () => {
     if (label) return `${label} slider`;
     return `${variant} slider`;
@@ -80,15 +136,15 @@ const Slider: React.FC<SliderProps> = ({
         type="range"
         value={value}
         onChange={handleChange}
-        min={min}
-        max={max}
-        step={step}
-        className={`${width} h-[10px] rounded-lg appearance-none outline-none cursor-pointer ${getTrackGradient()} ${customThumbClass || ''}`}
+        min={finalMin}
+        max={finalMax}
+        step={finalStep}
+        className={`${width} h-[10px] rounded-lg appearance-none outline-none cursor-pointer ${getTrackGradient()} ${
+          customThumbClass ?? ""
+        }`}
         aria-label={getAriaLabel()}
       />
-      {showValue && (
-        <span className="w-8 text-left">{value}</span>
-      )}
+      {showValue && <span className="w-8 text-left">{value}</span>}
     </div>
   );
 };

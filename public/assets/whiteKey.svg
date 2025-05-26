@@ -1,0 +1,14 @@
+<svg viewBox="0 0 50 120" xmlns="http://www.w3.org/2000/svg" >
+  <rect 
+    id="white-key"
+    x="0" 
+    y="0" 
+    width="50" 
+    height="120" 
+    rx="8" 
+    ry="8" 
+    fill="white" 
+    stroke="#ccc"
+    strokeWidth="1"
+  />
+</svg>
