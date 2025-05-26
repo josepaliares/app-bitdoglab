@@ -7,10 +7,19 @@ import ColorPicker from "@/components/ColorPicker";
 import { Button } from "@/components/ui/button";
 import { useLedRGB } from "@/hooks/useLedRGB";
 import Slider from "@/components/Slider";
+import Cards from "@/components/Cards";
+import bigx from "@/assets/imgs/BigX.png";
+import smalx from "@/assets/imgs/SmalX.png";
+import bigheart from "@/assets/imgs/BigHeart.png";
+import smalheart from "@/assets/imgs/SmalHeart.png";
+import smilley from "@/assets/imgs/Smiley.png";
+import sad from "@/assets/imgs/Sad.png";
+import giraffe from "@/assets/imgs/Giraffe.png";
 
 export default function Buttons() {
   const [selectedComponent, setSelectedComponent] = useState("");
   const [selectedButton, setSelectedButton] = useState("");
+  const [selectedCard, setSelectedCard] = useState("");
 
   const {
     // Valores individuais de RGB e seus setters (mantidos para compatibilidade)
@@ -25,6 +34,16 @@ export default function Buttons() {
     handleClearL,
     handleSendL
   } = useLedRGB();
+
+  const cardscomponents = [
+    { id: "bigx", icon: <img src={bigx} alt="imagem bigx"/>, text: "X grande"},
+    { id: "smalx", icon: <img src={smalx} alt="imagem smalx"/>, text: "X pequeno"},
+    { id: "bigheart", icon: <img src={bigheart} alt="imagem bigheart"/>, text: "Coração grande"},
+    { id: "smalheart", icon: <img src={smalheart} alt="imagem smalheart"/>, text: "Coração grande"},
+    { id: "smilley", icon: <img src={smilley} alt="imagem smilley"/>, text: "Coração grande"},
+    { id: "sad", icon: <img src={sad} alt="imagem sad"/>, text: "Coração grande"},
+    { id: "giraffe", icon: <img src={giraffe} alt="imagem giraffe"/>, text: "Coração grande"}
+  ];
 
   const buttonscomponents = [
     { id: "botaoa", label: "Botão A" },
@@ -41,18 +60,14 @@ export default function Buttons() {
   const [valueN, onChangeN] = useState(0);
   const [valueV, onChangeV] = useState(0);
 
-  const handleClearB = () => {
-    onChangeN(0);
-    onChangeV(0);
-  };
-
   const handleClear = () => {
     if (selectedComponent === "neopixel") {
-      console.log("limpou");
+      setSelectedCard("");
     } else if (selectedComponent === "ledrgb") {
       handleClearL();
     } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
-      handleClearB();
+      onChangeN(0);
+      onChangeV(0);
     }
   }
 
@@ -62,7 +77,7 @@ export default function Buttons() {
     }
     let json;
     if (selectedComponent === "neopixel") {
-      json = 0;
+      json = JSON.stringify({ [selectedComponent]: [selectedCard] }, null, 3);
     } else if (selectedComponent === "ledrgb") {
       json = handleSendL();
     } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
@@ -80,10 +95,17 @@ export default function Buttons() {
   const renderDynamicContent = () => {
     if (selectedComponent === "neopixel") {
       return (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-4 text-gray-800">
-            Primeira opção selecionada
-          </h3>
+        <div>
+          <Cards
+            cards={cardscomponents}
+            onSelect={setSelectedCard}
+            value={selectedCard}
+          />
+          {/* Botões de ação */}
+          <div className='flex flex-row justify-center gap-3 mt-3'>
+            <Button variant="whitePink" onClick={handleClear}>Limpar</Button>
+            <Button onClick={handleSend}>Enviar</Button>
+          </div>
         </div>
       );
     }
@@ -152,7 +174,7 @@ export default function Buttons() {
     
     // Default case - quando nenhuma opção válida é selecionada
     return (
-      <div className="mt-6 p-4 bg-gray-100 rounded-lg text-center">
+      <div className="mt-6 p-4 text-center">
         <p className="text-gray-500">Selecione uma opção acima para ver o conteúdo</p>
       </div>
     );
