@@ -36,17 +36,17 @@ const Cards: React.FC<CardsProps> = ({ cards, onSelect, value }) => {
           className={`
             flex flex-col items-center justify-center border-2 rounded-lg shadow-md cursor-pointer
             transition-all duration-200 hover:shadow-lg transform hover:scale-105
-            w-40 h-40 p-4
+            w-24 h-24 p-4
             ${selectedCard === card.id 
               ? 'border-blue-500 bg-blue-50 text-blue-700' 
               : 'border-gray-300 bg-white hover:border-gray-400'
             }
           `}
         >
-          <div className="mb-3 text-4xl">
+          <div className="mb-3 text-2xl">
             {card.icon}
           </div>
-          <p className="font-medium text-center text-sm">
+          <p className="text-center text-sm">
             {card.text}
           </p>
         </div>

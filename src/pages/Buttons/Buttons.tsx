@@ -15,6 +15,7 @@ import smalheart from "@/assets/imgs/SmalHeart.png";
 import smilley from "@/assets/imgs/Smiley.png";
 import sad from "@/assets/imgs/Sad.png";
 import giraffe from "@/assets/imgs/Giraffe.png";
+import PopUp from "@/components/PopUp";
 
 export default function Buttons() {
   const [selectedComponent, setSelectedComponent] = useState("");
@@ -57,6 +58,15 @@ export default function Buttons() {
     { id: "buzzerb", label: "Buzzer B" }
   ];
 
+  const [popup, setPopup] = useState({
+    isOpen: false,
+    message: ''
+  });
+
+  const closePopup = () => {
+    setPopup({ isOpen: false, message: '' });
+  };
+
   const [valueN, onChangeN] = useState(0);
   const [valueV, onChangeV] = useState(0);
 
@@ -71,7 +81,11 @@ export default function Buttons() {
 
   const handleSend = () => {
     if(selectedButton === ""){
-      return console.log("Botão não selecionado"); // arrumar para fazer uma telinha indicando que precisa selecionar um botão
+      setPopup({
+        isOpen: true,
+        message: "você precisa escolher um dos botões"
+      });
+      return;
     }
     let json;
     if (selectedComponent === "neopixel") {
@@ -81,13 +95,17 @@ export default function Buttons() {
     } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
       json = JSON.stringify({ [selectedComponent]: [valueN, valueV] }, null, 3);
     } else{
-      //component isn't select
-      json = null;
+      setPopup({
+        isOpen: true,
+        message: "você precisa escolher um dos componentes"
+      });
+      return;
     }
-    const jsonCompletB = JSON.stringify({
+
+    const jsonComplet = JSON.stringify({
       "botões": { [selectedButton]: [json] }
     }, null, 3)
-    console.log(jsonCompletB);
+    return jsonComplet;
   }
 
   const renderDynamicContent = () => {
@@ -199,9 +217,16 @@ export default function Buttons() {
           onSelect={setSelectedComponent}
           value={selectedComponent}
         />
+        <PopUp
+          isOpen={popup.isOpen}
+          onClose={closePopup}
+          message={popup.message}
+        />
+
         {/* Conteúdo Dinâmico */}
         {renderDynamicContent()}
       </main>
     </div>
   );
 }
+
