@@ -37,7 +37,7 @@ export default function Neopixel() {
         ideaButtonPath="/components/neopixel/info"
       />
       <main className="h-screen flex flex-col items-center">
-        <h2 className="text-ubuntu font-bold text-md mb-5 text-center">
+        <h2 className="text-ubuntu text-md mb-5 text-center">
           Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 

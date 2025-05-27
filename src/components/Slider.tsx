@@ -4,6 +4,8 @@ export type SliderVariant =
   | "red"
   | "green"
   | "blue"
+  | "volume"
+  | "numeric"
   | "default"
   | "pianoTones";
 
@@ -128,7 +130,7 @@ const Slider: React.FC<SliderProps> = ({
   return (
     <div className="flex items-center gap-3 mt-2">
       {displayLabel && (
-        <label className="w-6 text-right font-medium font-ubuntu text-md">
+        <label className="text-right font-medium font-ubuntu text-md mr-2">
           {displayLabel}:
         </label>
       )}

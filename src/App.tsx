@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 
 // Componentes
 import Botoes from "./pages/Buttons/Buttons";
+import BotoesInfo from "./pages/Buttons/ButtonsInfo";
 import Buzzers from "./pages/Buzzers/Buzzers";
 import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
@@ -44,7 +45,10 @@ export function App() {
           {/* Rota pai apenas para organização (não renderiza conteúdo) */}
           <Route path="/components">
             <Route index element={<Components />} />
-            <Route path="botoes" element={<Botoes />} />
+            <Route path="botoes">
+              <Route index element={<Botoes />} />
+              <Route path="info" element={<BotoesInfo />} />
+            </Route>
             
             <Route path="buzzers">
               <Route index element={<Buzzers />} />
