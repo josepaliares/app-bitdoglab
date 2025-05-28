@@ -28,7 +28,7 @@ export class BuzzersTocarController {
   async startBuzzer(frequency: number) {
     const data: BuzzersData = {
       isPressed: true,
-      frequency: Number(frequency.toFixed(2))
+      frequency: Number(frequency.toFixed(0))
 
     };
 
