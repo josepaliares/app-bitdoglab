@@ -1,7 +1,7 @@
 import { toMicropython } from "../json/toMicropython";
 
 export interface BuzzersData {
-  status: 'on' | 'off';
+  isPressed: boolean;
   frequency?: number;
   duration?: number;
 }
@@ -27,7 +27,7 @@ export class BuzzersTocarController {
 
   async startBuzzer(frequency: number) {
     const data: BuzzersData = {
-      status: 'on',
+      isPressed: true,
       frequency: Number(frequency.toFixed(2))
 
     };
@@ -54,7 +54,7 @@ export class BuzzersTocarController {
 
   async stopBuzzer(duration: number) {
     const data: BuzzersData = {
-      status: 'off',
+      isPressed: false,
       duration: duration
     };
 
