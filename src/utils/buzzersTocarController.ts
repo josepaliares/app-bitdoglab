@@ -28,7 +28,8 @@ export class BuzzersTocarController {
   async startBuzzer(frequency: number) {
     const data: BuzzersData = {
       status: 'on',
-      frequency: frequency
+      frequency: Number(frequency.toFixed(2))
+
     };
 
     const json = JSON.stringify({ buzzer: data }, null, 2);
