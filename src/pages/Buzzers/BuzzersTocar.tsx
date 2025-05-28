@@ -6,8 +6,7 @@ import Piano from "@/components/Piano";
 
 export default function BuzzersTocar() {
   const { sendCommand } = useConnection();
-
-  const { octave, setOctave, handleNotePress } = useBuzzersTocar(sendCommand);
+  const { octave, setOctave, handleNotePress, handleNoteRelease } = useBuzzersTocar(sendCommand);
 
   return (
     <>
@@ -24,7 +23,10 @@ export default function BuzzersTocar() {
           onChange={setOctave}
           showValue={false}
         />
-        <Piano onKeyPress={handleNotePress} />
+        <Piano 
+          onKeyPress={handleNotePress} 
+          onKeyRelease={handleNoteRelease}
+        />
       </div>
     </>
   );

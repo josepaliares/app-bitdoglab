@@ -4,14 +4,16 @@ import React, { useEffect, useRef, useState } from 'react';
 interface PianoKeyProps {
   id: string;
   variant: 'white' | 'black';
-  onClick?: (duration: number) => void;
+  onPress?: () => void;      // Chamado quando tecla é pressionada
+  onRelease?: (duration: number) => void; // Chamado quando tecla é solta
   style?: React.CSSProperties;
 }
 
 const PianoKey: React.FC<PianoKeyProps> = ({
   id,
   variant,
-  onClick,
+  onPress,
+  onRelease,
   style
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -102,8 +104,15 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   }, [isPressed, config.activeColor, config.defaultColor, isBlack]);
 
   const handleMouseDown = () => {
+    if (isPressed) return; // Evita múltiplos eventos
+    
     setIsPressed(true);
     pressStart.current = Date.now();
+    
+    // Chama o callback de pressionar
+    if (onPress) {
+      onPress();
+    }
   };
 
   const handleMouseUp = () => {
@@ -112,7 +121,11 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     setIsPressed(false);
     const duration = pressStart.current ? Date.now() - pressStart.current : 0;
     pressStart.current = null;
-    if (onClick && duration > 0) onClick(duration); // Só chama onClick se houve um click real
+    
+    // Chama o callback de soltar com a duração
+    if (onRelease && duration > 0) {
+      onRelease(duration);
+    }
   };
 
   const handleMouseLeave = () => {
@@ -121,7 +134,11 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       setIsPressed(false);
       const duration = pressStart.current ? Date.now() - pressStart.current : 0;
       pressStart.current = null;
-      if (onClick && duration > 0) onClick(duration);
+      
+      // Chama o callback de soltar com a duração
+      if (onRelease && duration > 0) {
+        onRelease(duration);
+      }
     }
   };
 
@@ -150,4 +167,5 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     </div>
   );
 };
+
 export default PianoKey;
