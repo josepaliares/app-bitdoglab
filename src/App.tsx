@@ -17,6 +17,7 @@ import BotoesInfo from "./pages/Buttons/ButtonsInfo";
 import Buzzers from "./pages/Buzzers/Buzzers";
 import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
+import BuzzersInfo from "./pages/Buzzers/BuzzersInfo";
 import Microfone from "./pages/Microphone/Microphone";
 import Display from "./pages/Display/Display";
 import Joystick from "./pages/Joystick/Joystick";
@@ -52,8 +53,9 @@ export function App() {
             
             <Route path="buzzers">
               <Route index element={<Buzzers />} />
-              <Route path="buzzersGravar" element={<BuzzersGravar />} />
-              <Route path="buzzersTocar" element={<BuzzersTocar />} />
+              <Route path="gravar" element={<BuzzersGravar />} />
+              <Route path="tocar" element={<BuzzersTocar />} />
+              <Route path="info" element={<BuzzersInfo />} />
             </Route>
             
             <Route path="microfone" element={<Microfone />} />

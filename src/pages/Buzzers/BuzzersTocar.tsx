@@ -4,7 +4,7 @@ import Slider from "@/components/Slider";
 import { useBuzzersTocar } from "@/hooks/useBuzzersTocar";
 import Piano from "@/components/Piano";
 
-export default function Buzzers() {
+export default function BuzzersTocar() {
   const { sendCommand } = useConnection();
 
   const { octave, setOctave, handleNotePress } = useBuzzersTocar(sendCommand);
@@ -12,7 +12,7 @@ export default function Buzzers() {
   return (
     <>
       <Header
-        title="Buzzers"
+        title="Toque uma música"
         showIdeaButton={true}
         ideaButtonPath="/components/buzzers/info"
       />

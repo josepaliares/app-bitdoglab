@@ -10,10 +10,10 @@ export default function Buzzers() {
       <Header title="Buzzers" showIdeaButton={false} />
       <main className="h-screen flex flex-col items-center justify-center gap-3.5">
         <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-          <Button onClick={() => navigate("/components/buzzers/buzzersTocar")}>
+          <Button onClick={() => navigate("/components/buzzers/tocar")}>
             Tocar em tempo real
           </Button>
-          <Button onClick={() => navigate("/components/buzzers/buzzersGravar")}>
+          <Button onClick={() => navigate("/components/buzzers/gravar")}>
             Gravar uma musica
           </Button>
         </div>
