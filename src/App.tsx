@@ -27,7 +27,6 @@ import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
 
-
 export function App() {
 
   useEffect(() => {
