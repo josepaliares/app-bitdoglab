@@ -1,9 +1,5 @@
 import { toMicropython } from "../json/toMicropython";
 
-export interface LedRGBData {
-	cor: string;
-}
-
 export class LedRGBController {
 	private sendCommand: (command: string) => Promise<void>;
 	constructor(sendCommand: (command: string) => Promise<void>) {
