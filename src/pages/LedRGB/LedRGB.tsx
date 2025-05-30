@@ -1,7 +1,8 @@
-import { Button } from '@/components/ui/button';
-import LED from '@/components/LED';
-import { Header } from "@/components/Header";
 import ColorPicker from '@/components/ColorPicker';
+import { Header } from "@/components/Header";
+import LED from '@/components/LED';
+import { Button } from '@/components/ui/button';
+import { useConnection } from "@/contexts/ConnectionContext";
 import { useLedRGB } from '@/hooks/useLedRGB';
 
 /**
@@ -10,6 +11,7 @@ import { useLedRGB } from '@/hooks/useLedRGB';
  * @returns {JSX.Element} - O componente LEDRgb renderizado
  */
 export default function LEDRgb() {
+  const { sendCommand } = useConnection();
   
   const {
       // Valores individuais de RGB e seus setters (mantidos para compatibilidade)
@@ -22,8 +24,8 @@ export default function LEDRgb() {
       // Estado e manipuladores dos LED
       currentColor,
       handleClearL,
-      handleSendL
-    } = useLedRGB();
+      handleSend
+    } = useLedRGB(sendCommand);
 
   return (
     <>
@@ -61,7 +63,7 @@ export default function LEDRgb() {
         {/* Botões de ação */}
         <div className='flex flex-row justify-center gap-3 mt-3'>
           <Button variant="whitePink" onClick={handleClearL}>Limpar</Button>
-          <Button onClick={handleSendL}>Enviar</Button>
+          <Button onClick={handleSend}>Enviar</Button>
         </div>
       </div>
     </>
