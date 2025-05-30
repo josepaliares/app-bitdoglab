@@ -3,7 +3,6 @@ import React, {
   useState,
   useContext,
   useEffect,
-  useRef,
 } from "react";
 
 export enum ConnectionType {

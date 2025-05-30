@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import lampada from "@/assets/imgs/lampada.png";
+import { Header } from "@/components/Header";
 import bluetooth from "@/assets/imgs/bluetooth.png";
 import touch from "@/assets/imgs/touch.png";
 import LED from "../../../public/assets/LED.svg";
@@ -54,19 +54,16 @@ export default function NeopixelInfo(): React.ReactElement {
 
   return (
     <>
-      <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate("/components/neopixel")}>
-          Voltar
-        </Button>
-      </div>
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <img src={lampada} alt="imagem lampada" className="w-1/10 mb-4" />
-        <h1 className="text-ubuntu font-bold text-lg">Como funciona?</h1>
-        
+      <Header
+        title=""
+        showIdeaButton={false}
+      />
+      <div className="h-screen flex flex-col items-center gap-3.5">
+        <h2 className="text-ubuntu font-medium text-lg mb-1">Como Funciona?</h2>
         {/* Usando o componente FlowDiagram para renderizar o fluxograma */}
         <FlowDiagram steps={flowSteps} />
         
-        <Button className="mt-2" onClick={() => navigate("/components/neopixel/rgb-info")}>
+        <Button className="mb-1" onClick={() => navigate("/components/neopixel/rgb-info")}>
           Como funciona o RGB?
         </Button>
       </div>

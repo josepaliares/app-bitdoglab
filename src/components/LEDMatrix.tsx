@@ -37,7 +37,7 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
   };
   
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center mb-3">
       {/* LED Matrix Grid */}
       <div
         className="grid gap-2"

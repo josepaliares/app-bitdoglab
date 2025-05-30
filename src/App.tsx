@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ConnectionProvider } from "./contexts/ConnectionContext";
 import { ConnectionStatus } from "./components/ConnectionStatus";
+import { useEffect } from "react";
+import { ScreenOrientation } from "@capacitor/screen-orientation";
 
 // Importações das páginas
 import SplashScreen from "./pages/SplashScreen";
@@ -11,9 +13,11 @@ import NotFound from "./pages/NotFound";
 
 // Componentes
 import Botoes from "./pages/Buttons/Buttons";
+import BotoesInfo from "./pages/Buttons/ButtonsInfo";
 import Buzzers from "./pages/Buzzers/Buzzers";
 import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
+import BuzzersInfo from "./pages/Buzzers/BuzzersInfo";
 import Microfone from "./pages/Microphone/Microphone";
 import Display from "./pages/Display/Display";
 import Joystick from "./pages/Joystick/Joystick";
@@ -24,6 +28,11 @@ import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
 
 export function App() {
+
+  useEffect(() => {
+    ScreenOrientation.lock({ orientation: 'portrait' });
+  }, []);
+  
   return (
     <ConnectionProvider>
       <BrowserRouter>
@@ -36,12 +45,16 @@ export function App() {
           {/* Rota pai apenas para organização (não renderiza conteúdo) */}
           <Route path="/components">
             <Route index element={<Components />} />
-            <Route path="botoes" element={<Botoes />} />
+            <Route path="botoes">
+              <Route index element={<Botoes />} />
+              <Route path="info" element={<BotoesInfo />} />
+            </Route>
             
             <Route path="buzzers">
               <Route index element={<Buzzers />} />
-              <Route path="buzzersGravar" element={<BuzzersGravar />} />
-              <Route path="buzzersTocar" element={<BuzzersTocar />} />
+              <Route path="gravar" element={<BuzzersGravar />} />
+              <Route path="tocar" element={<BuzzersTocar />} />
+              <Route path="info" element={<BuzzersInfo />} />
             </Route>
             
             <Route path="microfone" element={<Microfone />} />
