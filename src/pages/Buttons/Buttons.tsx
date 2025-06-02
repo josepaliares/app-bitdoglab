@@ -16,8 +16,10 @@ import smilley from "@/assets/imgs/Smiley.png";
 import sad from "@/assets/imgs/Sad.png";
 import giraffe from "@/assets/imgs/Giraffe.png";
 import PopUp from "@/components/PopUp";
+import { useConnection } from "@/contexts/ConnectionContext";
 
 export default function Buttons() {
+  const { sendCommand } = useConnection();
   const [selectedComponent, setSelectedComponent] = useState("");
   const [selectedButton, setSelectedButton] = useState("");
   const [selectedCard, setSelectedCard] = useState("");
@@ -34,7 +36,7 @@ export default function Buttons() {
     currentColor,
     handleClearL,
     handleSendL
-  } = useLedRGB();
+  } = useLedRGB(sendCommand);
 
   const cardscomponents = [
     { id: "bigx", icon: <img src={bigx} alt="imagem bigx"/>, text: "X grande"},
