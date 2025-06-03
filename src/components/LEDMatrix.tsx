@@ -40,7 +40,7 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
     <div className="flex flex-col items-center mb-3">
       {/* LED Matrix Grid */}
       <div
-        className="grid gap-2"
+        className="grid gap-1 sm:gap-2 md:gap-6 place-items-center"
         style={{
           display: 'grid',
           gridTemplateColumns: `auto repeat(${ledsPerRow}, 1fr)`,
@@ -68,20 +68,27 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
                   selected={selectedLEDIndex === ledIndex}
                   onClick={() => handleLEDClick(ledIndex)}
                 />
-              ) : null;
+              ) :(
+                    // Placeholder para manter o grid alinhado
+                    <div key={`empty-${ledIndex}`} className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14" />
+                  );
             })}
           </React.Fragment>
         ))}
       </div>
       
       {/* Column labels */}
-      <div className="flex flex-row justify-center gap-10 mt-2">
+      <div className="grid gap-1 sm:gap-2 md:gap-6 mt-2 sm:mt-4 place-items-center"
+          style={{
+              gridTemplateColumns: `minmax(auto, max-content) repeat(${ledsPerRow}, minmax(0, 1fr))`,
+            }}
+      >
         {/* Empty space for row labels column */}
-        <div className="" />
+        <div className="min-w-[20px] sm:min-w-[24px] md:min-w-[28px]" />
         
         {/* Column numbers */}
         {colIndices.map(colIndex => (
-          <h5 key={`col-${colIndex}`} className="mr-4">
+          <h5 key={`col-${colIndex}`} className="text-xs sm:text-sm">
             {colIndex}
           </h5>
         ))}

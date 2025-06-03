@@ -33,9 +33,14 @@ const LED: React.FC<LedProps> = ({
         const rect = svg?.querySelector("#led");
 
         if (!svg || !rect || !containerRef.current) return;
-
+        
         svg.setAttribute("id", id);
         svg.classList.add("led-svg");
+
+        svg.setAttribute("width", "100%");
+        svg.setAttribute("height", "100%");
+        svg.setAttribute("viewBox", "0 0 50 50"); // Ajuste conforme seu SVG
+        svg.style.display = "block";
         
         // Set initial color
         rect.setAttribute("fill", color);
@@ -57,11 +62,11 @@ const LED: React.FC<LedProps> = ({
     if (!containerRef.current) return;
     
     if (selected) {
-      containerRef.current.style.border = "4px solid #e31a8b";
-      containerRef.current.style.borderRadius = "11px";
+      containerRef.current.classList.remove("border-gray-300");
+      containerRef.current.classList.add("border-pink-500", "border-2", "sm:border-3");
     } else {
-      containerRef.current.style.border = "2px solid #e6e6e6";
-      containerRef.current.style.borderRadius = "11px";
+      containerRef.current.classList.remove("border-pink-500", "border", "sm:border-4");
+      containerRef.current.classList.add("border-gray-300", "border");
     }
   }, [selected]);
   
@@ -85,7 +90,14 @@ const LED: React.FC<LedProps> = ({
   return (
     <div 
       ref={containerRef}
-      className="w-[50px] h-[50px] flex items-center justify-center led-container cursor-pointer"
+      className={`
+        w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14
+        flex items-center justify-center 
+        led-container cursor-pointer 
+        border border-gray-300 rounded-lg
+        hover:border-pink-400 transition-colors duration-200
+        touch-manipulation
+      `}
       onClick={handleClick}
       data-led-id={id}
     />
