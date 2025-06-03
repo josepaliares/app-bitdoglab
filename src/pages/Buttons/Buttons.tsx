@@ -129,12 +129,13 @@ export default function Buttons() {
     
     if (selectedComponent === "ledrgb") {
       return (
-        <div className="h-screen flex flex-col items-center gap-5">
+        <div className="h-screen flex flex-col items-center gap-2">
           <div className="mb-4">
             <LED 
               id="single-led" 
               color={currentColor}
               selected={false}
+              size='lg'
             />
           </div>
           
@@ -161,7 +162,7 @@ export default function Buttons() {
     
     if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
       return (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg items-center">
+        <div className="mt-6 p-4 rounded-lg items-center">
           <Slider 
             variant="numeric" 
             value={valueN} 
@@ -201,11 +202,13 @@ export default function Buttons() {
   
   return (
     <div className="flex flex-col">
-      <Header title="Botões" 
+      <Header 
+        title="Botões" 
         showIdeaButton={true}
-        ideaButtonPath="/components/botoes/info" />
-      <main className="h-screen flex flex-col items-center gap-1">
-        <h2 className="text-ubuntu text-md mb-5 text-center">
+        ideaButtonPath="/components/botoes/info" 
+      />
+      <main className="h-screen flex flex-col items-center gap-2">
+        <h2 className="text-ubuntu text-md mb-5 text-center pr-5">
           Escolha um  botão e defina o que ele faz quando for pressionado
         </h2>
         <Selecter

@@ -28,7 +28,7 @@ const Cards: React.FC<CardsProps> = ({ cards, onSelect, value }) => {
   };
 
   return (
-    <div className={`flex items-center p-4`}>
+    <div className="flex flex-wrap justify-center items-center p-4">
       {cards.map((card) => (
         <div
           key={card.id}
@@ -36,7 +36,7 @@ const Cards: React.FC<CardsProps> = ({ cards, onSelect, value }) => {
           className={`
             flex flex-col items-center justify-center border-2 rounded-lg shadow-md cursor-pointer
             transition-all duration-200 hover:shadow-lg transform hover:scale-105
-            w-24 h-24 p-4
+            w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 p-4 flex-shrink-0
             ${selectedCard === card.id 
               ? 'border-blue-500 bg-blue-50 text-blue-700' 
               : 'border-gray-300 bg-white hover:border-gray-400'

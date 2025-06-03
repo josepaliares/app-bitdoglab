@@ -5,6 +5,7 @@ export interface LedProps {
   onClick?: (led: HTMLDivElement) => void;
   color?: string;
   selected?: boolean;
+  size?: 'sm' | 'md' | 'lg' | 'responsive';
 }
 
 /**
@@ -17,10 +18,26 @@ const LED: React.FC<LedProps> = ({
   id,
   onClick,
   color = 'rgb(0, 0, 0)',
-  selected = false
+  selected = false,
+  size = 'mg'
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
+
+  // Definir classes de tamanho baseado na prop
+  const getSizeClasses = () => {
+    switch (size) {
+      case 'sm':
+        return 'w-8 h-8 sm:w-10 sm:h-10';
+      case 'md':
+        return 'w-10 h-10 sm:w-12 sm:h-12';
+      case 'lg':
+        return 'w-12 h-12 sm:w-14 sm:h-14';
+      case 'responsive':
+      default:
+        return 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14';
+    }
+  };
   
   // Load and render SVG
   useEffect(() => {
@@ -91,7 +108,7 @@ const LED: React.FC<LedProps> = ({
     <div 
       ref={containerRef}
       className={`
-        w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14
+        ${getSizeClasses()}
         flex items-center justify-center 
         led-container cursor-pointer 
         border border-gray-300 rounded-lg
