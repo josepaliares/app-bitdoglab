@@ -6,7 +6,6 @@ interface LEDMatrixProps {
   ledsPerRow: number;
   onLEDSelected: (index: number) => void;
   ledColors: string[];
-  maxWidth?: string;
   compact?: boolean;
 }
 
@@ -21,7 +20,6 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
   ledsPerRow,
   onLEDSelected,
   ledColors,
-  maxWidth = "100%",
   compact = false
 }) => {
   const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);

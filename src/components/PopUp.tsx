@@ -11,7 +11,7 @@ const PopUp: React.FC<PopupProps> = ({ isOpen, onClose, message }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center" onClick={onClose}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center z-50" onClick={onClose}>
       <div className="bg-white rounded-lg p-6 max-w-md w-full relative animate-pulse" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={onClose}
