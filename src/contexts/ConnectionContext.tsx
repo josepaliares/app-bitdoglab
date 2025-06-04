@@ -3,6 +3,7 @@ import React, {
   useState,
   useContext,
   useEffect,
+  useCallback,
 } from "react";
 
 export enum ConnectionType {
@@ -27,6 +28,7 @@ interface ConnectionContextType {
   disconnect: () => Promise<void>;
   sendCommand: (command: string) => Promise<void>;
   scanBluetoothDevices: () => Promise<void>;
+  lastHeartbeat: number;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | undefined>(
@@ -45,6 +47,18 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
   const [availableDevices, setAvailableDevices] = useState<BluetoothDevice[]>(
     []
   );
+  const [lastHeartbeat, setLastHeartbeat] = useState<number>(Date.now());
+  const [pendingCommands, setPendingCommands] = useState<
+    Map<string, PendingCommand>
+  >(new Map());
+
+  interface PendingCommand {
+    id: string;
+    command: string;
+    timestamp: number;
+    resolve: (value: void | PromiseLike<void>) => void;
+    reject: (reason?: any) => void;
+  }
 
   // Função auxiliar para promisificar callbacks do bluetoothSerial
   const promisifyBluetoothCall = <T,>(
@@ -91,6 +105,37 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Função para processar as respostas recebidas
+  const processResponse = (response: string) => {
+    // Formato esperado da resposta: "ACK:id" ou "NACK:id"
+    const parts = response.trim().split(":");
+    if (parts.length !== 2) return; // Ignora respostas mal formatadas
+
+    const [type, id] = parts;
+    if (!id) return; // Ignora se não tiver ID
+
+    setPendingCommands((prev) => {
+      const newMap = new Map(prev);
+      const command = newMap.get(id);
+
+      if (command) {
+        if (type === "ACK") {
+          command.resolve();
+        } else if (type === "NACK") {
+          command.reject(new Error("Comando rejeitado pelo dispositivo"));
+        }
+        newMap.delete(id);
+      }
+
+      return newMap;
+    });
+
+    // Se for um ACK de heartbeat, atualiza o timestamp
+    if (type === "ACK") {
+      updateHeartbeat();
+    }
+  };
+
   const readFromSerial = async (port: any) => {
     if (!port) return;
 
@@ -101,11 +146,18 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       while (true) {
         const { value, done } = await reader.read();
-        if (done) break;
-        console.log("Recebido da Serial:", decoder.decode(value));
+        if (done) {
+          console.log("Conexão Serial encerrada");
+          await disconnect();
+          break;
+        }
+        const response = decoder.decode(value);
+        console.log("Recebido da Serial:", response);
+        processResponse(response);
       }
     } catch (error) {
       console.error("Erro na leitura Serial:", error);
+      await disconnect();
     } finally {
       reader.releaseLock();
     }
@@ -143,9 +195,11 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         "\n",
         (data: string) => {
           console.log("Recebido do Bluetooth:", data);
+          processResponse(data);
         },
-        (error: any) => {
-          console.error("Erro ao receber dados:", error);
+        async (error: any) => {
+          console.error("Erro ao receber dados Bluetooth:", error);
+          await disconnect();
         }
       );
 
@@ -198,27 +252,140 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error("Não conectado a nenhum dispositivo");
     }
 
-    try {
-      if (connectionType === ConnectionType.CABLE) {
-        const writer = serialPort.writable.getWriter();
-        const encoder = new TextEncoder();
+    return new Promise<void>(async (resolve, reject) => {
+      try {
+        const commandId = generateCommandId();
+        const commandWithId = `${commandId}:${command}`; // Formato: "id:comando"
 
-        try {
-          await writer.write(encoder.encode(command + "\r\n"));
-        } finally {
-          writer.releaseLock();
+        // Registra o comando pendente
+        setPendingCommands((prev) => {
+          const newMap = new Map(prev);
+          newMap.set(commandId, {
+            id: commandId,
+            command,
+            timestamp: Date.now(),
+            resolve,
+            reject,
+          });
+          return newMap;
+        });
+
+        // Envia o comando com ID
+        if (connectionType === ConnectionType.CABLE) {
+          const writer = serialPort.writable.getWriter();
+          const encoder = new TextEncoder();
+          try {
+            await writer.write(encoder.encode(commandWithId + "\r\n"));
+          } finally {
+            writer.releaseLock();
+          }
+        } else if (connectionType === ConnectionType.BLUETOOTH) {
+          await promisifyBluetoothCall(
+            window.bluetoothSerial.write,
+            commandWithId + "\r\n"
+          );
         }
-      } else if (connectionType === ConnectionType.BLUETOOTH) {
-        await promisifyBluetoothCall(
-          window.bluetoothSerial.write,
-          command + "\r\n"
-        );
+      } catch (error) {
+        console.error("Erro ao enviar comando:", error);
+        reject(new Error("Falha ao enviar comando ao dispositivo"));
       }
-    } catch (error) {
-      console.error("Erro ao enviar comando:", error);
-      throw new Error("Falha ao enviar comando ao dispositivo");
-    }
+    });
   };
+
+  // Função para gerar ID único para cada comando
+  const generateCommandId = () => {
+    return Math.random().toString(36).substring(2, 15);
+  };
+
+  // Função para limpar comandos antigos que não receberam ACK
+  const cleanupOldCommands = useCallback(() => {
+    const now = Date.now();
+    let hasTimedOutCommands = false;
+
+    setPendingCommands((prev) => {
+      const newMap = new Map(prev);
+      for (const [id, command] of newMap) {
+        if (now - command.timestamp > 3000) {
+          // Reduzido para 3 segundos
+          hasTimedOutCommands = true;
+          command.reject(new Error("Timeout: Comando não confirmado"));
+          newMap.delete(id);
+        }
+      }
+      return newMap;
+    });
+
+    // Se houver comandos que não receberam resposta, provavelmente perdemos a conexão
+    if (hasTimedOutCommands) {
+      console.log(
+        "Detectados comandos sem resposta - possível perda de conexão"
+      );
+      disconnect();
+    }
+  }, []);
+
+  // Efeito para limpar comandos antigos periodicamente
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const intervalId = setInterval(cleanupOldCommands, 1000);
+    return () => clearInterval(intervalId);
+  }, [isConnected, cleanupOldCommands]);
+
+  // Função para atualizar o heartbeat
+  const updateHeartbeat = useCallback(() => {
+    setLastHeartbeat(Date.now());
+  }, []);
+
+  // Efeito para verificar o heartbeat periodicamente
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const checkConnection = () => {
+      const now = Date.now();
+      const heartbeatAge = now - lastHeartbeat;
+
+      // Se o último heartbeat foi há mais de 3 segundos, consideramos que a conexão caiu
+      if (heartbeatAge > 3000) {
+        console.log(
+          "Conexão perdida: sem confirmação de heartbeat por mais de 3 segundos"
+        );
+        disconnect();
+      }
+    };
+
+    const intervalId = setInterval(checkConnection, 1000);
+    return () => clearInterval(intervalId);
+  }, [isConnected, lastHeartbeat]);
+
+  // Efeito para atualizar o heartbeat periodicamente enquanto houver conexão
+  useEffect(() => {
+    if (!isConnected) return;
+
+    const sendHeartbeat = async () => {
+      try {
+        // Tenta enviar um comando vazio para verificar a conexão
+        // O heartbeat só será atualizado quando receber o ACK
+        await sendCommand("");
+      } catch (error) {
+        console.log("Erro ao enviar heartbeat:", error);
+      }
+    };
+
+    // Configura heartbeat inicial
+    const initialHeartbeat = async () => {
+      try {
+        await sendCommand("");
+      } catch (error) {
+        console.log("Erro ao enviar heartbeat inicial:", error);
+      }
+    };
+    initialHeartbeat();
+
+    // Configura o intervalo para enviar heartbeats mais frequentemente
+    const intervalId = setInterval(sendHeartbeat, 1000);
+    return () => clearInterval(intervalId);
+  }, [isConnected]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -241,6 +408,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         disconnect,
         sendCommand,
         scanBluetoothDevices,
+        lastHeartbeat,
       }}
     >
       {children}

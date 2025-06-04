@@ -1,7 +1,18 @@
 import { useConnection, ConnectionType } from "../contexts/ConnectionContext";
+import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const ConnectionStatus = () => {
   const { isConnected, connectionType } = useConnection();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Se a conexão cair e não estivermos já na página de conexão, redireciona
+    if (!isConnected && !location.pathname.includes("/connection")) {
+      navigate("/connection");
+    }
+  }, [isConnected, navigate, location]);
 
   // Get connection label based on type
   const getConnectionLabel = () => {
