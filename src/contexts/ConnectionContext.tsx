@@ -29,6 +29,9 @@ interface ConnectionContextType {
   sendCommand: (command: string) => Promise<void>;
   scanBluetoothDevices: () => Promise<void>;
   lastHeartbeat: number;
+  startPeriodicRead: () => void;
+  stopPeriodicRead: () => void;
+  isPeriodicReadActive: boolean;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | undefined>(
@@ -51,6 +54,9 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
   const [pendingCommands, setPendingCommands] = useState<
     Map<string, PendingCommand>
   >(new Map());
+  const [isPeriodicReadActive, setIsPeriodicReadActive] = useState(false);
+  const [periodicInterval, setPeriodicInterval] =
+    useState<NodeJS.Timeout | null>(null);
 
   interface PendingCommand {
     id: string;
@@ -107,12 +113,19 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Função para processar as respostas recebidas
   const processResponse = (response: string) => {
+    // Verifica se é uma resposta numérica do print(1)
+    if (response.trim() === "1") {
+      console.log("Recebido resposta do print(1):", response);
+      updateHeartbeat();
+      return;
+    }
+
     // Formato esperado da resposta: "ACK:id" ou "NACK:id"
     const parts = response.trim().split(":");
-    if (parts.length !== 2) return; // Ignora respostas mal formatadas
+    if (parts.length !== 2) return;
 
     const [type, id] = parts;
-    if (!id) return; // Ignora se não tiver ID
+    if (!id) return;
 
     setPendingCommands((prev) => {
       const newMap = new Map(prev);
@@ -121,7 +134,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       if (command) {
         if (type === "ACK") {
           command.resolve();
-        } else if (type === "NACK") {
+        } else {
           command.reject(new Error("Comando rejeitado pelo dispositivo"));
         }
         newMap.delete(id);
@@ -387,6 +400,41 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => clearInterval(intervalId);
   }, [isConnected]);
 
+  // Função para iniciar a leitura periódica
+  const startPeriodicRead = useCallback(() => {
+    if (!isConnected || isPeriodicReadActive) return;
+
+    setIsPeriodicReadActive(true);
+    const interval = setInterval(async () => {
+      try {
+        // Envia o comando de interrupção seguido do print
+        await sendCommand("\x03\r");
+        await sendCommand("print(1)\r");
+      } catch (error) {
+        console.error("Erro na comunicação periódica:", error);
+        stopPeriodicRead();
+      }
+    }, 5000);
+
+    setPeriodicInterval(interval);
+  }, [isConnected, isPeriodicReadActive]);
+
+  // Função para parar a leitura periódica
+  const stopPeriodicRead = useCallback(() => {
+    if (periodicInterval) {
+      clearInterval(periodicInterval);
+      setPeriodicInterval(null);
+    }
+    setIsPeriodicReadActive(false);
+  }, [periodicInterval]);
+
+  // Efeito para limpar o intervalo quando desconectar
+  useEffect(() => {
+    if (!isConnected) {
+      stopPeriodicRead();
+    }
+  }, [isConnected, stopPeriodicRead]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -409,6 +457,9 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         sendCommand,
         scanBluetoothDevices,
         lastHeartbeat,
+        startPeriodicRead,
+        stopPeriodicRead,
+        isPeriodicReadActive,
       }}
     >
       {children}
