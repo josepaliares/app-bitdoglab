@@ -16,7 +16,7 @@ export default function BuzzersGravar() {
         showIdeaButton={true}
         ideaButtonPath="/components/buzzers/info"
       />
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
+      <div className="h-screen flex flex-col items-center gap-3.5">
         <h3>Escolha uma nota e seu tom</h3>
         <Slider
           variant="pianoTones"

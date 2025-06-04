@@ -60,7 +60,7 @@ export const useLedRGB = (
 			const json = handleSendL();
 			await ledRGBController.current?.sendLEDConfigurations(json);
 		} catch (error) {
-			console.error("Erro ao condigurar Led:", error);
+			console.error("Erro ao configurar Led:", error);
 		}
 
 	};

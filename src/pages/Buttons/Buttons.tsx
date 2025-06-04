@@ -1,11 +1,11 @@
 import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { useButtons } from "@/hooks/useButtons";
+import { useConnection } from "@/contexts/ConnectionContext";
 import DropdownSelector from "@/components/DropdownSelector";
 import Selecter from "@/components/Selecter";
-import { useState } from "react";
 import LED from "@/components/LED";
 import ColorPicker from "@/components/ColorPicker";
-import { Button } from "@/components/ui/button";
-import { useLedRGB } from "@/hooks/useLedRGB";
 import Slider from "@/components/Slider";
 import Cards from "@/components/Cards";
 import bigx from "@/assets/imgs/BigX.png";
@@ -16,27 +16,9 @@ import smilley from "@/assets/imgs/Smiley.png";
 import sad from "@/assets/imgs/Sad.png";
 import giraffe from "@/assets/imgs/Giraffe.png";
 import PopUp from "@/components/PopUp";
-import { useConnection } from "@/contexts/ConnectionContext";
 
 export default function Buttons() {
   const { sendCommand } = useConnection();
-  const [selectedComponent, setSelectedComponent] = useState("");
-  const [selectedButton, setSelectedButton] = useState("");
-  const [selectedCard, setSelectedCard] = useState("");
-
-  const {
-    // Valores individuais de RGB e seus setters (mantidos para compatibilidade)
-    valueR,
-    valueG,
-    valueB,
-    setValueR,
-    setValueG,
-    setValueB,
-    // Estado e manipuladores dos LED
-    currentColor,
-    handleClearL,
-    handleSendL
-  } = useLedRGB(sendCommand);
 
   const cardscomponents = [
     { id: "bigx", icon: <img src={bigx} alt="imagem bigx"/>, text: "X grande"},
@@ -60,55 +42,36 @@ export default function Buttons() {
     { id: "buzzerb", label: "Buzzer B" }
   ];
 
-  const [popup, setPopup] = useState({
-    isOpen: false,
-    message: ''
-  });
+  const {
+    // State
+    selectedComponent,
+    selectedButton,
+    selectedCard,
+    popup,
+    valueN,
+    valueV,
 
-  const closePopup = () => {
-    setPopup({ isOpen: false, message: '' });
-  };
-
-  const [valueN, onChangeN] = useState(0);
-  const [valueV, onChangeV] = useState(0);
-
-  const handleClear = () => {
-    if (selectedComponent === "ledrgb") {
-      handleClearL();
-    } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
-      onChangeN(0);
-      onChangeV(0);
-    }
-  }
-
-  const handleSend = () => {
-    if(selectedButton === ""){
-      setPopup({
-        isOpen: true,
-        message: "você precisa escolher um dos botões"
-      });
-      return;
-    }
-    let json;
-    if (selectedComponent === "neopixel") {
-      json = JSON.stringify({ [selectedComponent]: [selectedCard] }, null, 3);
-    } else if (selectedComponent === "ledrgb") {
-      json = handleSendL();
-    } else if (selectedComponent === "buzzera" || selectedComponent === "buzzerb") {
-      json = JSON.stringify({ [selectedComponent]: [valueN, valueV] }, null, 3);
-    } else{
-      setPopup({
-        isOpen: true,
-        message: "você precisa escolher um dos componentes"
-      });
-      return;
-    }
-
-    const jsonComplet = JSON.stringify({
-      "botões": { [selectedButton]: [json] }
-    }, null, 3)
-    return jsonComplet;
-  }
+    // LED RGB values
+    valueR,
+    valueG,
+    valueB,
+    currentColor,
+    
+    // Setters
+    setSelectedComponent,
+    setSelectedButton,
+    setSelectedCard,
+    onChangeN,
+    onChangeV,
+    setValueR,
+    setValueG,
+    setValueB,
+    
+    // Handlers
+    closePopup,
+    handleClear,
+    handleSend
+  } = useButtons(sendCommand);
 
   const renderDynamicContent = () => {
     if (selectedComponent === "neopixel") {
@@ -199,7 +162,7 @@ export default function Buttons() {
       </div>
     );
   };
-  
+
   return (
     <div className="flex flex-col">
       <Header 
