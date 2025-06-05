@@ -10,6 +10,7 @@ export default function Welcome() {
   useEffect(() => {
     if (!hasShown.current) {
       hasShown.current = true;
+      console.log("Mostrando o disclaimer...");
       Dialog.alert({
         title: "Aviso - Versão Antecipada",
         message: `Este aplicativo está em fase de desenvolvimento.

@@ -3,6 +3,7 @@ import { ConnectionProvider } from "./contexts/ConnectionContext";
 import { ConnectionStatus } from "./components/ConnectionStatus";
 import { useEffect } from "react";
 import { ScreenOrientation } from "@capacitor/screen-orientation";
+import { BackButtonHandler } from "./components/BackButtonHandler";
 
 // Importações das páginas
 import SplashScreen from "./pages/SplashScreen";
@@ -32,20 +33,20 @@ import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
 import EmConstrucao from "./pages/EmConstrucao";
 
 export function App() {
-
   useEffect(() => {
-    ScreenOrientation.lock({ orientation: 'portrait' });
+    ScreenOrientation.lock({ orientation: "portrait" });
   }, []);
-  
+
   return (
     <ConnectionProvider>
       <BrowserRouter>
+        <BackButtonHandler />
         <ConnectionStatus />
         <Routes>
           <Route path="/" element={<SplashScreen />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/connection" element={<Connection />} />
-          
+
           {/* Rota pai apenas para organização (não renderiza conteúdo) */}
           <Route path="/components">
             <Route index element={<Components />} />
@@ -69,22 +70,21 @@ export function App() {
             <Route path="buzzers" element={<EmConstrucao />} />
             <Route path="microfone" element={<EmConstrucao />} />
             <Route path="display" element={<EmConstrucao />} />
-            <Route path="joystick" element={<EmConstrucao/>} />
+            <Route path="joystick" element={<EmConstrucao />} />
 
-            
             <Route path="neopixel">
               <Route index element={<Neopixel />} />
               <Route path="info" element={<NeopixelInfo />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
-            
+
             <Route path="ledrgb">
               <Route index element={<LedRGB />} />
               <Route path="info" element={<LedRGBInfo />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
           </Route>
-          
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
