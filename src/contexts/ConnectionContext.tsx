@@ -102,7 +102,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        console.log("Recebido da Serial:", decoder.decode(value));
+        // console.log("Recebido da Serial:", decoder.decode(value));
       }
     } catch (error) {
       console.error("Erro na leitura Serial:", error);

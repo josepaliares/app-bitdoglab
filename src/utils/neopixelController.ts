@@ -47,6 +47,7 @@ export class NeopixelController {
 
       // Enviar comandos dos LEDs
       const micropythonCommands = toMicropython(json);
+      // console.log(json); // mostrar o JSON para debug
       for (const command of micropythonCommands) {
         await this.sendCommand(command);
         await new Promise((resolve) => setTimeout(resolve, 50));
