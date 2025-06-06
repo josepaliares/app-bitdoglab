@@ -3,6 +3,7 @@ import { ConnectionProvider } from "./contexts/ConnectionContext";
 import { ConnectionStatus } from "./components/ConnectionStatus";
 import { useEffect } from "react";
 import { ScreenOrientation } from "@capacitor/screen-orientation";
+import { BackButtonHandler } from "./components/BackButtonHandler";
 
 // Importações das páginas
 import SplashScreen from "./pages/SplashScreen";
@@ -12,40 +13,45 @@ import Components from "./pages/Components";
 import NotFound from "./pages/NotFound";
 
 // Componentes
-import Botoes from "./pages/Buttons/Buttons";
-import BotoesInfo from "./pages/Buttons/ButtonsInfo";
-import Buzzers from "./pages/Buzzers/Buzzers";
-import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
-import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
-import BuzzersInfo from "./pages/Buzzers/BuzzersInfo";
-import Microfone from "./pages/Microphone/Microphone";
-import Display from "./pages/Display/Display";
-import Joystick from "./pages/Joystick/Joystick";
+
+// import Botoes from "./pages/Buttons/Buttons";
+// import BotoesInfo from "./pages/Buttons/ButtonsInfo";
+// import Buzzers from "./pages/Buzzers/Buzzers";
+// import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
+// import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
+// import BuzzersInfo from "./pages/Buzzers/BuzzersInfo";
+// import Microfone from "./pages/Microphone/Microphone";
+// import Display from "./pages/Display/Display";
+// import Joystick from "./pages/Joystick/Joystick";
+
 import Neopixel from "./pages/Neopixel/Neopixel";
 import NeopixelInfo from "./pages/Neopixel/NeopixelInfo";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
 
-export function App() {
+import EmConstrucao from "./pages/EmConstrucao";
 
+export function App() {
   useEffect(() => {
-    ScreenOrientation.lock({ orientation: 'portrait' });
+    ScreenOrientation.lock({ orientation: "portrait" });
   }, []);
-  
+
   return (
     <ConnectionProvider>
       <BrowserRouter>
+        <BackButtonHandler />
         <ConnectionStatus />
         <Routes>
           <Route path="/" element={<SplashScreen />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/connection" element={<Connection />} />
-          
+
           {/* Rota pai apenas para organização (não renderiza conteúdo) */}
           <Route path="/components">
             <Route index element={<Components />} />
-            <Route path="botoes">
+
+            {/* <Route path="botoes">
               <Route index element={<Botoes />} />
               <Route path="info" element={<BotoesInfo />} />
             </Route>
@@ -59,21 +65,26 @@ export function App() {
             
             <Route path="microfone" element={<Microfone />} />
             <Route path="display" element={<Display />} />
-            <Route path="joystick" element={<Joystick />} />
-            
+            <Route path="joystick" element={<Joystick />} /> */}
+            <Route path="botoes" element={<EmConstrucao />} />
+            <Route path="buzzers" element={<EmConstrucao />} />
+            <Route path="microfone" element={<EmConstrucao />} />
+            <Route path="display" element={<EmConstrucao />} />
+            <Route path="joystick" element={<EmConstrucao />} />
+
             <Route path="neopixel">
               <Route index element={<Neopixel />} />
               <Route path="info" element={<NeopixelInfo />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
-            
+
             <Route path="ledrgb">
               <Route index element={<LedRGB />} />
               <Route path="info" element={<LedRGBInfo />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
           </Route>
-          
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
