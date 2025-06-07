@@ -5,27 +5,41 @@ import type { ReactNode } from 'react';
  * Interface para as props do FlowCard
  */
 interface FlowCardProps {
+  id: string,
   icon: ReactNode;
   text: string;
   className?: string;
   stepNumber?: number;
   showArrow?: boolean;
+  onClick?: (card: string) => void;
 }
 
 /**
  * Componente FlowCard - Representa um card no fluxograma
  */
 const FlowCard: React.FC<FlowCardProps> = ({ 
+  id,
   icon, 
   text, 
   className = "", 
   stepNumber,
-  showArrow = false 
+  showArrow = false,
+  onClick
 }) => {
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick(id); // Chama onClick se existir
+    }
+  };
+
+
   return (
     <div className="relative">
       {/* Container do card com numeração */}
-      <div className="flex items-center relative">
+      <div className="flex items-center relative"
+        onClick={handleClick}
+      >
         {/* Numeração à esquerda */}
         {stepNumber && (
           <div className="flex flex-col items-center mr-6 relative">
