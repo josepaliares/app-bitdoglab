@@ -14,20 +14,8 @@ export default function NeopixelInfo(): React.ReactElement {
   // Definindo os passos do fluxograma com tipagem
   const flowSteps: FlowStep[] = [
     {
-      icon: (
-        <div
-          className="w-12 aspect-square bg-black mask mask-center mask-no-repeat mask-contain"
-          style={{
-            WebkitMaskImage: `url(${LED})`,
-            maskImage: `url(${LED})`,
-          }}
-        />
-      ),
-      text: "Usuário toca no LED(x,y)"
-    },
-    {
       icon: <img src={touch} alt="imagem touch"/>,
-      text: "Seleciona uma cor"
+      text: "Seleciona as cores dos leds"
     },
     {
       icon: <Button>Enviar</Button>,
