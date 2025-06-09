@@ -21,8 +21,8 @@ A estrutura segue um fluxo linear e modular:
 ---
 #### ✨ Contribuindo com Novas Aplicações
 
-1. **Adicione um Caso**: Em micropython(), inclua um case para sua aplicação.
-2. **Crie um Parser**: Implemente uma função no estilo parseNomeDaApp(instructions).
+1. **Adicione um Caso**: Em toMicropython.ts, inclua um case para sua aplicação.
+2. **Crie um interpreter**: Implemente uma função pura (sem efeitos colaterais) no estilo interpreterNomeDaApp(instructions) no arquivo interpreters.
 3. **Teste**: Garanta que o código gerado seja compatível com o hardware alvo.
 
 ---
@@ -36,5 +36,12 @@ A estrutura segue um fluxo linear e modular:
          "cor": "rgb(<número de 0 a 255>, <número de 0 a 255>, <número de 0 a 255>)"
       }
    ]
+}
+```
+
+2. 🟥 **LedRGB**: Processa um lot de dados contido em um único JSON no formato:
+```
+{
+   "ledRGB": "rgb(<número de 0 a 255>, <número de 0 a 255>, <número de 0 a 255>)"
 }
 ```
