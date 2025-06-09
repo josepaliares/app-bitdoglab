@@ -26,6 +26,7 @@ import NeopixelInfo from "./pages/Neopixel/NeopixelFluxograma";
 import NeopixelInfo1 from "./pages/Neopixel/NeopixelInfo1";
 import NeopixelInfo2 from "./pages/Neopixel/NeopixelInfo2";
 import NeopixelInfo3 from "./pages/Neopixel/NeopixelInfo3";
+import NeopixelInfo4 from "./pages/Neopixel/NeopixelInfo4";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
@@ -70,6 +71,7 @@ export function App() {
               <Route path="info1" element={<NeopixelInfo1 />} />
               <Route path="info2" element={<NeopixelInfo2 />} />
               <Route path="info3" element={<NeopixelInfo3 />} />
+              <Route path="info4" element={<NeopixelInfo4 />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
             

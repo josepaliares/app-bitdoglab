@@ -50,6 +50,9 @@ export default function NeopixelInfo(): React.ReactElement {
     if (cardId == '2'){
       navigate("/components/neopixel/info3");
     }
+    if (cardId == '3'){
+      navigate("/components/neopixel/info4");
+    }
   }
 
   return (
@@ -58,7 +61,7 @@ export default function NeopixelInfo(): React.ReactElement {
         title=""
         showIdeaButton={false}
       />
-      <div className="h-screen flex flex-col items-center gap-3.5">
+      <div className="h-screen flex flex-col items-center gap-3.5 mx-2">
         <h2 className="text-ubuntu font-medium text-lg mb-1">Como Funciona?</h2>
         {/* Usando o componente FlowDiagram para renderizar o fluxograma */}
         <FlowDiagram 
