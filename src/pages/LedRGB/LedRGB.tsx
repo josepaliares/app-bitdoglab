@@ -45,6 +45,7 @@ export default function LEDRgb() {
             id="single-led" 
             color={currentColor}
             selected={false}
+            size='lg'
           />
         </div>
         

@@ -10,12 +10,6 @@ def process_command(cmd):
         # Remove caracteres extras e executa
         cmd = cmd.strip()
         if cmd:
-            # Verificar se é comando de heartbeat
-            if cmd == "HB_PING":
-                uart.write("HB_PONG\r\n")
-                return
-            
-            # Comando Python normal
             exec(cmd)
             uart.write("OK\r\n")
     except Exception as e:

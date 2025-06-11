@@ -6,6 +6,7 @@ interface LEDMatrixProps {
   ledsPerRow: number;
   onLEDSelected: (index: number) => void;
   ledColors: string[];
+  compact?: boolean;
 }
 
 /**
@@ -18,7 +19,8 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
   ledsPerCol,
   ledsPerRow,
   onLEDSelected,
-  ledColors
+  ledColors,
+  compact = false
 }) => {
   const [selectedLEDIndex, setSelectedLEDIndex] = useState<number | null>(null);
   
@@ -35,12 +37,28 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
     setSelectedLEDIndex(index);
     onLEDSelected(index);
   };
+
+  // Calcular tamanho da gap baseado no número de LEDs e tamanho da tela
+  const getGapClass = () => {
+    if (compact) return "gap-1 sm:gap-2";
+    if (ledsPerRow > 10) return "gap-1 sm:gap-2 md:gap-3";
+    if (ledsPerRow > 5) return "gap-2 sm:gap-3 md:gap-4";
+    return "gap-2 sm:gap-4 md:gap-6";
+  };
+
+  // Determinar tamanho dos LEDs baseado na quantidade
+  const getLEDSize = (): 'sm' | 'md' | 'lg' | 'responsive' => {
+    if (ledsPerRow > 15 || ledsPerCol > 15) return 'sm';
+    if (ledsPerRow > 10 || ledsPerCol > 10) return 'md';
+    if (ledsPerRow > 5 || ledsPerCol > 5) return 'responsive';
+    return 'lg';
+  };
   
   return (
     <div className="flex flex-col items-center mb-3">
       {/* LED Matrix Grid */}
       <div
-        className="grid gap-2"
+        className="grid gap-1 sm:gap-2 md:gap-6 place-items-center"
         style={{
           display: 'grid',
           gridTemplateColumns: `auto repeat(${ledsPerRow}, 1fr)`,
@@ -67,24 +85,39 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
                   color={ledColors[ledIndex]}
                   selected={selectedLEDIndex === ledIndex}
                   onClick={() => handleLEDClick(ledIndex)}
+                  size={getLEDSize()}
                 />
-              ) : null;
+              ) :(
+                    // Placeholder para manter o grid alinhado
+                    <div key={`empty-${ledIndex}`} className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14" />
+                  );
             })}
           </React.Fragment>
         ))}
       </div>
       
-      {/* Column labels */}
-      <div className="flex flex-row justify-center gap-10 mt-2">
-        {/* Empty space for row labels column */}
-        <div className="" />
-        
-        {/* Column numbers */}
-        {colIndices.map(colIndex => (
-          <h5 key={`col-${colIndex}`} className="mr-4">
-            {colIndex}
-          </h5>
-        ))}
+       {/* Column labels */}
+          <div 
+            className={`grid ${getGapClass()} mt-2 sm:mt-4 place-items-center`}
+            style={{
+              gridTemplateColumns: `auto repeat(${ledsPerRow}, 50px)`,
+            }}
+          >
+            {/* Empty space for row labels column */}
+            <div className="w-8 sm:w-10 md:w-12" />
+            
+            {/* Column numbers */}
+            {colIndices.map(colIndex => (
+              <div 
+                key={`col-${colIndex}`} 
+                className={`
+                  ${compact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base md:text-lg'}
+                  font-medium text-center
+                `}
+              >
+                {colIndex}
+              </div>
+            ))}
       </div>
     </div>
   );
