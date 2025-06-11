@@ -13,7 +13,7 @@ export class NeopixelController {
 
   async setupNeopixel() {
     const setupCommands = [
-      "\x03\r\n", // Creio que isso  deva rodar assim que iniciarmos a placa
+      "\x03\r\n",
       "from machine import Pin",
       "import neopixel",
       "np = neopixel.NeoPixel(Pin(7), 25)",
@@ -26,35 +26,23 @@ export class NeopixelController {
     }
   }
 
-  async sendLEDConfigurations(leds: NodeListOf<Element>) {
-    const dados: NeopixelData[] = [];
-
-    leds.forEach((svg) => {
-      const pos = svg.getAttribute("id");
-      const ledRect = svg.querySelector("#led");
-      
-      if (ledRect && ledRect.getAttribute("text") == "on") {
-        const cor = ledRect.getAttribute("fill");
-        dados.push({ pos: pos!, cor: cor! });
-      }
-    });
-
-    const json = JSON.stringify({ neopixel: dados }, null, 3);
+  async sendLEDConfigurations(data: NeopixelData[]) {
+    const json = JSON.stringify({ neopixel: data }, null, 3);
 
     try {
-      // Setup inicial
+      // Initial setup
       await this.setupNeopixel();
 
-      // Enviar comandos dos LEDs
+      // Send LED commands
       const micropythonCommands = toMicropython(json);
       for (const command of micropythonCommands) {
         await this.sendCommand(command);
         await new Promise((resolve) => setTimeout(resolve, 50));
       }
 
-      console.log("Comandos enviados com sucesso!");
+      console.log("Commands sent successfully!");
     } catch (error) {
-      console.error("Erro ao enviar comandos:", error);
+      console.error("Error sending commands:", error);
       throw error;
     }
   }

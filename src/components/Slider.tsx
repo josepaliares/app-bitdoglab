@@ -42,7 +42,6 @@ const Slider: React.FC<SliderProps> = ({
     const stepVal = 1;
     const labels = ["1", "2", "3", "4", "5", "6", "7"];
 
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange(parseInt(e.target.value));
     };
@@ -146,7 +145,26 @@ const Slider: React.FC<SliderProps> = ({
         }`}
         aria-label={getAriaLabel()}
       />
-      {showValue && <span className="w-8 text-left">{value}</span>}
+      {showValue && (
+        <input
+          type="number"
+          min={finalMin}
+          max={finalMax}
+          value={value}
+          onChange={(e) =>
+            onChange(
+              Math.max(finalMin, Math.min(finalMax, Number(e.target.value)))
+            )
+          }
+          className={`
+            w-14 border rounded px-1 py-0.5 text-center font-bold
+            ${variant === "red" ? "text-red-600" : ""}
+            ${variant === "green" ? "text-green-600" : ""}
+            ${variant === "blue" ? "text-blue-600" : ""}
+          `}
+          style={{ marginLeft: 4 }}
+        />
+      )}
     </div>
   );
 };

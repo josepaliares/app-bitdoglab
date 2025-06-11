@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-} from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 
 export enum ConnectionType {
   CABLE = "cable",
@@ -102,9 +97,11 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
+        // Process received data if needed
         console.log("Recebido da Serial:", decoder.decode(value));
       }
     } catch (error) {
+      setIsConnected(false);
       console.error("Erro na leitura Serial:", error);
     } finally {
       reader.releaseLock();
@@ -127,6 +124,39 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Função para tratar desconexões inesperadas do Bluetooth
+  const handleBluetoothDisconnection = (error: any) => {
+    console.error("Tratando desconexão Bluetooth:", error);
+
+    // Verifica se é um erro de socket fechado ou desconexão
+    const errorString = error?.toString?.() || JSON.stringify(error) || "";
+    const isDisconnectionError =
+      errorString.includes("bt socket closed") ||
+      errorString.includes("read return: -1") ||
+      errorString.includes("IOException") ||
+      errorString.includes("disconnected") ||
+      errorString.includes("Connection lost") ||
+      errorString.includes("Device not connected");
+
+    if (isDisconnectionError) {
+      console.log("Desconexão detectada, atualizando estado...");
+      setIsConnected(false);
+      setConnectionType(ConnectionType.NONE);
+
+      // Tenta limpar a subscrição silenciosamente
+      try {
+        window.bluetoothSerial.unsubscribe().catch(() => {
+          // Ignora erros na limpeza
+        });
+      } catch (cleanupError) {
+        // Ignora erros na limpeza
+      }
+    } else {
+      // Para outros tipos de erro, apenas marca como desconectado
+      setIsConnected(false);
+    }
+  };
+
   const connectBluetooth = async (deviceId: string) => {
     try {
       if (isConnected) {
@@ -146,6 +176,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
         },
         (error: any) => {
           console.error("Erro ao receber dados:", error);
+          handleBluetoothDisconnection(error);
         }
       );
 
@@ -154,7 +185,6 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       setIsConnected(true);
     } catch (error) {
       console.error("Erro na conexão Bluetooth:", error);
-      setIsConnected(false);
       throw new Error("Falha ao conectar ao dispositivo Bluetooth");
     }
   };
@@ -216,6 +246,12 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch (error) {
       console.error("Erro ao enviar comando:", error);
+
+      // Verifica se é um erro de desconexão durante o envio
+      if (connectionType === ConnectionType.BLUETOOTH) {
+        handleBluetoothDisconnection(error);
+      }
+
       throw new Error("Falha ao enviar comando ao dispositivo");
     }
   };
@@ -228,6 +264,31 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     };
   }, []);
+
+  // Verificação periódica do status da conexão Bluetooth
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    if (isConnected && connectionType === ConnectionType.BLUETOOTH) {
+      // Verifica o status da conexão a cada 5 segundos
+      intervalId = setInterval(async () => {
+        try {
+          await promisifyBluetoothCall(window.bluetoothSerial.isConnected);
+        } catch (error) {
+          console.log(
+            "Conexão Bluetooth perdida detectada via verificação periódica"
+          );
+          handleBluetoothDisconnection(error);
+        }
+      }, 5000);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [isConnected, connectionType]);
 
   return (
     <ConnectionContext.Provider
