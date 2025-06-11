@@ -49,19 +49,19 @@ export default function RGBInfo() {
         {/* Demonstração visual dos LEDs */}
         <div className="flex flex-row gap-4 mt-6 items-center">
           {/* LED Vermelho */}
-          <LED id="red-led" color={redColor} />
+          <LED id="red-led" color={redColor} size='lg' />
           
           {/* Sinal de + */}
           <span className="text-2xl font-bold text-black self-center">+</span>
           
           {/* LED Verde */}
-          <LED id="green-led" color={greenColor} />
+          <LED id="green-led" color={greenColor} size='lg' />
           
           {/* Sinal de + */}
           <span className="text-2xl font-bold text-black self-center">+</span>
           
           {/* LED Azul */}
-          <LED id="blue-led" color={blueColor} />
+          <LED id="blue-led" color={blueColor} size='lg' />
           
           {/* Sinal de = */}
           <span className="text-2xl font-bold text-black self-center">=</span>
@@ -70,10 +70,11 @@ export default function RGBInfo() {
           <LED 
             id="combined-led" 
             color={combinedColor} 
+            size='lg'
           />
         </div>
 
-        <h3 className="text-ubuntu font-regular text-sm mt-10 mb-10">
+        <h3 className="text-ubuntu font-regular text-sm mt-10 mb-10 text-center">
           Todas as cores podem ser vistas como uma "mistura" de vermelho, verde e azul!
         </h3>
         
