@@ -84,7 +84,7 @@ export default function Buttons() {
           />
           {/* Botões de ação */}
           <div className='flex flex-row justify-center gap-3 mt-3'>
-            <Button onClick={handleSend}>Enviar</Button>
+            <Button variant="secondary" onClick={handleSend}>Enviar</Button>
           </div>
         </div>
       );
@@ -116,8 +116,8 @@ export default function Buttons() {
           
           {/* Botões de ação */}
           <div className='flex flex-row justify-center gap-3 mt-3'>
-            <Button variant="whitePink" onClick={handleClear}>Limpar</Button>
-            <Button onClick={handleSend}>Enviar</Button>
+            <Button variant="whiteSecondary" onClick={handleClear}>Limpar</Button>
+            <Button variant="secondary" onClick={handleSend}>Enviar</Button>
           </div>
         </div>
       );
@@ -148,8 +148,8 @@ export default function Buttons() {
           />
           {/* Botões de ação */}
           <div className='flex flex-row justify-center gap-3 mt-3'>
-            <Button variant="whitePink" onClick={handleClear}>Limpar</Button>
-            <Button onClick={handleSend}>Enviar</Button>
+            <Button variant="whiteSecondary" onClick={handleClear}>Limpar</Button>
+            <Button variant="secondary" onClick={handleSend}>Enviar</Button>
           </div>
         </div>
       );
@@ -158,20 +158,20 @@ export default function Buttons() {
     // Default case - quando nenhuma opção válida é selecionada
     return (
       <div className="mt-6 p-4 text-center">
-        <p className="text-gray-500">Selecione uma opção acima para ver o conteúdo</p>
+        <p className="text-text">Selecione uma opção acima para ver o conteúdo</p>
       </div>
     );
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-background min-h-screen">
       <Header 
         title="Botões" 
         showIdeaButton={true}
         ideaButtonPath="/components/botoes/info" 
       />
       <main className="h-screen flex flex-col items-center gap-2">
-        <h2 className="text-ubuntu text-md mb-5 text-center pr-5">
+        <h2 className="text-ubuntu text-md mb-5 text-center pr-5 text-heading">
           Escolha um  botão e defina o que ele faz quando for pressionado
         </h2>
         <Selecter

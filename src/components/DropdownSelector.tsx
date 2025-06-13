@@ -52,9 +52,9 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
     <div className={`relative ${className || ''}`}>
       <div
         onClick={toggleDropdown}
-        className={`${width} ${height} px-4 py-3 bg-white border border-gray-300 rounded cursor-pointer flex justify-between items-center hover:border-gray-400 transition-colors`}
+        className={`${width} ${height} px-4 py-3 bg-background border border-neutral-palette-30 rounded cursor-pointer flex justify-between items-center hover:border-neutral-palette-20 transition-colors`}
       >
-        <span className={value ? "text-gray-900" : "text-gray-500"}>
+        <span className={value ? "text-text" : "text-neutral-palette-20"}>
           {getDisplayText()}
         </span>
         <svg
@@ -68,12 +68,12 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg z-10">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-neutral-palette-30 rounded shadow-lg z-10">
           {options.map((option) => (
             <div
               key={option.id}
               onClick={() => handleSelect(option.id)}
-              className="px-4 py-3 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors text-gray-700 border-b border-gray-200 last:border-b-0"
+              className="px-4 py-3 hover:bg-primary hover:text-on-primary cursor-pointer transition-colors text-text border-b border-neutral-palette-30 last:border-b-0"
             >
               {option.label}
             </div>

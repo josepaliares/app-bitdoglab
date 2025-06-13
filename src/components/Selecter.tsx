@@ -40,37 +40,25 @@ const Selecter: React.FC<SelecterProps> = ({
             className={`
               p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-md
               ${selectedComponent === component.id
-                ? 'border-blue-500 shadow-md transform scale-105'
-                : 'border-gray-200 bg-white hover:border-gray-300'
+                ? 'border-primary shadow-md transform scale-105 bg-primary-container text-on-primary-container'
+                : 'border-neutral-palette-30 bg-background hover:border-neutral-palette-20 text-text'
               }
             `}
-            style={{
-              borderColor: selectedComponent === component.id ? '#3f84af' : undefined
-            }}
           >
             <div className="flex items-center justify-between">
               <div className={`
                 w-3 h-3 rounded-full border-2 flex items-center justify-center mr-3
                 ${selectedComponent === component.id
-                  ? 'border-blue-500'
-                  : 'border-gray-300'
+                  ? 'border-primary bg-primary'
+                  : 'border-neutral-palette-30 bg-background'
                 }
-              `}
-              style={{
-                borderColor: selectedComponent === component.id ? '#3f84af' : undefined,
-                backgroundColor: selectedComponent === component.id ? '#3f84af' : undefined
-              }}>
+              `}>
                 {selectedComponent === component.id && (
-                  <div className="w-1 h-1 bg-white rounded-full"></div>
+                  <div className="w-1 h-1 bg-on-primary rounded-full"></div>
                 )}
               </div>
               <div className="flex-1">
-                <h3 className={`text-md ${
-                  selectedComponent === component.id ? 'text-gray-800' : 'text-gray-800'
-                }`}
-                style={{
-                  color: selectedComponent === component.id ? '#3f84af' : undefined
-                }}>
+                <h3 className={`text-md font-ubuntu font-medium ${selectedComponent === component.id ? 'text-primary' : 'text-text'}`}>
                   {component.label}
                 </h3>
               </div>

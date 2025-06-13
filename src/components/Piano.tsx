@@ -26,7 +26,7 @@ const Piano: React.FC<PianoProps> = ({ onKeyPress, onKeyRelease }) => {
   return (
     <div className="flex flex-col items-center gap-4 p-6">
       {/* Container do piano */}
-      <div className="relative bg-gradient-to-b from-gray-100 to-gray-200 p-4 rounded-lg shadow-lg">
+      <div className="relative bg-gradient-to-b from-surface to-background p-4 rounded-lg shadow-lg">
         <div className="relative flex">
           {/* Teclas brancas */}
           {whiteNotes.map((note) => (

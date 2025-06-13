@@ -79,11 +79,11 @@ const LED: React.FC<LedProps> = ({
     if (!containerRef.current) return;
     
     if (selected) {
-      containerRef.current.classList.remove("border-gray-300", "border-2");
-      containerRef.current.classList.add("border-pink-500", "border-4", "sm:border-4", "md:border-8");
+      containerRef.current.classList.remove("border-neutral-palette-30", "border-2");
+      containerRef.current.classList.add("border-secondary", "border-4", "sm:border-4", "md:border-8");
     } else {
-      containerRef.current.classList.remove("border-pink-500", "border-4", "sm:border-4", "md:border-8");
-      containerRef.current.classList.add("border-gray-300", "border-2");
+      containerRef.current.classList.remove("border-secondary", "border-4", "sm:border-4", "md:border-8");
+      containerRef.current.classList.add("border-neutral-palette-30", "border-2");
     }
   }, [selected]);
   
@@ -111,8 +111,8 @@ const LED: React.FC<LedProps> = ({
         ${getSizeClasses()}
         flex items-center justify-center 
         led-container cursor-pointer 
-        border border-gray-300 rounded-lg
-        hover:border-pink-400 transition-colors duration-200
+        border border-neutral-palette-30 rounded-lg
+        hover:border-secondary transition-colors duration-200
         touch-manipulation
       `}
       onClick={handleClick}

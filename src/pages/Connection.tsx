@@ -74,17 +74,17 @@ export default function Connection() {
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
       <Header title="" showIdeaButton={false} />
       <div className="h-screen flex flex-col items-center justify-center gap-3.5 p-4">
-        <h1 className="text-ubuntu px-8 font-medium text-lg text-center">
+        <h1 className="text-ubuntu px-8 font-medium text-lg text-center text-heading">
           {isConnected
             ? "Você está conectado à placa"
             : "Antes de começar, primeiro conecte-se com a placa"}
         </h1>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <div className="bg-error/10 border border-error text-error px-4 py-3 rounded">
             {error}
           </div>
         )}
@@ -92,11 +92,11 @@ export default function Connection() {
         {!isConnected && (
           <div className="w-full max-w-md">
             <div className="mb-4">
-              <h2 className="text-ubuntu font-medium mb-2">
+              <h2 className="text-ubuntu font-medium mb-2 text-heading">
                 Escolha o método de conexão:
               </h2>
               <div className="flex gap-4">
-                <label className="flex items-center">
+                <label className="flex items-center text-text">
                   <input
                     type="radio"
                     name="connectionType"
@@ -106,7 +106,7 @@ export default function Connection() {
                   />
                   Conexão via cabo
                 </label>
-                <label className="flex items-center">
+                <label className="flex items-center text-text">
                   <input
                     type="radio"
                     name="connectionType"
@@ -131,25 +131,25 @@ export default function Connection() {
                     {scanning ? "Buscando..." : "Buscar dispositivos"}
                   </Button>
                   {scanning && (
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-text">
                       Isso pode levar alguns segundos...
                     </span>
                   )}
                 </div>
 
-                <div className="mt-2 border rounded-md p-2 max-h-32 overflow-y-auto">
-                  <h3 className="text-sm font-semibold mb-1">
+                <div className="mt-2 border border-neutral-palette-30 rounded-md p-2 max-h-32 overflow-y-auto">
+                  <h3 className="text-sm font-semibold mb-1 text-heading">
                     Dispositivos disponíveis:
                   </h3>
                   {availableDevices.length === 0 ? (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-text">
                       Nenhum dispositivo encontrado
                     </p>
                   ) : (
                     <ul className="space-y-1">
                       {availableDevices.map((device) => (
                         <li key={device.address} className="flex items-center">
-                          <label className="flex items-center text-sm">
+                          <label className="flex items-center text-sm text-text">
                             <input
                               type="radio"
                               name="bluetoothDevice"

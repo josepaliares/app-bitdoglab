@@ -18,7 +18,7 @@ export default function NeopixelInfo(): React.ReactElement {
       text: "Seleciona uma cor"
     },
     {
-      icon: <Button>Enviar</Button>,
+      icon: <Button variant="secondary">Enviar</Button>,
       text: "Clica em \"Enviar\"",
       className: "items-center" // Classe extra para ajustar a posição do texto
     },
@@ -29,7 +29,7 @@ export default function NeopixelInfo(): React.ReactElement {
     {
       icon: (
         <div
-          className="w-12 aspect-square bg-gradient-to-bl from-pink-30 to-blue-30 mask mask-center mask-no-repeat mask-contain"
+          className="w-12 aspect-square bg-gradient-to-bl from-secondary-palette-30 to-primary-palette-30 mask mask-center mask-no-repeat mask-contain"
           style={{
             WebkitMaskImage: `url(${LED})`,
             maskImage: `url(${LED})`,
@@ -46,12 +46,12 @@ export default function NeopixelInfo(): React.ReactElement {
         title=""
         showIdeaButton={false}
       />
-      <div className="h-screen flex flex-col items-center gap-3.5">
-        <h2 className="text-ubuntu font-medium text-lg mb-1">Como Funciona?</h2>
+      <div className="h-screen flex flex-col items-center gap-3.5 bg-background">
+        <h2 className="text-ubuntu font-medium text-lg mb-1 text-heading">Como Funciona?</h2>
         {/* Usando o componente FlowDiagram para renderizar o fluxograma */}
         <FlowDiagram steps={flowSteps} />
         
-        <Button className="mt-2" onClick={() => navigate("/components/ledrgb/rgb-info")}>
+        <Button variant="secondary" className="mt-2" onClick={() => navigate("/components/ledrgb/rgb-info")}> 
           Como funciona o RGB?
         </Button>
       </div>
