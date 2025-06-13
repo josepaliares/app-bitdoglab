@@ -16,7 +16,7 @@ export interface FlowStep {
 interface FlowDiagramProps {
   steps: FlowStep[];
   className?: string;
-  onCardSelected: (index: string) => void;
+  onCardSelected?: (index: string) => void;
   showNumbers?: boolean; // Nova prop para controlar se mostra numeração
 }
 
@@ -31,7 +31,9 @@ const FlowDiagram: React.FC<FlowDiagramProps> = ({
 }) => {
 
   const handleCardClick = (index: string) => {
-    onCardSelected(index);
+    if (onCardSelected) {
+      onCardSelected(index);
+    }
   };
 
   return (
