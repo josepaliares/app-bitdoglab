@@ -9,7 +9,7 @@ interface PianoProps {
 
 const Piano: React.FC<PianoProps> = ({ onKeyPress, onKeyRelease }) => {
   const whiteNotes: Note[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-  const blackNotes: (Note | null)[] = ['C#', 'D#', null, 'F#', 'G#', 'A#', null]; // null onde não há tecla preta
+  const blackNotes: (Note | null)[] = ['C#', 'D#', null, 'F#', 'G#', 'A#', null];
 
   const handleKeyPress = (note: Note) => {
     if (onKeyPress) {
@@ -24,10 +24,9 @@ const Piano: React.FC<PianoProps> = ({ onKeyPress, onKeyRelease }) => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 p-6">
-      {/* Container do piano */}
-      <div className="relative bg-gradient-to-b from-gray-100 to-gray-200 p-4 rounded-lg shadow-lg">
-        <div className="relative flex">
+    <div className="w-full flex flex-col items-center gap-4 p-4">
+      <div className="relative bg-gradient-to-b from-gray-100 to-gray-200 p-4 rounded-lg shadow-lg max-w-full overflow-x-auto">
+        <div className="relative flex min-w-fit">
           {/* Teclas brancas */}
           {whiteNotes.map((note) => (
             <PianoKey
@@ -41,10 +40,8 @@ const Piano: React.FC<PianoProps> = ({ onKeyPress, onKeyRelease }) => {
 
           {/* Teclas pretas - posicionadas absolutamente */}
           {blackNotes.map((note, index) => {
-            if (!note) return null; // Remove espaços vazios
-            
-            // Posicionamento correto das teclas pretas
-            const leftPosition = (index * 48) + 34; // 48px largura + offset para centralizar
+            if (!note) return null;
+            const leftPosition = (index * 48) + 34;
             
             return (
               <PianoKey

@@ -1,5 +1,6 @@
 import { interpreterNeopixel } from "./interpreters/neoPixel"
 import { interpreterLedRGB } from "./interpreters/ledRGB"
+import { interpreterBuzzer } from "./interpreters/buzzer";
 export { toMicropython }
 
 function parse(json: string): [string, unknown] {
@@ -15,6 +16,8 @@ function micropython(app: string, instructions: unknown): string[] {
 			return interpreterNeopixel(instructions as { pos: string, cor: string }[]);
 		case 'ledRGB':
 			return interpreterLedRGB(instructions as string);
+		case 'buzzer':
+			return interpreterBuzzer(instructions as { isPressed: boolean, frequency?: number, duration?: number });
 		default: // isso será retirado após todos os apps serem feitos
 			return ["em contrução..."]
 	}
