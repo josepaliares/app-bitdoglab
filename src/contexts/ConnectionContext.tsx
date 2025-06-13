@@ -93,6 +93,9 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           while (true) {
             const { value, done } = await portReader.read();
             if (done) break;
+            if (false) {
+              console.log("Recebido da Serial:", decoder.decode(value));
+            }
             // Dados recebidos podem ser processados aqui se necessário
           }
         } catch (error) {
