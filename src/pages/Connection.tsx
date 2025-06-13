@@ -1,10 +1,54 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { useNavigate } from "react-router-dom";
 import { useConnection } from "../contexts/ConnectionContext";
 
 type ConnectionType = "cable" | "bluetooth";
+
+interface ConnectionState {
+  loading: boolean;
+  error: string | null;
+  selectedConnectionType: ConnectionType;
+  scanning: boolean;
+  selectedDevice: string | null;
+}
+
+const INITIAL_STATE: ConnectionState = {
+  loading: false,
+  error: null,
+  selectedConnectionType: "cable",
+  scanning: false,
+  selectedDevice: null,
+};
+
+const MESSAGES = {
+  connected: "Você está conectado à placa",
+  disconnected: "Antes de começar, primeiro conecte-se com a placa",
+  selectDevice: "Selecione um dispositivo Bluetooth",
+  scanningHint: "Isso pode levar alguns segundos...",
+  noDevices: "Nenhum dispositivo encontrado",
+  availableDevices: "Dispositivos disponíveis:",
+  connectionMethod: "Escolha o método de conexão:",
+  continue: "Continuar para Componentes",
+  errors: {
+    scanFailed: "Falha ao buscar dispositivos Bluetooth",
+    disconnectFailed: "Falha ao desconectar",
+    connectFailed: "Falha ao conectar",
+  },
+  buttons: {
+    processing: "Processando...",
+    disconnect: "Desconectar",
+    scanning: "Buscando...",
+    scan: "Buscar dispositivos",
+    connectCable: "Conectar via cabo",
+    connectBluetooth: "Conectar via Bluetooth",
+  },
+  connectionTypes: {
+    cable: "Conexão via cabo",
+    bluetooth: "Conexão Bluetooth",
+  },
+} as const;
 
 export default function Connection() {
   const navigate = useNavigate();
@@ -17,98 +61,108 @@ export default function Connection() {
     availableDevices,
   } = useConnection();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedConnectionType, setSelectedConnectionType] = useState<ConnectionType>("cable");
-  const [scanning, setScanning] = useState(false);
-  const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
+  const [state, setState] = useState<ConnectionState>(INITIAL_STATE);
 
-  const clearError = () => setError(null);
+  const updateState = useCallback((updates: Partial<ConnectionState>) => {
+    setState(prev => ({ ...prev, ...updates }));
+  }, []);
 
-  const handleScan = async () => {
+  const clearError = useCallback(() => {
+    updateState({ error: null });
+  }, [updateState]);
+
+  const handleScan = useCallback(async () => {
     try {
-      setScanning(true);
-      clearError();
+      updateState({ scanning: true, error: null });
       await scanBluetoothDevices();
     } catch (err: any) {
-      setError(err.message || "Falha ao buscar dispositivos Bluetooth");
+      updateState({ error: err.message || MESSAGES.errors.scanFailed });
     } finally {
-      setScanning(false);
+      updateState({ scanning: false });
     }
-  };
+  }, [scanBluetoothDevices, updateState]);
 
-  const handleDisconnect = async () => {
+  const handleDisconnect = useCallback(async () => {
     try {
-      setLoading(true);
+      updateState({ loading: true });
       await disconnect();
       clearError();
     } catch (err: any) {
-      setError(err.message || "Falha ao desconectar");
+      updateState({ error: err.message || MESSAGES.errors.disconnectFailed });
     } finally {
-      setLoading(false);
+      updateState({ loading: false });
     }
-  };
+  }, [disconnect, clearError, updateState]);
 
-  const handleConnect = async () => {
+  const handleConnect = useCallback(async () => {
     try {
-      setLoading(true);
-      clearError();
+      updateState({ loading: true, error: null });
 
-      if (selectedConnectionType === "cable") {
+      if (state.selectedConnectionType === "cable") {
         await connectCable();
       } else {
-        if (!selectedDevice) {
-          setError("Selecione um dispositivo Bluetooth");
+        if (!state.selectedDevice) {
+          updateState({ error: MESSAGES.selectDevice, loading: false });
           return;
         }
-        await connectBluetooth(selectedDevice);
+        await connectBluetooth(state.selectedDevice);
       }
 
       navigate("/components");
     } catch (err: any) {
-      setError(err.message || "Falha ao conectar");
+      updateState({ error: err.message || MESSAGES.errors.connectFailed });
     } finally {
-      setLoading(false);
+      updateState({ loading: false });
     }
-  };
+  }, [state.selectedConnectionType, state.selectedDevice, connectCable, connectBluetooth, navigate, updateState]);
 
-  const handleConnection = () => {
+  const handleConnection = useCallback(() => {
     return isConnected ? handleDisconnect() : handleConnect();
-  };
+  }, [isConnected, handleDisconnect, handleConnect]);
 
-  const isConnectDisabled = () => {
-    return loading || (selectedConnectionType === "bluetooth" && !selectedDevice && !isConnected);
-  };
+  const handleConnectionTypeChange = useCallback((type: ConnectionType) => {
+    updateState({ selectedConnectionType: type, selectedDevice: null });
+  }, [updateState]);
 
-  const getConnectButtonText = () => {
-    if (loading) return "Processando...";
-    if (isConnected) return "Desconectar";
-    return `Conectar via ${selectedConnectionType === "cable" ? "cabo" : "Bluetooth"}`;
-  };
+  const handleDeviceSelect = useCallback((deviceAddress: string) => {
+    updateState({ selectedDevice: deviceAddress });
+  }, [updateState]);
+
+  const isConnectDisabled = useCallback(() => {
+    return state.loading || (state.selectedConnectionType === "bluetooth" && !state.selectedDevice && !isConnected);
+  }, [state.loading, state.selectedConnectionType, state.selectedDevice, isConnected]);
+
+  const getConnectButtonText = useCallback(() => {
+    if (state.loading) return MESSAGES.buttons.processing;
+    if (isConnected) return MESSAGES.buttons.disconnect;
+    return state.selectedConnectionType === "cable" 
+      ? MESSAGES.buttons.connectCable 
+      : MESSAGES.buttons.connectBluetooth;
+  }, [state.loading, state.selectedConnectionType, isConnected]);
 
   const renderConnectionTypeSelector = () => (
     <div className="mb-4">
-      <h2 className="text-ubuntu font-medium mb-2">Escolha o método de conexão:</h2>
+      <h2 className="text-ubuntu font-medium mb-2">{MESSAGES.connectionMethod}</h2>
       <div className="flex gap-4">
         <label className="flex items-center">
           <input
             type="radio"
             name="connectionType"
-            checked={selectedConnectionType === "cable"}
-            onChange={() => setSelectedConnectionType("cable")}
+            checked={state.selectedConnectionType === "cable"}
+            onChange={() => handleConnectionTypeChange("cable")}
             className="mr-2"
           />
-          Conexão via cabo
+          {MESSAGES.connectionTypes.cable}
         </label>
         <label className="flex items-center">
           <input
             type="radio"
             name="connectionType"
-            checked={selectedConnectionType === "bluetooth"}
-            onChange={() => setSelectedConnectionType("bluetooth")}
+            checked={state.selectedConnectionType === "bluetooth"}
+            onChange={() => handleConnectionTypeChange("bluetooth")}
             className="mr-2"
           />
-          Conexão Bluetooth
+          {MESSAGES.connectionTypes.bluetooth}
         </label>
       </div>
     </div>
@@ -116,9 +170,9 @@ export default function Connection() {
 
   const renderBluetoothDeviceList = () => (
     <div className="mt-2 border rounded-md p-2 max-h-32 overflow-y-auto">
-      <h3 className="text-sm font-semibold mb-1">Dispositivos disponíveis:</h3>
+      <h3 className="text-sm font-semibold mb-1">{MESSAGES.availableDevices}</h3>
       {availableDevices.length === 0 ? (
-        <p className="text-sm text-gray-500">Nenhum dispositivo encontrado</p>
+        <p className="text-sm text-gray-500">{MESSAGES.noDevices}</p>
       ) : (
         <ul className="space-y-1">
           {availableDevices.map((device) => (
@@ -128,8 +182,8 @@ export default function Connection() {
                   type="radio"
                   name="bluetoothDevice"
                   value={device.address}
-                  checked={selectedDevice === device.address}
-                  onChange={() => setSelectedDevice(device.address)}
+                  checked={state.selectedDevice === device.address}
+                  onChange={() => handleDeviceSelect(device.address)}
                   className="mr-2"
                 />
                 {device.name || device.id}
@@ -146,15 +200,15 @@ export default function Connection() {
       <div className="flex items-center gap-2 mb-2">
         <Button
           onClick={handleScan}
-          disabled={scanning}
+          disabled={state.scanning}
           variant="outline"
           className="text-sm"
         >
-          {scanning ? "Buscando..." : "Buscar dispositivos"}
+          {state.scanning ? MESSAGES.buttons.scanning : MESSAGES.buttons.scan}
         </Button>
-        {scanning && (
+        {state.scanning && (
           <span className="text-sm text-gray-500">
-            Isso pode levar alguns segundos...
+            {MESSAGES.scanningHint}
           </span>
         )}
       </div>
@@ -162,22 +216,22 @@ export default function Connection() {
     </div>
   );
 
-  const renderErrorMessage = () => error && (
+  const renderErrorMessage = () => state.error && (
     <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-      {error}
+      {state.error}
     </div>
   );
 
   const renderConnectionForm = () => !isConnected && (
     <div className="w-full max-w-md">
       {renderConnectionTypeSelector()}
-      {selectedConnectionType === "bluetooth" && renderBluetoothSection()}
+      {state.selectedConnectionType === "bluetooth" && renderBluetoothSection()}
     </div>
   );
 
   const renderContinueButton = () => isConnected && (
     <Button onClick={() => navigate("/components")} className="mt-2">
-      Continuar para Componentes
+      {MESSAGES.continue}
     </Button>
   );
 
@@ -186,9 +240,7 @@ export default function Connection() {
       <Header title="" showIdeaButton={false} />
       <div className="h-screen flex flex-col items-center justify-center gap-3.5 p-4">
         <h1 className="text-ubuntu px-8 font-medium text-lg text-center">
-          {isConnected
-            ? "Você está conectado à placa"
-            : "Antes de começar, primeiro conecte-se com a placa"}
+          {isConnected ? MESSAGES.connected : MESSAGES.disconnected}
         </h1>
 
         {renderErrorMessage()}
