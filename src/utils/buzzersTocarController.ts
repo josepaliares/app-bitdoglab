@@ -18,8 +18,9 @@ export class BuzzersTocarController {
 			"\x03\r\n",
 			"from machine import Pin, PWM",
 			"import time",
-			"buzzer = PWM(Pin(8))",  // Using GPIO8 for Buzzer
-			"print('Buzzer inicializado')",
+			"buzzer = PWM(Pin(21))",
+			"buzzerAux = PWM(Pin(8))",
+			"print('Buzzers inicializado')",
 		];
 
 		for (const cmd of setupCommands) {
