@@ -24,180 +24,122 @@ interface ConnectionContextType {
   scanBluetoothDevices: () => Promise<void>;
 }
 
-// Constantes para valores mágicos
 const BAUD_RATE = 9600;
 const COMMAND_TERMINATOR = "\r\n";
 const BLUETOOTH_DELIMITER = "\n";
 const CONNECTION_CHECK_INTERVAL = 5000;
+const BLUETOOTH_ERRORS = ["bt socket closed", "read return: -1", "IOException", "disconnected", "Connection lost", "Device not connected"];
 
-const ConnectionContext = createContext<ConnectionContextType | undefined>(
-  undefined
-);
+const ConnectionContext = createContext<ConnectionContextType | undefined>(undefined);
 
-export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [connectionType, setConnectionType] = useState<ConnectionType>(
-    ConnectionType.NONE
-  );
+  const [connectionType, setConnectionType] = useState<ConnectionType>(ConnectionType.NONE);
   const [serialPort, setSerialPort] = useState<any>(null);
   const [reader, setReader] = useState<any>(null);
-  const [availableDevices, setAvailableDevices] = useState<BluetoothDevice[]>(
-    []
-  );
+  const [availableDevices, setAvailableDevices] = useState<BluetoothDevice[]>([]);
 
-  // Função auxiliar para promisificar callbacks do bluetoothSerial
-  const promisifyBluetoothCall = useCallback(<T,>(
-    fn: (...args: any[]) => void,
-    ...args: any[]
-  ): Promise<T> => {
-    return new Promise((resolve, reject) => {
-      fn(...args, resolve, reject);
-    });
-  }, []);
+  const promisifyBluetooth = useCallback(<T,>(fn: (...args: any[]) => void, ...args: any[]): Promise<T> => 
+    new Promise((resolve, reject) => fn(...args, resolve, reject)), []);
 
-  // Função para verificar se o Bluetooth está ativo
-  const ensureBluetoothEnabled = useCallback(async () => {
-    try {
-      await promisifyBluetoothCall(window.bluetoothSerial.isEnabled);
-    } catch (error) {
-      try {
-        await promisifyBluetoothCall(window.bluetoothSerial.enable);
-      } catch (error) {
-        throw new Error("Por favor, ative o Bluetooth do dispositivo");
-      }
-    }
-  }, [promisifyBluetoothCall]);
-
-  // Função centralizada para tratar perda de conexão
-  const handleConnectionLoss = useCallback(() => {
+  const resetConnection = useCallback(() => {
     setIsConnected(false);
     setConnectionType(ConnectionType.NONE);
   }, []);
 
-  // Função para verificar se é erro de desconexão Bluetooth
-  const isBluetoothDisconnectionError = useCallback((error: any): boolean => {
-    const errorString = error?.toString?.() || JSON.stringify(error) || "";
-    return [
-      "bt socket closed",
-      "read return: -1", 
-      "IOException",
-      "disconnected",
-      "Connection lost",
-      "Device not connected"
-    ].some(keyword => errorString.includes(keyword));
+  const isBluetoothError = useCallback((error: any): boolean => {
+    const errorStr = error?.toString?.() || JSON.stringify(error) || "";
+    return BLUETOOTH_ERRORS.some(keyword => errorStr.includes(keyword));
   }, []);
 
-  // Cable connection functions
-  const connectCable = useCallback(async () => {
+  const ensureBluetoothEnabled = useCallback(async () => {
     try {
-      if (!navigator.serial) {
-        throw new Error("Web Serial API não é suportada neste navegador");
-      }
+      await promisifyBluetooth(window.bluetoothSerial.isEnabled);
+    } catch {
+      await promisifyBluetooth(window.bluetoothSerial.enable).catch(() => {
+        throw new Error("Por favor, ative o Bluetooth do dispositivo");
+      });
+    }
+  }, [promisifyBluetooth]);
 
+  const handleBluetoothError = useCallback((error: any) => {
+    console.error("Erro Bluetooth:", error);
+    if (isBluetoothError(error)) {
+      resetConnection();
+      try { window.bluetoothSerial.unsubscribe().catch(() => {}); } catch {}
+    } else {
+      resetConnection();
+    }
+  }, [isBluetoothError, resetConnection]);
+
+  const connectCable = useCallback(async () => {
+    if (!navigator.serial) throw new Error("Web Serial API não é suportada neste navegador");
+    
+    try {
       const port = await navigator.serial.requestPort();
       await port.open({ baudRate: BAUD_RATE });
-
+      
       setSerialPort(port);
       setConnectionType(ConnectionType.CABLE);
       setIsConnected(true);
-
-      readFromSerial(port);
+      
+      // Leitura assíncrona
+      const portReader = port.readable.getReader();
+      setReader(portReader);
+      const decoder = new TextDecoder();
+      
+      (async () => {
+        try {
+          while (true) {
+            const { value, done } = await portReader.read();
+            if (done) break;
+            // Dados recebidos podem ser processados aqui se necessário
+          }
+        } catch (error) {
+          resetConnection();
+          console.error("Erro na leitura Serial:", error);
+        } finally {
+          portReader.releaseLock();
+        }
+      })();
     } catch (error) {
       console.error("Erro na conexão Serial:", error);
-      handleConnectionLoss();
+      resetConnection();
       throw error;
     }
-  }, [handleConnectionLoss]);
-
-  const readFromSerial = useCallback(async (port: any) => {
-    if (!port) return;
-
-    const reader = port.readable.getReader();
-    setReader(reader);
-    const decoder = new TextDecoder();
-
-    try {
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        console.log("Recebido da Serial:", decoder.decode(value));
-      }
-    } catch (error) {
-      handleConnectionLoss();
-      console.error("Erro na leitura Serial:", error);
-    } finally {
-      reader.releaseLock();
-    }
-  }, [handleConnectionLoss]);
+  }, [resetConnection]);
 
   const scanBluetoothDevices = useCallback(async () => {
     try {
       await ensureBluetoothEnabled();
-
-      const devices = await promisifyBluetoothCall<BluetoothDevice[]>(
-        window.bluetoothSerial.list
-      );
-
-      console.log("Dispositivos encontrados:", devices);
+      const devices = await promisifyBluetooth<BluetoothDevice[]>(window.bluetoothSerial.list);
       setAvailableDevices(devices);
     } catch (error) {
       console.error("Erro na busca Bluetooth:", error);
       throw new Error("Falha ao buscar dispositivos Bluetooth");
     }
-  }, [ensureBluetoothEnabled, promisifyBluetoothCall]);
-
-  // Função para tratar desconexões inesperadas do Bluetooth
-  const handleBluetoothDisconnection = useCallback((error: any) => {
-    console.error("Tratando desconexão Bluetooth:", error);
-
-    if (isBluetoothDisconnectionError(error)) {
-      console.log("Desconexão detectada, atualizando estado...");
-      handleConnectionLoss();
-
-      // Tenta limpar a subscrição silenciosamente
-      try {
-        window.bluetoothSerial.unsubscribe().catch(() => {});
-      } catch (cleanupError) {
-        // Ignora erros na limpeza
-      }
-    } else {
-      handleConnectionLoss();
-    }
-  }, [isBluetoothDisconnectionError, handleConnectionLoss]);
+  }, [ensureBluetoothEnabled, promisifyBluetooth]);
 
   const connectBluetooth = useCallback(async (deviceId: string) => {
     try {
-      if (isConnected) {
-        await disconnect();
-      }
-
+      if (isConnected) await disconnect();
       await ensureBluetoothEnabled();
-
-      console.log("Conectando ao dispositivo:", deviceId);
-      await promisifyBluetoothCall(window.bluetoothSerial.connect, deviceId);
-
-      // Configurar recebimento de dados
+      
+      await promisifyBluetooth(window.bluetoothSerial.connect, deviceId);
+      
       window.bluetoothSerial.subscribe(
         BLUETOOTH_DELIMITER,
-        (data: string) => {
-          console.log("Recebido do Bluetooth:", data);
-        },
-        (error: any) => {
-          console.error("Erro ao receber dados:", error);
-          handleBluetoothDisconnection(error);
-        }
+        (data: string) => console.log("Recebido do Bluetooth:", data),
+        handleBluetoothError
       );
-
-      console.log("Conexão estabelecida!");
+      
       setConnectionType(ConnectionType.BLUETOOTH);
       setIsConnected(true);
     } catch (error) {
       console.error("Erro na conexão Bluetooth:", error);
       throw new Error("Falha ao conectar ao dispositivo Bluetooth");
     }
-  }, [isConnected, ensureBluetoothEnabled, promisifyBluetoothCall, handleBluetoothDisconnection]);
+  }, [isConnected, ensureBluetoothEnabled, promisifyBluetooth, handleBluetoothError]);
 
   const disconnect = useCallback(async () => {
     try {
@@ -206,106 +148,67 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
           await reader.cancel();
           reader.releaseLock();
         }
-
-        if (serialPort) {
-          await serialPort.close();
-        }
-
+        if (serialPort) await serialPort.close();
         setSerialPort(null);
         setReader(null);
       } else if (connectionType === ConnectionType.BLUETOOTH) {
-        try {
-          await promisifyBluetoothCall(window.bluetoothSerial.unsubscribe);
-        } catch (error) {
-          console.warn("Erro ao cancelar subscrição:", error);
-        }
-
-        await promisifyBluetoothCall(window.bluetoothSerial.disconnect);
+        try { await promisifyBluetooth(window.bluetoothSerial.unsubscribe); } catch {}
+        await promisifyBluetooth(window.bluetoothSerial.disconnect);
       }
-
-      handleConnectionLoss();
+      resetConnection();
     } catch (error) {
       console.error("Erro ao desconectar:", error);
       throw new Error("Falha ao desconectar do dispositivo");
     }
-  }, [connectionType, reader, serialPort, promisifyBluetoothCall, handleConnectionLoss]);
+  }, [connectionType, reader, serialPort, promisifyBluetooth, resetConnection]);
 
   const sendCommand = useCallback(async (command: string) => {
-    if (!isConnected) {
-      throw new Error("Não conectado a nenhum dispositivo");
-    }
-
-    const commandWithTerminator = command + COMMAND_TERMINATOR;
-
+    if (!isConnected) throw new Error("Não conectado a nenhum dispositivo");
+    
+    const fullCommand = command + COMMAND_TERMINATOR;
+    
     try {
       if (connectionType === ConnectionType.CABLE) {
         const writer = serialPort.writable.getWriter();
-        const encoder = new TextEncoder();
-
         try {
-          await writer.write(encoder.encode(commandWithTerminator));
+          await writer.write(new TextEncoder().encode(fullCommand));
         } finally {
           writer.releaseLock();
         }
       } else if (connectionType === ConnectionType.BLUETOOTH) {
-        await promisifyBluetoothCall(
-          window.bluetoothSerial.write,
-          commandWithTerminator
-        );
+        await promisifyBluetooth(window.bluetoothSerial.write, fullCommand);
       }
     } catch (error) {
       console.error("Erro ao enviar comando:", error);
-
-      // Verifica se é um erro de desconexão durante o envio
-      if (connectionType === ConnectionType.BLUETOOTH) {
-        handleBluetoothDisconnection(error);
-      }
-
+      if (connectionType === ConnectionType.BLUETOOTH) handleBluetoothError(error);
       throw new Error("Falha ao enviar comando ao dispositivo");
     }
-  }, [isConnected, connectionType, serialPort, promisifyBluetoothCall, handleBluetoothDisconnection]);
+  }, [isConnected, connectionType, serialPort, promisifyBluetooth, handleBluetoothError]);
 
-  // Cleanup on unmount
+  // Cleanup e verificação periódica
   useEffect(() => {
-    return () => {
-      if (isConnected) {
-        disconnect().catch(console.error);
-      }
-    };
+    return () => { if (isConnected) disconnect().catch(console.error); };
   }, [isConnected, disconnect]);
 
-  // Verificação periódica do status da conexão Bluetooth
   useEffect(() => {
-    if (!isConnected || connectionType !== ConnectionType.BLUETOOTH) {
-      return;
-    }
-
-    const intervalId = setInterval(async () => {
+    if (!isConnected || connectionType !== ConnectionType.BLUETOOTH) return;
+    
+    const interval = setInterval(async () => {
       try {
-        await promisifyBluetoothCall(window.bluetoothSerial.isConnected);
+        await promisifyBluetooth(window.bluetoothSerial.isConnected);
       } catch (error) {
-        console.log("Conexão Bluetooth perdida detectada via verificação periódica");
-        handleBluetoothDisconnection(error);
+        handleBluetoothError(error);
       }
     }, CONNECTION_CHECK_INTERVAL);
-
-    return () => clearInterval(intervalId);
-  }, [isConnected, connectionType, promisifyBluetoothCall, handleBluetoothDisconnection]);
+    
+    return () => clearInterval(interval);
+  }, [isConnected, connectionType, promisifyBluetooth, handleBluetoothError]);
 
   return (
-    <ConnectionContext.Provider
-      value={{
-        isConnected,
-        connectionType,
-        serialPort,
-        availableDevices,
-        connectCable,
-        connectBluetooth,
-        disconnect,
-        sendCommand,
-        scanBluetoothDevices,
-      }}
-    >
+    <ConnectionContext.Provider value={{
+      isConnected, connectionType, serialPort, availableDevices,
+      connectCable, connectBluetooth, disconnect, sendCommand, scanBluetoothDevices,
+    }}>
       {children}
     </ConnectionContext.Provider>
   );
@@ -313,8 +216,6 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({
 
 export const useConnection = () => {
   const context = useContext(ConnectionContext);
-  if (context === undefined) {
-    throw new Error("useConnection must be used within a ConnectionProvider");
-  }
+  if (!context) throw new Error("useConnection must be used within a ConnectionProvider");
   return context;
 };
