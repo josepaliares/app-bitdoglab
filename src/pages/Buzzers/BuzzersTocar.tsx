@@ -16,7 +16,7 @@ export default function BuzzersTocar() {
         ideaButtonPath="/components/buzzers/info"
       />
       <div className="h-screen flex flex-col items-center gap-3.5">
-        <h3>Escolha uma nota e seu tom</h3>
+        <h3>Escolha uma nota e a sua oita</h3>
         <Slider
           variant="pianoTones"
           value={octave}
