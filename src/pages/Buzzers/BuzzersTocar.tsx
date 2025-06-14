@@ -17,7 +17,7 @@ export default function BuzzersTocar() {
       />
       <div className="flex-1 flex flex-col items-center justify-between overflow-y-auto pb-4">
         <div className="flex flex-col items-center gap-3.5 w-full">
-          <h5 className="text-sm font-regular text-ubuntu">Escolha uma nota e seu tom</h5>
+          <h5 className="text-sm font-regular text-ubuntu">Escolha uma nota e a sua oita</h5>
           <Slider
             variant="pianoTones"
             value={octave}
