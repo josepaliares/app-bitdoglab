@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ReactNode } from 'react';
 import FlowCard from './FlowCard';
 
@@ -17,6 +16,7 @@ export interface FlowStep {
 interface FlowDiagramProps {
   steps: FlowStep[];
   className?: string;
+  onCardSelected?: (index: string) => void;
   showNumbers?: boolean; // Nova prop para controlar se mostra numeração
 }
 
@@ -26,18 +26,28 @@ interface FlowDiagramProps {
 const FlowDiagram: React.FC<FlowDiagramProps> = ({ 
   steps, 
   className = "",
-  showNumbers = true 
+  onCardSelected,
+  showNumbers = true,
 }) => {
+
+  const handleCardClick = (index: string) => {
+    if (onCardSelected) {
+      onCardSelected(index);
+    }
+  };
+
   return (
     <div className={`flex flex-col items-center ${className}`}>
       {steps.map((step, index) => (
         <FlowCard 
           key={index}
+          id={index.toString()}
           icon={step.icon}
           text={step.text}
           className={step.className}
           stepNumber={showNumbers ? index + 1 : undefined}
           showArrow={index < steps.length - 1} // Mostra seta para todos exceto o último
+          onClick={handleCardClick}
         />
       ))}
     </div>

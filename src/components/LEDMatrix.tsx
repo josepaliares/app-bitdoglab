@@ -46,6 +46,14 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
     return "gap-2 sm:gap-4 md:gap-6";
   };
 
+   // Função para obter o gap CSS baseado na lógica do getGapClass
+  const getGapValue = () => {
+    if (compact) return "10px";
+    if (ledsPerRow > 10) return "10px";
+    if (ledsPerRow > 5) return "10px";
+    return "10px";
+  };
+
   // Determinar tamanho dos LEDs baseado na quantidade
   const getLEDSize = (): 'sm' | 'md' | 'lg' | 'responsive' => {
     if (ledsPerRow > 15 || ledsPerCol > 15) return 'sm';
@@ -100,11 +108,14 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
           <div 
             className={`grid ${getGapClass()} mt-2 sm:mt-4 place-items-center`}
             style={{
-              gridTemplateColumns: `auto repeat(${ledsPerRow}, 50px)`,
+              gridTemplateColumns: `auto repeat(${ledsPerRow}, 53px)`,
+              gap: getGapValue(),
+              width: '100%',
+              maxWidth: 'fit-content'
             }}
           >
             {/* Empty space for row labels column */}
-            <div className="w-8 sm:w-10 md:w-12" />
+            <div className="w-1 sm:w-2 md:w-4" />
             
             {/* Column numbers */}
             {colIndices.map(colIndex => (
@@ -112,7 +123,7 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
                 key={`col-${colIndex}`} 
                 className={`
                   ${compact ? 'text-xs sm:text-sm' : 'text-sm sm:text-base md:text-lg'}
-                  font-medium text-center
+                  text-ubuntu font-medium text-center w-full
                 `}
               >
                 {colIndex}
