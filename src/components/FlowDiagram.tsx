@@ -37,7 +37,7 @@ const FlowDiagram: React.FC<FlowDiagramProps> = ({
   };
 
   return (
-    <div className={`flex flex-col items-center ${className}`}>
+    <div className={`flex flex-col items-center mx-2 ${className}`}>
       {steps.map((step, index) => (
         <FlowCard 
           key={index}

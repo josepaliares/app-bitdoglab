@@ -14,15 +14,15 @@ import NotFound from "./pages/NotFound";
 
 // Componentes
 
-import Botoes from "./pages/Buttons/Buttons";
-import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
+//import Botoes from "./pages/Buttons/Buttons";
+//import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
 import Buzzers from "./pages/Buzzers/Buzzers";
-import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
+//import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
 import BuzzersInfo from "./pages/Buzzers/BuzzersFluxograma";
-import Microfone from "./pages/Microphone/Microphone";
-import Display from "./pages/Display/Display";
-import Joystick from "./pages/Joystick/Joystick";
+//import Microfone from "./pages/Microphone/Microphone";
+//import Display from "./pages/Display/Display";
+//import Joystick from "./pages/Joystick/Joystick";
 
 import Neopixel from "./pages/Neopixel/Neopixel";
 import NeopixelInfo from "./pages/Neopixel/NeopixelFluxograma";
@@ -32,9 +32,8 @@ import NeopixelInfo3 from "./pages/Neopixel/NeopixelInfo3";
 import NeopixelInfo4 from "./pages/Neopixel/NeopixelInfo4";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
-import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
-
-// import EmConstrucao from "./pages/EmConstrucao";
+import LedRGBInfo from "./pages/LedRGB/LedRGBFluxograma";
+import EmConstrucao from "./pages/EmConstrucao";
 
 export function App() {
   useEffect(() => {
@@ -56,20 +55,25 @@ export function App() {
             <Route index element={<Components />} />
 
             <Route path="botoes">
-              <Route index element={<Botoes />} />
-              <Route path="info" element={<BotoesInfo />} />
+              <Route index element={<EmConstrucao />} />
+              {/*<Route index element={<Botoes />} />*/}
+              {/*<Route path="info" element={<BotoesInfo />} />*/}
             </Route>
             
             <Route path="buzzers">
               <Route index element={<Buzzers />} />
-              <Route path="gravar" element={<BuzzersGravar />} />
+              <Route path="gravar" element={<EmConstrucao />} />
+              {/*<Route path="gravar" element={<BuzzersGravar />} />*/}
               <Route path="tocar" element={<BuzzersTocar />} />
               <Route path="info" element={<BuzzersInfo />} />
             </Route>
             
-            <Route path="microfone" element={<Microfone />} />
-            <Route path="display" element={<Display />} />
-            <Route path="joystick" element={<Joystick />} />
+            {/*<Route path="microfone" element={<Microfone />} />*/}
+            <Route path="microfone" element={<EmConstrucao />} />
+            {/*<Route path="display" element={<Display />} />*/}
+            <Route path="display" element={<EmConstrucao />} />
+            {/*<Route path="joystick" element={<Joystick />} />*/}
+            <Route path="joystick" element={<EmConstrucao />} />
 
 
             <Route path="neopixel">

@@ -20,7 +20,7 @@ export default function NeopixelInfo2(): React.ReactElement {
             <p>comando = pintar_LED(x,y,cor)</p>
             <p>enviar_para_placa(comando)</p>
         </div>
-        <p className="text-ubuntu font-small text-lg mb-1 text-start">Assim, o LED recebe o comando e acende!</p>
+        <p className="text-ubuntu font-small text-lg mb-1 mx-2 text-start">Assim, o LED recebe o comando e acende!</p>
       </div>
     </>
   );
