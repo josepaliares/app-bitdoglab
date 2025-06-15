@@ -14,15 +14,15 @@ import NotFound from "./pages/NotFound";
 
 // Componentes
 
-//import Botoes from "./pages/Buttons/Buttons";
-//import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
+import Botoes from "./pages/Buttons/Buttons";
+import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
 import Buzzers from "./pages/Buzzers/Buzzers";
-//import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
+import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
 import BuzzersInfo from "./pages/Buzzers/BuzzersFluxograma";
-//import Microfone from "./pages/Microphone/Microphone";
-//import Display from "./pages/Display/Display";
-//import Joystick from "./pages/Joystick/Joystick";
+import Microfone from "./pages/Microphone/Microphone";
+import Display from "./pages/Display/Display";
+import Joystick from "./pages/Joystick/Joystick";
 
 import Neopixel from "./pages/Neopixel/Neopixel";
 import NeopixelInfo from "./pages/Neopixel/NeopixelFluxograma";
@@ -33,7 +33,10 @@ import NeopixelInfo4 from "./pages/Neopixel/NeopixelInfo4";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBFluxograma";
-import EmConstrucao from "./pages/EmConstrucao";
+import LedRGBInfo1 from "./pages/LedRGB/LedRGBInfo1";
+import LedRGBInfo2 from "./pages/LedRGB/LedRGBInfo2";
+import LedRGBInfo4 from "./pages/LedRGB/LedRGBInfo4";
+//import EmConstrucao from "./pages/EmConstrucao";
 
 export function App() {
   useEffect(() => {
@@ -55,25 +58,20 @@ export function App() {
             <Route index element={<Components />} />
 
             <Route path="botoes">
-              <Route index element={<EmConstrucao />} />
-              {/*<Route index element={<Botoes />} />*/}
-              {/*<Route path="info" element={<BotoesInfo />} />*/}
+              <Route index element={<Botoes />} />
+              <Route path="info" element={<BotoesInfo />} />
             </Route>
             
             <Route path="buzzers">
               <Route index element={<Buzzers />} />
-              <Route path="gravar" element={<EmConstrucao />} />
-              {/*<Route path="gravar" element={<BuzzersGravar />} />*/}
+              <Route path="gravar" element={<BuzzersGravar />} />
               <Route path="tocar" element={<BuzzersTocar />} />
               <Route path="info" element={<BuzzersInfo />} />
             </Route>
             
-            {/*<Route path="microfone" element={<Microfone />} />*/}
-            <Route path="microfone" element={<EmConstrucao />} />
-            {/*<Route path="display" element={<Display />} />*/}
-            <Route path="display" element={<EmConstrucao />} />
-            {/*<Route path="joystick" element={<Joystick />} />*/}
-            <Route path="joystick" element={<EmConstrucao />} />
+            <Route path="microfone" element={<Microfone />} />
+            <Route path="display" element={<Display />} />
+            <Route path="joystick" element={<Joystick />} />
 
 
             <Route path="neopixel">
@@ -89,6 +87,10 @@ export function App() {
             <Route path="ledrgb">
               <Route index element={<LedRGB />} />
               <Route path="info" element={<LedRGBInfo />} />
+              <Route path="info1" element={<LedRGBInfo1 />} />
+              <Route path="info2" element={<LedRGBInfo2 />} />
+              <Route path="info3" element={<NeopixelInfo3 />} />
+              <Route path="info4" element={<LedRGBInfo4 />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
           </Route>
