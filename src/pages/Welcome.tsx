@@ -22,7 +22,7 @@ Agradecemos sua compreensão!`,
   }, []);
 
   return (
-    <div className="bg-gradient-to-bl from-pink-30 to-blue-30 h-screen flex flex-col items-center justify-center gap-6 px-4">
+    <div className="bg-gradient-pink-blue h-screen flex flex-col items-center justify-center gap-6 px-4">
       <h2 className="text-ubuntu font-bold text-lg px-4 py-2 text-center text-white">
         Olá! Seja bem vindo ao
       </h2>

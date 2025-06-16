@@ -19,7 +19,8 @@ export default {
 			backgroundImage: {
 				'gradient-blue': 'linear-gradient(to right, #000000,rgb(0, 0, 255))',
 				'gradient-green': 'linear-gradient(to right, #000000,rgb(0, 255, 0))',
-				'gradient-red': 'linear-gradient(to right, #000000,rgb(255, 0, 0))'
+				'gradient-red': 'linear-gradient(to right, #000000,rgb(255, 0, 0))',
+				'gradient-pink-blue': 'linear-gradient(to bottom left, #e31a8b, #3f84af)',
 			},
 			fontFamily: {
 				ubuntu: ['Ubuntu', 'sans-serif'],
