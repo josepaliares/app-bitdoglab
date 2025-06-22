@@ -28,6 +28,7 @@ export class NeopixelController {
 
   async sendLEDConfigurations(data: NeopixelData[]) {
     const json = JSON.stringify({ neopixel: data }, null, 3);
+    console.log(json);
 
     try {
       // Initial setup

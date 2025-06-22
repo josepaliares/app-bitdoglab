@@ -20,6 +20,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [isPressed, setIsPressed] = useState(false);
   const pressStart = useRef<number | null>(null);
+  const isProcessing = useRef(false);
 
   // Configurações baseadas na variante
   const keyConfig = {
@@ -59,6 +60,10 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         // Adicionar estilos CSS para transições e hover
         svg.style.transition = 'all 0.075s ease';
         svg.style.cursor = 'pointer';
+        
+        svg.style.userSelect = 'none';
+        svg.style.webkitUserSelect = 'none';
+        svg.style.touchAction = 'manipulation'; // Previne zoom no duplo toque
         
         // Aplicar classes do Tailwind baseadas na variante
         if (isBlack) {
@@ -103,11 +108,16 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
   }, [isPressed, config.activeColor, config.defaultColor, isBlack]);
 
-  const handleMouseDown = () => {
-    if (isPressed) return; // Evita múltiplos eventos
+  const handlePressStart = (event: React.MouseEvent | React.TouchEvent) => {
+    event.preventDefault(); // Previne comportamentos padrão
     
+    if (isProcessing.current || isPressed) return; // Evita múltiplos eventos
+    
+    isProcessing.current = true;
     setIsPressed(true);
     pressStart.current = Date.now();
+    
+    console.log(`🎹 Tecla ${id} pressionada`); // Debug
     
     // Chama o callback de pressionar
     if (onPress) {
@@ -115,12 +125,19 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
   };
 
-  const handleMouseUp = () => {
-    if (!isPressed) return; // Só executa se a tecla estava pressionada
+  const handlePressEnd = (event?: React.MouseEvent | React.TouchEvent) => {
+    if (event) {
+      event.preventDefault();
+    }
+    
+    if (!isPressed || !isProcessing.current) return; // Só executa se a tecla estava pressionada
     
     setIsPressed(false);
     const duration = pressStart.current ? Date.now() - pressStart.current : 0;
     pressStart.current = null;
+    isProcessing.current = false;
+    
+    console.log(`🎹 Tecla ${id} solta após ${duration}ms`); // Debug
     
     // Chama o callback de soltar com a duração
     if (onRelease && duration > 0) {
@@ -128,29 +145,55 @@ const PianoKey: React.FC<PianoKeyProps> = ({
     }
   };
 
-  const handleMouseLeave = () => {
-    if (isPressed) {
-      // Só processa se realmente estava pressionado
-      setIsPressed(false);
-      const duration = pressStart.current ? Date.now() - pressStart.current : 0;
-      pressStart.current = null;
-      
-      // Chama o callback de soltar com a duração
-      if (onRelease && duration > 0) {
-        onRelease(duration);
-      }
-    }
+  // EVENTOS MOUSE (Desktop)
+  const handleMouseDown = (event: React.MouseEvent) => {
+    handlePressStart(event);
+  };
+
+  const handleMouseUp = (event: React.MouseEvent) => {
+    handlePressEnd(event);
+  };
+
+  const handleMouseLeave = (event: React.MouseEvent) => {
+    handlePressEnd(event);
+  };
+
+  // EVENTOS TOUCH (Mobile)
+  const handleTouchStart = (event: React.TouchEvent) => {
+    handlePressStart(event);
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent) => {
+    handlePressEnd(event);
+  };
+
+  const handleTouchCancel = (event: React.TouchEvent) => {
+    // Touch cancelado (ex: deslizar para fora)
+    handlePressEnd(event);
   };
 
   return (
     <div
       className="cursor-pointer select-none relative transition-all duration-75"
+      data-key-id={id}
+      data-variant={variant}
+      style={{
+        ...style,
+        touchAction: 'manipulation', 
+        userSelect: 'none',          
+        WebkitUserSelect: 'none', 
+        WebkitTouchCallout: 'none'   
+      }}
+
+      // Eventos Desktop
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
-      data-key-id={id}
-      data-variant={variant}
-      style={style}
+      
+      // Eventos Mobile
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
     >
       <div ref={containerRef} />
 
