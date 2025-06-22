@@ -17,8 +17,6 @@ import NotFound from "./pages/NotFound";
 import Botoes from "./pages/Buttons/Buttons";
 import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
 import Buzzers from "./pages/Buzzers/Buzzers";
-import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
-import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
 import BuzzersInfo from "./pages/Buzzers/BuzzersFluxograma";
 import Microfone from "./pages/Microphone/Microphone";
 import Display from "./pages/Display/Display";
@@ -64,8 +62,6 @@ export function App() {
             
             <Route path="buzzers">
               <Route index element={<Buzzers />} />
-              <Route path="gravar" element={<BuzzersGravar />} />
-              <Route path="tocar" element={<BuzzersTocar />} />
               <Route path="info" element={<BuzzersInfo />} />
             </Route>
             
