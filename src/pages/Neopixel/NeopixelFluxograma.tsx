@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
-import bluetooth from "@/assets/imgs/bluetooth.png";
+import cabobluetooth from "@/assets/imgs/CaboEBlutooth.png";
 import touch from "@/assets/imgs/touch.png";
 import LED from "../../../public/assets/LED.svg";
 import FlowDiagram from '@/components/FlowDiagram';
@@ -23,8 +23,8 @@ export default function NeopixelInfo(): React.ReactElement {
       className: "items-center" // Classe extra para ajustar a posição do texto
     },
     {
-      icon: <img src={bluetooth} alt="imagem bluetooth"/>,
-      text: "Placa recebe via Bluetooth"
+      icon: <img src={cabobluetooth} alt="imagem cabobluetooth"/>,
+      text: "Placa recebe via cabo ou Bluetooth"
     },
     {
       icon: (

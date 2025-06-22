@@ -25,7 +25,7 @@ export default function BuzzersTocar() {
             showValue={false}
           />
         </div>
-        <div className="w-full flex-shrink-0 mb-2">
+        <div className="w-full flex-shrink-0 mb-2 ">
           <Piano 
             onKeyPress={handleNotePress} 
             onKeyRelease={handleNoteRelease}

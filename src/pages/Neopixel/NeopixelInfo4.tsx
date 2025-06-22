@@ -17,7 +17,7 @@ export default function NeopixelInfo4(): React.ReactElement {
         <div className="flex items-center gap-2 mx-2">
            <img 
               src={Leds} 
-              alt="imagem conexao"
+              alt="imagem Leds"
               className="block mx-auto "
             /> 
             <p className="text-ubuntu text-text font-medium text-md mb-1">O comando enviado contém as coordenadas (x, y) do LED e os valores de cor (R, G, B).</p>
@@ -25,7 +25,7 @@ export default function NeopixelInfo4(): React.ReactElement {
         <div className="flex items-center gap-1 mx-2">
            <img 
               src={binaryCode} 
-              alt="imagem conexao"
+              alt="imagem binaryCode"
               className="block mx-auto "
             /> 
             <p className="text-ubuntu text-text font-medium text-md mb-1">Esse comando é transformado em linguagem de máquina, que é um código binário que o hardware da placa entende.</p>
@@ -33,7 +33,7 @@ export default function NeopixelInfo4(): React.ReactElement {
         <div className="flex items-center gap-2 mx-2">
            <img 
               src={Plaquinha} 
-              alt="imagem conexao"
+              alt="imagem Plaquinha"
               className="block mx-auto "
             /> 
             <p className="text-ubuntu text-text font-medium text-md mb-1">A placa interpreta essa linguagem para saber qual LED deve acender e qual cor ele deve mostrar.</p>
@@ -41,7 +41,7 @@ export default function NeopixelInfo4(): React.ReactElement {
         <div className="flex items-center gap-2 mx-2">
            <img 
               src={CorExemplo} 
-              alt="imagem conexao"
+              alt="imagem CorExemplo"
               className="block mx-auto "
             /> 
             <p className="text-ubuntu text-text font-medium text-md mb-1">Por exemplo, o comando com cor (227, 26, 139) vira uma sequência de bits que programa o LED para essa cor.</p>
@@ -49,7 +49,7 @@ export default function NeopixelInfo4(): React.ReactElement {
         <div className="flex items-center gap-2 mx-2">
            <img 
               src={Led} 
-              alt="imagem conexao"
+              alt="imagem Led"
               className="block mx-auto "
             /> 
             <p className="text-ubuntu text-text font-medium text-md mb-1">Assim, o LED recebe e executa o comando, acendendo na cor desejada.</p>
