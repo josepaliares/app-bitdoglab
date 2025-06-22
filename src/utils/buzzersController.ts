@@ -6,7 +6,7 @@ export interface BuzzersData {
 	duration?: number;
 }
 
-export class BuzzersTocarController {
+export class BuzzersController {
 	private sendCommand: (command: string) => Promise<void>;
 	private isSetupDone: boolean = false;
 

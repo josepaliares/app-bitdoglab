@@ -1,28 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import { ScreenOrientation } from "@capacitor/screen-orientation";
-import { BuzzersTocarController } from "../utils/buzzersTocarController";
+import { BuzzersController } from "../utils/buzzersController";
 import type { Note } from "../types/notes";
 import { noteToFrequency } from "../types/notes";
 
 /**
  * Custom hook to manage Piano Buzzer state and control
  * @param sendCommand - Function to send commands to the device
- * @returns All necessary state and handlers for the BuzzersTocar component
+ * @returns All necessary state and handlers for the Buzzers component
  */
-export const useBuzzersTocar = (
+export const useBuzzers = (
 	sendCommand: (command: string) => Promise<void>
 ) => {
-	const buzzersTocarController = useRef<BuzzersTocarController | null>(null);
+	const buzzersController = useRef<BuzzersController | null>(null);
 	const hasInitialized = useRef(false);
 	const [octave, setOctave] = useState(4);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const startTimeRef = useRef<number | null>(null);
 
-	// Initialize the BuzzersTocarController once
+	// Initialize the BuzzersController once
 	useEffect(() => {
 		if (hasInitialized.current) return;
 		hasInitialized.current = true;
-		buzzersTocarController.current = new BuzzersTocarController(sendCommand);
+		buzzersController.current = new BuzzersController(sendCommand);
 	}, [sendCommand]);
 
 	// Lock the screen orientation to landscape when the component mounts
@@ -45,7 +45,7 @@ export const useBuzzersTocar = (
 		setIsPlaying(true);
 
 		try {
-			await buzzersTocarController.current?.startBuzzer(frequency);
+			await buzzersController.current?.startBuzzer(frequency);
 		} catch (error) {
 			console.error("Erro ao iniciar nota:", error);
 			setIsPlaying(false);
@@ -64,7 +64,7 @@ export const useBuzzersTocar = (
 		startTimeRef.current = null;
 
 		try {
-			await buzzersTocarController.current?.stopBuzzer(duration);
+			await buzzersController.current?.stopBuzzer(duration);
 		} catch (error) {
 			console.error("Erro ao parar nota:", error);
 		}

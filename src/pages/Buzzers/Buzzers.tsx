@@ -1,19 +1,37 @@
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { useConnection } from "@/contexts/ConnectionContext";
 import { Header } from "@/components/Header";
+import Slider from "@/components/Slider";
+import { useBuzzers } from "@/hooks/useBuzzers";
+import Piano from "@/components/Piano";
 
 export default function Buzzers() {
-  const navigate = useNavigate();
+  const { sendCommand } = useConnection();
+  const { octave, setOctave, handleNotePress, handleNoteRelease } = useBuzzers(sendCommand);
 
   return (
-    <div className="flex flex-col bg-background min-h-screen">
-      <Header title="Buzzers" showIdeaButton={false} />
-      <main className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-          <Button variant="secondary" onClick={() => navigate("/components/buzzers/tocar")}>Tocar em tempo real</Button>
-          <Button variant="secondary" onClick={() => navigate("/components/buzzers/gravar")}>Gravar uma musica</Button>
+    <div className="flex flex-col h-screen">
+      <Header
+        title="Toque uma música"
+        showIdeaButton={true}
+        ideaButtonPath="/components/buzzers/info"
+      />
+      <div className="flex-1 flex flex-col items-center justify-between overflow-y-auto pb-4 bg-background">
+        <div className="flex flex-col items-center gap-3.5 w-full">
+          <h3 className="text-ubuntu text-text font-medium text-lg mb-1">Escolha uma nota e seu tom</h3>
+          <Slider
+            variant="pianoTones"
+            value={octave}
+            onChange={setOctave}
+            showValue={false}
+          />
         </div>
-      </main>
+        <div className="w-full flex-shrink-0 mb-2 ">
+          <Piano 
+            onKeyPress={handleNotePress} 
+            onKeyRelease={handleNoteRelease}
+          />
+        </div>
+      </div>
     </div>
   );
 }
