@@ -32,9 +32,11 @@ import NeopixelInfo3 from "./pages/Neopixel/NeopixelInfo3";
 import NeopixelInfo4 from "./pages/Neopixel/NeopixelInfo4";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
 import LedRGB from "./pages/LedRGB/LedRGB";
-import LedRGBInfo from "./pages/LedRGB/LedRGBInfo";
-
-// import EmConstrucao from "./pages/EmConstrucao";
+import LedRGBInfo from "./pages/LedRGB/LedRGBFluxograma";
+import LedRGBInfo1 from "./pages/LedRGB/LedRGBInfo1";
+import LedRGBInfo2 from "./pages/LedRGB/LedRGBInfo2";
+import LedRGBInfo4 from "./pages/LedRGB/LedRGBInfo4";
+//import EmConstrucao from "./pages/EmConstrucao";
 
 export function App() {
   useEffect(() => {
@@ -85,6 +87,10 @@ export function App() {
             <Route path="ledrgb">
               <Route index element={<LedRGB />} />
               <Route path="info" element={<LedRGBInfo />} />
+              <Route path="info1" element={<LedRGBInfo1 />} />
+              <Route path="info2" element={<LedRGBInfo2 />} />
+              <Route path="info3" element={<NeopixelInfo3 />} />
+              <Route path="info4" element={<LedRGBInfo4 />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
           </Route>

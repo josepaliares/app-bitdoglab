@@ -2,7 +2,7 @@ import type { FlowStep } from "@/components/FlowDiagram";
 import FlowDiagram from "@/components/FlowDiagram";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import bluetooth from "@/assets/imgs/bluetooth.png";
+import cabobluetooth from "@/assets/imgs/CaboEBlutooth.png";
 import touch from "@/assets/imgs/touch.png";
 import idea from "@/assets/imgs/lampada.png";
 import button3d from "@/assets/imgs/Button3D.png";
@@ -30,8 +30,8 @@ export default function ButtonsInfo() {
       className: "items-center" // Classe extra para ajustar a posição do texto
     },
     {
-      icon: <img src={bluetooth} alt="imagem bluetooth"/>,
-      text: "Placa recebe via Bluetooth"
+      icon: <img src={cabobluetooth} alt="imagem cabobluetooth"/>,
+      text: "Placa recebe via cabo ou Bluetooth"
     },
     {
       icon: <img src={idea} alt="imagem idea"/>,

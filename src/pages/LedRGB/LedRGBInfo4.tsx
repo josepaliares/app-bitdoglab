@@ -2,10 +2,9 @@ import { Header } from "@/components/Header";
 import binaryCode from "@/assets/imgs/binaryCode.png";
 import CorExemplo from "@/assets/imgs/CorExemplo.png";
 import Led from "@/assets/imgs/Led.png";
-import Leds from "@/assets/imgs/Leds.png";
 import Plaquinha from "@/assets/imgs/Plaquinha.png";
 
-export default function NeopixelInfo4(): React.ReactElement {
+export default function LedRGBInfo4(): React.ReactElement {
   return(
     <>
       <Header
@@ -16,11 +15,11 @@ export default function NeopixelInfo4(): React.ReactElement {
         <h2 className="text-ubuntu tx-bl font-medium text-lg mb-1">Como os LEDs mudam de cor?</h2>
         <div className="flex itens-center gap-2 mx-2">
            <img 
-              src={Leds} 
-              alt="imagem Leds"
+              src={Led} 
+              alt="imagem Led"
               className="block mx-auto "
             /> 
-            <p className="text-ubuntu font-medium text-md mb-1">O comando enviado contém as coordenadas (x, y) do LED e os valores de cor (R, G, B).</p>
+            <p className="text-ubuntu font-medium text-md mb-1">O comando enviado contém os valores das cores (R, G, B) que você escolheu para o LED RGB</p>
         </div>
         <div className="flex itens-center gap-1 mx-2">
            <img 
@@ -36,7 +35,7 @@ export default function NeopixelInfo4(): React.ReactElement {
               alt="imagem Plaquinha"
               className="block mx-auto "
             /> 
-            <p className="text-ubuntu font-medium text-md mb-1">A placa interpreta essa linguagem para saber qual LED deve acender e qual cor ele deve mostrar.</p>
+            <p className="text-ubuntu font-medium text-md mb-1">A placa interpreta essa linguagem para ascender o LED RGB e qual cor ele deve mostrar.</p>
         </div>
         <div className="flex itens-center gap-2 mx-2">
            <img 
