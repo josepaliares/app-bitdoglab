@@ -2,11 +2,11 @@ import React from "react";
 import { Header } from "@/components/Header";
 import FlowDiagram from "@/components/FlowDiagram";
 import type { FlowStep } from "@/components/FlowDiagram";
-import pressedPiaonKey from "@/assets/imgs/pressedpianokey.jpeg";
+import pressedPiaonKey from "@/assets/imgs/pressedpianokey.png";
 import music from "@/assets/imgs/music.png";
 import touch from "@/assets/imgs/touch.png";
 import SemSom from "@/assets/imgs/SemSom.png";
-import Piano from "@/assets/imgs/Piano.png";
+import unpressedPiaonKey from "@/assets/imgs/unpressedpianokey.png";
 
 export default function NeopixelInfo(): React.ReactElement {
   // Definindo os passos do fluxograma com tipagem
@@ -24,7 +24,7 @@ export default function NeopixelInfo(): React.ReactElement {
       text: "Placa começa a tocar a nota",
     },
     {
-      icon: <img src={Piano} alt="imagem Piano"/>,
+      icon: <img src={unpressedPiaonKey} className="w-16"/>,
       text: "Solta a tecla do piano",
     },
     {
