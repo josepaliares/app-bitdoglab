@@ -203,8 +203,8 @@ const PianoKey: React.FC<PianoKeyProps> = ({
           // Label branca para teclas pretas
           <span className="text-white drop-shadow-sm">{id}</span>
         ) : (
-          // Label cinza para teclas brancas
-          <span className="text-gray-600">{id}</span>
+          // Label para teclas brancas
+          <span className="text-text">{id}</span>
         )}
       </div>
     </div>

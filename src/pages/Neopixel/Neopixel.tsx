@@ -30,14 +30,14 @@ export default function Neopixel() {
   } = useNeopixel(sendCommand, totalLEDs);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-background min-h-screen">
       <Header
         title="Neopixel"
         showIdeaButton={true}
         ideaButtonPath="/components/neopixel/info"
       />
-      <main className="h-screen flex flex-col items-center">
-        <h2 className="text-ubuntu flex mb-5 text-center">
+      <main className="flex flex-col items-center">
+        <h2 className="text-ubuntu mb-5 text-center text-heading">
           Selecione um dos 25 LEDS e regule a cor conforme desejar
         </h2>
 
@@ -60,10 +60,10 @@ export default function Neopixel() {
         />
 
         <div className="flex flex-row justify-center gap-3 mt-4">
-          <Button variant="whitePink" onClick={handleClear}>
+          <Button variant="whiteSecondary" onClick={handleClear}>
             Limpar
           </Button>
-          <Button onClick={handleSend}>Enviar</Button>
+          <Button variant="secondary" onClick={handleSend}>Enviar</Button>
         </div>
       </main>
     </div>

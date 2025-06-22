@@ -15,9 +15,9 @@ export default function BuzzersGravar() {
         showIdeaButton={true}
         ideaButtonPath="/components/buzzers/info"
       />
-      <div className="flex-1 flex flex-col items-center justify-between overflow-y-auto pb-4">
+      <div className="flex-1 flex flex-col items-center justify-between overflow-y-auto pb-4 bg-background">
         <div className="flex flex-col items-center gap-3.5 w-full">
-          <h5 className="text-sm font-regular text-ubuntu">Escolha uma nota e seu tom</h5>
+          <h3 className="text-ubuntu text-text font-medium text-lg mb-1">Escolha uma nota e seu tom</h3>
           <Slider
             variant="pianoTones"
             value={octave}
