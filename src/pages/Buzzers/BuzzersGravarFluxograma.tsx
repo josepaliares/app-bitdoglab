@@ -5,31 +5,31 @@ import type { FlowStep } from "@/components/FlowDiagram";
 import pressedPiaonKey from "@/assets/imgs/pressedpianokey.png";
 import music from "@/assets/imgs/music.png";
 import touch from "@/assets/imgs/touch.png";
-import SemSom from "@/assets/imgs/SemSom.png";
-import unpressedPiaonKey from "@/assets/imgs/unpressedpianokey.png";
+import stop from "@/assets/imgs/stop_recording.png";
+import disk from "@/assets/imgs/Floppy-disk.png";
 
-export default function NeopixelInfo(): React.ReactElement {
+export default function BuzzersGravarFluxograma(): React.ReactElement {
   // Definindo os passos do fluxograma com tipagem
   const flowSteps: FlowStep[] = [
     {
       icon: <img src={touch} alt="imagem touch"/>,
-      text: "Usuário escolhe uma oitava",
+      text: "Clica em gravar uma musica",
     },
     {
       icon: <img src={pressedPiaonKey} className="w-16"/>,
-      text: "Pressiona uma tecla do piano",
+      text: "Pressiona as teclas do piano",
+    },
+    {
+      icon: <img src={disk} className="w-16"/>,
+      text: "Placa salva a sequencia musical",
+    },
+    {
+      icon: <img src={stop} className="w-16"/>,
+      text: "Finaliza a gravação",
     },
     {
       icon: <img src={music} className="w-16"/>,
-      text: "Placa começa a tocar a nota",
-    },
-    {
-      icon: <img src={unpressedPiaonKey} className="w-16"/>,
-      text: "Solta a tecla do piano",
-    },
-    {
-      icon: <img src={SemSom} className="w-16"/>,
-      text: "Placa para de tocar a nota",
+      text: "Reproduz a sequência gravada",
     },
   ];
 

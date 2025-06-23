@@ -8,8 +8,8 @@ export default function Buzzers() {
   return (
     <div className="flex flex-col">
       <Header title="Buzzers" showIdeaButton={false} />
-      <main className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <div className="h-screen flex flex-col items-center justify-center gap-3.5">
+      <main className="h-screen flex flex-col items-center gap-3.5 mt-20">
+        <div className="h-screen flex flex-col items-center gap-3.5">
           <Button onClick={() => navigate("/components/buzzers/tocar")}>
             Tocar em tempo real
           </Button>

@@ -16,10 +16,15 @@ import NotFound from "./pages/NotFound";
 
 import Botoes from "./pages/Buttons/Buttons";
 import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
+
 import Buzzers from "./pages/Buzzers/Buzzers";
 import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
+import BuzzersInfoGravar from "./pages/Buzzers/BuzzersGravarFluxograma";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
-import BuzzersInfo from "./pages/Buzzers/BuzzersFluxograma";
+import BuzzersInfoTocar from "./pages/Buzzers/BuzzersTocarFluxograma";
+import BuzzersTocarInfo1 from "./pages/Buzzers/BuzzersTocarInfo1";
+import BuzzersTocarInfo2 from "./pages/Buzzers/BuzzersTocarInfo2";
+
 import Microfone from "./pages/Microphone/Microphone";
 import Display from "./pages/Display/Display";
 import Joystick from "./pages/Joystick/Joystick";
@@ -31,6 +36,7 @@ import NeopixelInfo2 from "./pages/Neopixel/NeopixelInfo2";
 import NeopixelInfo3 from "./pages/Neopixel/NeopixelInfo3";
 import NeopixelInfo4 from "./pages/Neopixel/NeopixelInfo4";
 import RGBInfo from "./pages/Neopixel/RGBInfo";
+
 import LedRGB from "./pages/LedRGB/LedRGB";
 import LedRGBInfo from "./pages/LedRGB/LedRGBFluxograma";
 import LedRGBInfo1 from "./pages/LedRGB/LedRGBInfo1";
@@ -64,9 +70,16 @@ export function App() {
             
             <Route path="buzzers">
               <Route index element={<Buzzers />} />
-              <Route path="gravar" element={<BuzzersGravar />} />
-              <Route path="tocar" element={<BuzzersTocar />} />
-              <Route path="info" element={<BuzzersInfo />} />
+              <Route path="gravar">
+                <Route index element={<BuzzersGravar />}/>
+                <Route path="info" element={<BuzzersInfoGravar />} />
+              </Route>
+              <Route path="tocar">
+                <Route index element={<BuzzersTocar />}/>
+                <Route path="info" element={<BuzzersInfoTocar />} />
+                <Route path="info1" element={<BuzzersTocarInfo1 />} />
+                <Route path="info2" element={<BuzzersTocarInfo2 />} />
+              </Route>
             </Route>
             
             <Route path="microfone" element={<Microfone />} />

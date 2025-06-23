@@ -8,7 +8,7 @@ import LED from "../../../public/assets/LED.svg";
 import FlowDiagram from '@/components/FlowDiagram';
 import type { FlowStep } from "@/components/FlowDiagram";
 
-export default function NeopixelInfo(): React.ReactElement {
+export default function NeopixelFluxograma(): React.ReactElement {
   const navigate = useNavigate();
 
   // Definindo os passos do fluxograma com tipagem

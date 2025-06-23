@@ -8,7 +8,7 @@ import idea from "@/assets/imgs/lampada.png";
 import button3d from "@/assets/imgs/Button3D.png";
 import down from "@/assets/imgs/Down.png";
 
-export default function ButtonsInfo() {
+export default function ButtonsFluxograma() {
 
   // Definindo os passos do fluxograma com tipagem
   const flowSteps: FlowStep[] = [

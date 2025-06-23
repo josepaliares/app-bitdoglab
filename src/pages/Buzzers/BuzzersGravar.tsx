@@ -13,7 +13,7 @@ export default function BuzzersGravar() {
       <Header
         title="Toque uma música"
         showIdeaButton={true}
-        ideaButtonPath="/components/buzzers/info"
+        ideaButtonPath="/components/buzzers/gravar/info"
       />
       <div className="flex-1 flex flex-col items-center justify-between overflow-y-auto pb-4">
         <div className="flex flex-col items-center gap-3.5 w-full">
