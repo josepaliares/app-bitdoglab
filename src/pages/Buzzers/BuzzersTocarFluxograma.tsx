@@ -43,6 +43,15 @@ export default function BuzzersTocarFluxograma(): React.ReactElement {
     if (cardId == '1'){
       navigate("/components/buzzers/tocar/info2");
     }
+    if (cardId == '2'){
+      navigate("/components/buzzers/tocar/info3");
+    }
+    if (cardId == '3'){
+      navigate("/components/buzzers/tocar/info4");
+    }
+    if (cardId == '4'){
+      navigate("/components/buzzers/tocar/info5");
+    }
   }
 
   return (
