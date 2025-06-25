@@ -41,9 +41,9 @@ export default function Buzzers() {
         showIdeaButton={true}
         ideaButtonPath="/components/buzzers/info"
       />
-      <div className="flex-1 flex flex-col items-center justify-between overflow-y-auto pb-4 bg-background relative">
+      <div className="flex-1 flex flex-col items-center overflow-y-auto pb-4 bg-background relative">
         <div className="flex flex-col items-center gap-3.5 w-full">
-          <h3 className="text-ubuntu text-text font-medium text-lg mb-1">Escolha uma nota e seu tom</h3>
+          <h3 className="text-ubuntu text-text font-medium text-lg mb-1">Escolha uma nota e sua oitava</h3>
           <Slider
             variant="pianoTones"
             value={octave}
