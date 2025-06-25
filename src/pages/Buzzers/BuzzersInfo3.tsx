@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import cel_placa_musica from "@/assets/imgs/cel_placa_musica.png";
 
-export default function BuzzersTocarInfo3(): React.ReactElement {
+export default function BuzzersInfo3(): React.ReactElement {
   return(
     <>
       <Header

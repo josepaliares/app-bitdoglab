@@ -17,13 +17,14 @@ import NotFound from "./pages/NotFound";
 import Botoes from "./pages/Buttons/Buttons";
 import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
 
-import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
+import Buzzers from "./pages/Buzzers/Buzzers";
 import BuzzersInfo from "./pages/Buzzers/BuzzersFluxograma";
-import BuzzersTocarInfo1 from "./pages/Buzzers/BuzzersTocarInfo1";
-import BuzzersTocarInfo2 from "./pages/Buzzers/BuzzersTocarInfo2";
-import BuzzersTocarInfo3 from "./pages/Buzzers/BuzzersTocarInfo3";
-import BuzzersTocarInfo4 from "./pages/Buzzers/BuzzersTocarInfo4";
-import BuzzersTocarInfo5 from "./pages/Buzzers/BuzzersTocarInfo5";
+import BuzzersInfo1 from "./pages/Buzzers/BuzzersInfo1";
+import BuzzersInfo2 from "./pages/Buzzers/BuzzersInfo2";
+import BuzzersInfo3 from "./pages/Buzzers/BuzzersInfo3";
+import BuzzersInfo4 from "./pages/Buzzers/BuzzersInfo4";
+import BuzzersInfo5 from "./pages/Buzzers/BuzzersInfo5";
+
 import Microfone from "./pages/Microphone/Microphone";
 import Display from "./pages/Display/Display";
 import Joystick from "./pages/Joystick/Joystick";
@@ -67,15 +68,14 @@ export function App() {
               <Route path="info" element={<BotoesInfo />} />
             </Route>
 
-              <Route path="tocar">
-                <Route index element={<BuzzersTocar />}/>
-                <Route path="info" element={<BuzzersInfo />} />
-                <Route path="info1" element={<BuzzersTocarInfo1 />} />
-                <Route path="info2" element={<BuzzersTocarInfo2 />} />
-                <Route path="info3" element={<BuzzersTocarInfo3 />} />
-                <Route path="info4" element={<BuzzersTocarInfo4 />} />
-                <Route path="info5" element={<BuzzersTocarInfo5 />} />
-              </Route>
+            <Route path="buzzers">
+              <Route index element={<Buzzers />} />
+              <Route path="info" element={<BuzzersInfo />} />
+              <Route path="info1" element={<BuzzersInfo1 />} />
+              <Route path="info2" element={<BuzzersInfo2 />} />
+              <Route path="info3" element={<BuzzersInfo3 />} />
+              <Route path="info4" element={<BuzzersInfo4 />} />
+              <Route path="info5" element={<BuzzersInfo5 />} />
             </Route>
             
             <Route path="microfone" element={<Microfone />} />

@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 
-export default function BuzzersTocarInfo4(): React.ReactElement {
+export default function BuzzersInfo4(): React.ReactElement {
   return(
     <>
       <Header
