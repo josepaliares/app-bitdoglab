@@ -60,12 +60,15 @@ export default function BuzzersTocarFluxograma(): React.ReactElement {
       text: "Fazer upload de arquivo no aplicativo",
     },
     {
-      icon: <img src={stop} className="w-16"/>,
-      text: "Placa toca musica gravada",
+      icon: <img src={music} className="w-16"/>,
+      text: "Placa reproduz a sequência gravada",
     },
   ];
 
   const handleCardSelection = (cardId: string) => {
+    if (cardId == '0'){
+      navigate("/components/buzzers/info0");
+    }
     if (cardId == '1'){
       navigate("/components/buzzers/info1");
     }
@@ -81,11 +84,17 @@ export default function BuzzersTocarFluxograma(): React.ReactElement {
     if (cardId == '5'){
       navigate("/components/buzzers/info5");
     }
+    if (cardId == '6'){
+      navigate("/components/buzzers/info6");
+    }
   }
 
   const handleCardSelection2 = (cardId: string) => {
     if (cardId == '0'){
-
+      navigate("/components/buzzers/info7");
+    }
+    if (cardId == '1'){
+      navigate("/components/buzzers/info8");
     }
   }
 
