@@ -17,17 +17,13 @@ import NotFound from "./pages/NotFound";
 import Botoes from "./pages/Buttons/Buttons";
 import BotoesInfo from "./pages/Buttons/ButtonsFluxograma";
 
-import Buzzers from "./pages/Buzzers/Buzzers";
-import BuzzersGravar from "./pages/Buzzers/BuzzersGravar";
-import BuzzersInfoGravar from "./pages/Buzzers/BuzzersGravarFluxograma";
 import BuzzersTocar from "./pages/Buzzers/BuzzersTocar";
-import BuzzersInfoTocar from "./pages/Buzzers/BuzzersTocarFluxograma";
+import BuzzersInfo from "./pages/Buzzers/BuzzersFluxograma";
 import BuzzersTocarInfo1 from "./pages/Buzzers/BuzzersTocarInfo1";
 import BuzzersTocarInfo2 from "./pages/Buzzers/BuzzersTocarInfo2";
 import BuzzersTocarInfo3 from "./pages/Buzzers/BuzzersTocarInfo3";
 import BuzzersTocarInfo4 from "./pages/Buzzers/BuzzersTocarInfo4";
 import BuzzersTocarInfo5 from "./pages/Buzzers/BuzzersTocarInfo5";
-
 import Microfone from "./pages/Microphone/Microphone";
 import Display from "./pages/Display/Display";
 import Joystick from "./pages/Joystick/Joystick";
@@ -70,18 +66,10 @@ export function App() {
               <Route index element={<Botoes />} />
               <Route path="info" element={<BotoesInfo />} />
             </Route>
-            
-            <Route path="buzzers">
-              <Route index element={<Buzzers />} />
-
-              <Route path="gravar">
-                <Route index element={<BuzzersGravar />}/>
-                <Route path="info" element={<BuzzersInfoGravar />} />
-              </Route>
 
               <Route path="tocar">
                 <Route index element={<BuzzersTocar />}/>
-                <Route path="info" element={<BuzzersInfoTocar />} />
+                <Route path="info" element={<BuzzersInfo />} />
                 <Route path="info1" element={<BuzzersTocarInfo1 />} />
                 <Route path="info2" element={<BuzzersTocarInfo2 />} />
                 <Route path="info3" element={<BuzzersTocarInfo3 />} />

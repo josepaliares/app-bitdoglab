@@ -25,7 +25,7 @@ export default function ButtonsFluxograma() {
       text: "Seleciona a ação do botão"
     },
     {
-      icon: <Button>Enviar</Button>,
+      icon: <Button variant="secondary">Enviar</Button>,
       text: "Clica em \"Enviar\"",
       className: "items-center" // Classe extra para ajustar a posição do texto
     },
@@ -40,7 +40,7 @@ export default function ButtonsFluxograma() {
   ];
   
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-background min-h-screen">
       <Header title="Como funciona?" showIdeaButton={false} />
       <main className="h-screen flex flex-col items-center gap-3.5">
         {/* Usando o componente FlowDiagram para renderizar o fluxograma */}

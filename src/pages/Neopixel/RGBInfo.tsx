@@ -26,13 +26,13 @@ export default function RGBInfo() {
   return (
     <>
       <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate(-1)}>
+        <Button variant="primary" onClick={() => navigate(-1)}>
           Voltar
         </Button>
       </div>
 
-      <div className="h-screen flex flex-col items-center justify-center gap-3.5">
-        <h1 className="text-ubuntu font-bold text-lg">Como a cor é formada?</h1>
+      <div className="h-screen flex flex-col items-center justify-center gap-3.5 bg-background">
+        <h1 className="text-ubuntu font-bold text-lg text-heading">Como a cor é formada?</h1>
         
         {/* ColorPicker para ajustar os valores RGB */}
         <ColorPicker
@@ -52,19 +52,19 @@ export default function RGBInfo() {
           <LED id="red-led" color={redColor} size='lg' />
           
           {/* Sinal de + */}
-          <span className="text-2xl font-bold text-black self-center">+</span>
+          <span className="text-2xl font-bold text-text self-center">+</span>
           
           {/* LED Verde */}
           <LED id="green-led" color={greenColor} size='lg' />
           
           {/* Sinal de + */}
-          <span className="text-2xl font-bold text-black self-center">+</span>
+          <span className="text-2xl font-bold text-text self-center">+</span>
           
           {/* LED Azul */}
           <LED id="blue-led" color={blueColor} size='lg' />
           
           {/* Sinal de = */}
-          <span className="text-2xl font-bold text-black self-center">=</span>
+          <span className="text-2xl font-bold text-text self-center">=</span>
           
           {/* LED combinado (resultante) */}
           <LED 
@@ -74,11 +74,11 @@ export default function RGBInfo() {
           />
         </div>
 
-        <h3 className="text-ubuntu font-regular text-sm mt-10 mb-10 text-center">
+        <h3 className="text-ubuntu font-regular text-sm mt-10 mb-10 text-center text-text">
           Todas as cores podem ser vistas como uma "mistura" de vermelho, verde e azul!
         </h3>
         
-        <Button onClick={() => navigate(-2)}>Teste você mesmo!</Button>
+        <Button variant="secondary" onClick={() => navigate(-2)}>Teste você mesmo!</Button>
       </div>
     </>
   );

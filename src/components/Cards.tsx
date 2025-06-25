@@ -38,8 +38,8 @@ const Cards: React.FC<CardsProps> = ({ cards, onSelect, value }) => {
             transition-all duration-200 hover:shadow-lg transform hover:scale-105
             w-28 h-28 sm:w-24 sm:h-24 md:w-28 md:h-28 p-4 flex-shrink-0
             ${selectedCard === card.id 
-              ? 'border-blue-500 bg-blue-50 text-blue-700' 
-              : 'border-gray-300 bg-white hover:border-gray-400'
+              ? 'border-primary bg-primary-container text-on-primary-container' 
+              : 'border-neutral-palette-30 bg-background hover:border-neutral-palette-20'
             }
           `}
         >

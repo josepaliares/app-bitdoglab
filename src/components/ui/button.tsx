@@ -8,18 +8,18 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: 'bg-pink-30 text-white font-ubuntu font-bold font-xl hover:bg-pink-40',
-				blue: 'bg-blue-30 text-white font-ubuntu font-bold font-xl hover:bg-blue-40',
-				whitePink: 'bg-white text-pink-30 font-ubuntu font-bold border-2 border-pink-30 hover:text-pink-40 hover:border-pink-40',
-				whiteBlue: 'bg-white text-blue-30 font-ubuntu font-bold border-2 border-blue-30 hover:text-blue-40 hover:border-blue-40',
+				default: 'bg-secondary text-on-secondary font-ubuntu font-bold font-xl hover:bg-secondary-palette-40',
+				primary: 'bg-primary text-on-primary font-ubuntu font-bold font-xl hover:bg-primary-palette-40',
+				whiteSecondary: 'bg-background text-secondary font-ubuntu font-bold border-2 border-secondary hover:text-secondary-palette-40 hover:border-secondary-palette-40',
+				whitePrimary: 'bg-background text-primary font-ubuntu font-bold border-2 border-primary hover:text-primary-palette-40 hover:border-primary-palette-40',
 				
 				destructive:
-					'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+					'bg-error text-on-error hover:bg-error/90',
 				outline:
-					'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+					'border border-neutral-palette-30 bg-background hover:bg-surface hover:text-on-surface',
 				secondary:
-					'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-				ghost: 'hover:bg-accent hover:text-accent-foreground',
+					'bg-secondary text-on-secondary hover:bg-secondary/80',
+				ghost: 'hover:bg-surface hover:text-on-surface',
 				link: 'text-primary underline-offset-4 hover:underline',
 			},
 			size: {
