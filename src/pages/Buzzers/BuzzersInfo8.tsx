@@ -11,7 +11,7 @@ export default function BuzzersInfo8(): React.ReactElement {
         showIdeaButton={false}
       />
       <div className="h-screen flex flex-col items-center gap-3.5">
-        <h2 className="text-ubuntu tx-bl font-medium text-lg mb-1"> Parar gravação e salva</h2>
+        <h2 className="text-ubuntu tx-bl font-medium text-lg mb-1"> Placa reproduz sequência gravada</h2>
         <div className="flex items-center gap-2 mx-2">
            <img src={send} alt="imagem Leds" className="block mx-auto "/> 
             <p className="text-ubuntu text-text font-medium text-md mb-1">O app envia para a placa um arquivo  com a lista de notas e tempos gravados.</p>
