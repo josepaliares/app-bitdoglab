@@ -12,14 +12,14 @@ export function Header({ title, showIdeaButton = false, ideaButtonPath = "" }: H
   const navigate = useNavigate();
 
   return (
-    <header className="text-ubuntu flex items-center pt-4 px-4 pr-10">
+    <header className="text-ubuntu flex items-center pt-4 px-4 pr-10 bg-background">
       <div className="flex-1 flex justify-start">
-        <Button variant="blue" onClick={() => navigate(-1)}>
+        <Button variant="primary" onClick={() => navigate(-1)}>
           Voltar
         </Button>
       </div>
       
-      <h1 className="font-bold text-xl flex-1 text-center p-6">{title}</h1>
+      <h1 className="font-bold text-xl flex-1 text-center p-6 text-heading">{title}</h1>
       
       <div className="flex-1 flex justify-end">
         {showIdeaButton && (

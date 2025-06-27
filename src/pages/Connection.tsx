@@ -236,7 +236,7 @@ export default function Connection() {
   );
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
       <Header title="" showIdeaButton={false} />
       <div className="h-screen flex flex-col items-center justify-center gap-3.5 p-4">
         <h1 className="text-ubuntu px-8 font-medium text-lg text-center">

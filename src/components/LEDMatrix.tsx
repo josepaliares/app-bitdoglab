@@ -108,7 +108,7 @@ const LEDMatrix: React.FC<LEDMatrixProps> = ({
           <div 
             className={`grid ${getGapClass()} mt-2 sm:mt-4 place-items-center`}
             style={{
-              gridTemplateColumns: `auto repeat(${ledsPerRow}, 53px)`,
+              gridTemplateColumns: `auto repeat(${ledsPerRow}, 48px)`,
               gap: getGapValue(),
               width: '100%',
               maxWidth: 'fit-content'

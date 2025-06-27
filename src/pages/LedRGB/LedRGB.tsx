@@ -34,8 +34,8 @@ export default function LEDRgb() {
         showIdeaButton={true}
         ideaButtonPath="/components/ledrgb/info"
       />
-      <div className="h-screen flex flex-col items-center gap-5">
-        <h2 className="text-ubuntu font-medium text-md mb-10">
+      <div className="h-screen flex flex-col items-center gap-5 bg-background">
+        <h2 className="text-ubuntu font-medium text-md mb-10 text-heading">
           Ajuste a cor do LED com os controles abaixo!
         </h2>
         
@@ -63,8 +63,8 @@ export default function LEDRgb() {
         
         {/* Botões de ação */}
         <div className='flex flex-row justify-center gap-3 mt-3'>
-          <Button variant="whitePink" onClick={handleClearL}>Limpar</Button>
-          <Button onClick={handleSend}>Enviar</Button>
+          <Button variant="whiteSecondary" onClick={handleClearL}>Limpar</Button>
+          <Button variant="secondary" onClick={handleSend}>Enviar</Button>
         </div>
       </div>
     </>

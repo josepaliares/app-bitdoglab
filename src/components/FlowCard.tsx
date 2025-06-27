@@ -43,7 +43,7 @@ const FlowCard: React.FC<FlowCardProps> = ({
         {/* Numeração à esquerda */}
         {stepNumber && (
           <div className="flex flex-col items-center mr-6 relative">
-            <div className="w-8 h-8 text-black rounded-full flex items-center justify-center font-bold text-sm border-2">
+            <div className="w-8 h-8 text-heading rounded-full flex items-center justify-center font-bold text-sm border-2 border-neutral-palette-30">
               {stepNumber}
             </div>
             
@@ -51,16 +51,16 @@ const FlowCard: React.FC<FlowCardProps> = ({
             {showArrow && (
               <div className="flex flex-col items-center mt-4 mb-4">
                 {/* Linha vertical */}
-                <div className="w-0.5 h-6 bg-gray-400"></div>
+                <div className="w-0.5 h-6 bg-neutral-palette-20"></div>
                 {/* Seta */}
-                <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-400"></div>
+                <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-neutral-palette-20"></div>
               </div>
             )}
           </div>
         )}
         
         {/* Card principal */}
-        <div className={`flex items-center p-4 border-2 border-gray-300 rounded-lg shadow-md w-80 h-24 ${className}`}>
+        <div className={`flex items-center p-4 border-2 border-neutral-palette-30 rounded-lg shadow-md w-80 h-24 ${className}`}>
           <div className="flex-shrink-0">
             {icon}
           </div>

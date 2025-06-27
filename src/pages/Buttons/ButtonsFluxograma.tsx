@@ -2,13 +2,13 @@ import type { FlowStep } from "@/components/FlowDiagram";
 import FlowDiagram from "@/components/FlowDiagram";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import bluetooth from "@/assets/imgs/bluetooth.png";
+import cabobluetooth from "@/assets/imgs/CaboEBlutooth.png";
 import touch from "@/assets/imgs/touch.png";
 import idea from "@/assets/imgs/lampada.png";
 import button3d from "@/assets/imgs/Button3D.png";
 import down from "@/assets/imgs/Down.png";
 
-export default function ButtonsInfo() {
+export default function ButtonsFluxograma() {
 
   // Definindo os passos do fluxograma com tipagem
   const flowSteps: FlowStep[] = [
@@ -25,13 +25,13 @@ export default function ButtonsInfo() {
       text: "Seleciona a ação do botão"
     },
     {
-      icon: <Button>Enviar</Button>,
+      icon: <Button variant="secondary">Enviar</Button>,
       text: "Clica em \"Enviar\"",
       className: "items-center" // Classe extra para ajustar a posição do texto
     },
     {
-      icon: <img src={bluetooth} alt="imagem bluetooth"/>,
-      text: "Placa recebe via Bluetooth"
+      icon: <img src={cabobluetooth} alt="imagem cabobluetooth"/>,
+      text: "Placa recebe via cabo ou Bluetooth"
     },
     {
       icon: <img src={idea} alt="imagem idea"/>,
@@ -40,7 +40,7 @@ export default function ButtonsInfo() {
   ];
   
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col bg-background min-h-screen">
       <Header title="Como funciona?" showIdeaButton={false} />
       <main className="h-screen flex flex-col items-center gap-3.5">
         {/* Usando o componente FlowDiagram para renderizar o fluxograma */}

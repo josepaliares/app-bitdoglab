@@ -7,7 +7,7 @@ const NotFound = () => {
   return (
     <>
       <div className="absolute top-5 left-5">
-        <Button variant="blue" onClick={() => navigate(-1)}>
+        <Button variant="primary" onClick={() => navigate(-1)}>
           Voltar
         </Button>
       </div>
