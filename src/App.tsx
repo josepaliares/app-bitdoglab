@@ -34,6 +34,9 @@ import LedRGBInfo from "./pages/LedRGB/LedRGBFluxograma";
 import LedRGBInfo1 from "./pages/LedRGB/LedRGBInfo1";
 import LedRGBInfo2 from "./pages/LedRGB/LedRGBInfo2";
 import LedRGBInfo4 from "./pages/LedRGB/LedRGBInfo4";
+import Records from "./pages/Records";
+// import { RecordsList } from "./components/RecordsList";
+import { recordsConfigs } from "./components/RecordsList";
 //import EmConstrucao from "./pages/EmConstrucao";
 
 export function App() {
@@ -50,6 +53,10 @@ export function App() {
           <Route path="/" element={<SplashScreen />} />
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/connection" element={<Connection />} />
+          {/* Novas rotas para as gravações */}
+          <Route path="/buzzer-records" element={<Records config={recordsConfigs.buzzers} />} />
+          <Route path="/neopixel-records" element={<Records config={recordsConfigs.neopixel} />} />
+
 
           {/* Rota pai apenas para organização (não renderiza conteúdo) */}
           <Route path="/components">
