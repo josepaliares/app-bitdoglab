@@ -2,5 +2,8 @@ title: Research and Learning Roadmaps
 
 theme: minima
 
+header_pages:
+ - README.md
+
 exclude: 
   - BitDogLab
