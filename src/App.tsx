@@ -46,6 +46,8 @@ import LedRGBInfo from "./pages/LedRGB/LedRGBFluxograma";
 import LedRGBInfo1 from "./pages/LedRGB/LedRGBInfo1";
 import LedRGBInfo2 from "./pages/LedRGB/LedRGBInfo2";
 import LedRGBInfo4 from "./pages/LedRGB/LedRGBInfo4";
+
+import Jogo from "./pages/Jogo/Jogo";
 //import EmConstrucao from "./pages/EmConstrucao";
 
 export function App() {
@@ -110,8 +112,12 @@ export function App() {
               <Route path="info4" element={<LedRGBInfo4 />} />
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
-          </Route>
+            <Route path="jogo">
+              <Route index element={<Jogo />} />
+            </Route>
 
+          </Route>
+            
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
