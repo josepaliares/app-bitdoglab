@@ -1,6 +1,7 @@
 // LoadManageModal.tsx
 import { useState, useEffect } from "react";
 import { X, Trash2, Edit2, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface SaveData {
   id: string;
@@ -87,78 +88,88 @@ export default function LoadManageModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[80vh] overflow-y-auto m-4">
-        <div className="flex justify-between items-center mb-4">
+      <div className="bg-white rounded-lg w-full max-w-md max-h-[80vh] m-4 flex flex-col">
+        {/* Cabeçalho fixo */}
+        <div className="flex justify-between items-center p-6 pb-4 border-b border-gray-200">
           <h2 className="text-xl font-bold">{title}</h2>
-          <button
+          <Button
             onClick={onClose}
+            variant="ghost"
+            size="sm"
             className="text-gray-500 hover:text-gray-700"
           >
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
-        <div className="space-y-2">
-          {saves.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">
-              Nenhuma gravação encontrada
-            </p>
-          ) : (
-            saves.map((save) => (
-              <div
-                key={save.id}
-                className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
-              >
-                <div className="flex-1">
-                  {editingId === save.id ? (
-                    <input
-                      type="text"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') handleRename(save.id);
-                        if (e.key === 'Escape') {
-                          setEditingId(null);
-                          setEditName("");
-                        }
-                      }}
-                      onBlur={() => handleRename(save.id)}
-                      autoFocus
-                    />
-                  ) : (
-                    <div>
-                      <div className="font-medium">{save.name}</div>
-                      <div className="text-sm text-gray-500">{save.createdAt}</div>
-                    </div>
-                  )}
+        {/* Conteúdo rolável */}
+        <div className="flex-1 overflow-y-auto p-6 pt-4">
+          <div className="space-y-2">
+            {saves.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">
+                Nenhuma gravação encontrada
+              </p>
+            ) : (
+              saves.map((save) => (
+                <div
+                  key={save.id}
+                  className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                >
+                  <div className="flex-1">
+                    {editingId === save.id ? (
+                      <input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="w-full px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') handleRename(save.id);
+                          if (e.key === 'Escape') {
+                            setEditingId(null);
+                            setEditName("");
+                          }
+                        }}
+                        onBlur={() => handleRename(save.id)}
+                        autoFocus
+                      />
+                    ) : (
+                      <div>
+                        <div className="font-medium break-all">{save.name}</div>
+                        <div className="text-sm text-gray-500">{save.createdAt}</div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleLoad(save)}
+                      variant="primary"
+                      size="sm"
+                      className="flex items-center gap-1"
+                      title="Carregar"
+                    >
+                      <Play className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => startEdit(save)}
+                      variant="whitePrimary"
+                      size="sm"
+                      title="Renomear"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={() => handleDelete(save.id)}
+                      variant="whiteSecondary"
+                      size="sm"
+                      title="Excluir"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleLoad(save)}
-                    className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 flex items-center gap-1"
-                    title="Carregar"
-                  >
-                    <Play className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => startEdit(save)}
-                    className="p-1 text-blue-500 hover:text-blue-700"
-                    title="Renomear"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(save.id)}
-                    className="p-1 text-red-500 hover:text-red-700"
-                    title="Excluir"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
