@@ -1,33 +1,93 @@
+import { useConnection } from "@/contexts/ConnectionContext";
 import { Header } from "@/components/Header";
-import { Button } from '@/components/ui/button';
+import { useGame } from "@/hooks/useJogo";
+import { Button } from "@/components/ui/button";
+import { Play, Square, RotateCcw } from "lucide-react";
 
-/**
- * Jogo - Um componente para rodar o jogo da placa
- * 
- * @returns {JSX.Element} - O componente Jogo renderizado
- */
-export default function Jogo() {
-  // Função para atualizar a placa
-  const handleSend = async () => {
-    
-  };
+export default function Game() {
+	const { sendCommand } = useConnection();
+	const {
+		isGameRunning,
+		isLoading,
+		error,
+		startGame,
+		stopGame,
+		resetGame,
+		getGameStatus
+	} = useGame(sendCommand);
 
-  return (
-    <>
-      <Header
-        title="Jogo"
-        showIdeaButton={false}
-      />
-      <div className="h-screen flex flex-col items-center gap-5 bg-background">
-        <h2 className="text-ubuntu font-medium text-md mb-10 text-heading mx-4">
-          Aqui você pode testar um joguinho na placa, só clicar no play
-        </h2>
-        
-        {/* Botões de ação */}
-        <div className='flex flex-row justify-center gap-3 mt-3'>
-          <Button variant="secondary" onClick={handleSend}>Play</Button>
-        </div>
-      </div>
-    </>
-  );
+	const status = getGameStatus();
+
+	return (
+		<div className="flex flex-col h-screen">
+			<Header
+				title="Jogo Interativo"
+				showIdeaButton={true}
+				ideaButtonPath="/components/game/info"
+			/>
+			<div className="flex-1 flex flex-col items-center justify-center gap-6 p-6 bg-background">
+				<div className="text-center">
+					<h2 className="text-2xl font-bold text-text mb-2">
+						Jogo de Controle Interativo
+					</h2>
+					<p className="text-text/70 mb-4">
+						Use os botões e joystick para jogar!
+					</p>
+
+					{error && (
+						<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+							{error}
+						</div>
+					)}
+
+					<div className="flex flex-col gap-2 text-sm text-text/60 mb-6">
+						<p>Setup: {status.isSetupDone ? "✅ Pronto" : "❌ Não configurado"}</p>
+						<p>Status: {isGameRunning ? "🎮 Rodando" : "⏹️ Parado"}</p>
+					</div>
+				</div>
+
+				<div className="flex gap-4">
+					<Button
+						onClick={startGame}
+						disabled={isLoading || isGameRunning}
+						className="flex items-center gap-2"
+					>
+						<Play size={20} />
+						{isLoading ? "Carregando..." : "Iniciar Jogo"}
+					</Button>
+
+					<Button
+						onClick={stopGame}
+						disabled={isLoading || !isGameRunning}
+						variant="destructive"
+						className="flex items-center gap-2"
+					>
+						<Square size={20} />
+						Parar Jogo
+					</Button>
+
+					<Button
+						onClick={resetGame}
+						disabled={isLoading}
+						variant="outline"
+						className="flex items-center gap-2"
+					>
+						<RotateCcw size={20} />
+						Reset
+					</Button>
+				</div>
+
+				{isGameRunning && (
+					<div className="text-center p-4 bg-green-50 border border-green-200 rounded-lg">
+						<p className="text-green-800 font-medium">
+							🎮 Jogo rodando! Use o hardware para jogar.
+						</p>
+						<p className="text-green-600 text-sm mt-1">
+							Botão A/B, Joystick e Microfone estão ativos.
+						</p>
+					</div>
+				)}
+			</div>
+		</div>
+	);
 }
