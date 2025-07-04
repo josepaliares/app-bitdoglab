@@ -7,6 +7,8 @@ export const useGame = (
 ) => {
 	const gameController = useRef<GameController | null>(null);
 	const hasInitialized = useRef(false);
+	const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
+
 	const [isGameRunning, setIsGameRunning] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -22,11 +24,40 @@ export const useGame = (
 	useEffect(() => {
 		if (isGameRunning) {
 			ScreenOrientation.lock({ orientation: "landscape" });
+			// Start game loop
+			startGameLoop();
+		} else {
+			// Stop game loop
+			stopGameLoop();
 		}
+
 		return () => {
 			ScreenOrientation.lock({ orientation: "portrait" });
+			stopGameLoop();
 		};
 	}, [isGameRunning]);
+
+	const startGameLoop = () => {
+		if (gameLoopRef.current) return;
+
+		gameLoopRef.current = setInterval(async () => {
+			if (gameController.current && isGameRunning) {
+				try {
+					await gameController.current.continueGame();
+				} catch (error) {
+					console.error("Erro no loop do jogo:", error);
+					// Don't stop the game for minor errors
+				}
+			}
+		}, 1000); // Execute game cycle every second
+	};
+
+	const stopGameLoop = () => {
+		if (gameLoopRef.current) {
+			clearInterval(gameLoopRef.current);
+			gameLoopRef.current = null;
+		}
+	};
 
 	/**
 	 * Inicia o jogo

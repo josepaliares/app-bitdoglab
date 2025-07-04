@@ -19,6 +19,8 @@ export class GameController {
 			return;
 		}
 
+		console.log("🔧 Configurando hardware do jogo...");
+
 		const setupCommands = [
 			"\x03\r\n", // Ctrl+C para parar execução anterior
 			"from machine import Pin, PWM, ADC",
@@ -58,16 +60,25 @@ export class GameController {
 			"print('Game hardware inicializado')",
 		];
 
-		for (const cmd of setupCommands) {
-			await this.sendCommand(cmd);
-			await new Promise((resolve) => setTimeout(resolve, 100));
-		}
+		try {
+			for (const cmd of setupCommands) {
+				await this.sendCommand(cmd);
+				await new Promise((resolve) => setTimeout(resolve, 200)); // Increased delay
+			}
 
-		await this.setupGameFunctions();
-		this.isSetupDone = true;
+			await this.setupGameFunctions();
+			this.isSetupDone = true;
+			console.log("✅ Hardware do jogo configurado com sucesso!");
+		} catch (error) {
+			console.error("❌ Erro ao configurar hardware:", error);
+			this.isSetupDone = false;
+			throw new Error(`Falha na configuração do hardware: ${error}`);
+		}
 	}
 
 	async setupGameFunctions() {
+		console.log("🔧 Configurando funções do jogo...");
+
 		const functionCommands = [
 			"# Game functions",
 			"def seta_Esquerda():",
@@ -125,15 +136,21 @@ export class GameController {
 			"print('Game functions definidas')",
 		];
 
-		for (const cmd of functionCommands) {
-			await this.sendCommand(cmd);
-			await new Promise((resolve) => setTimeout(resolve, 50));
+		try {
+			for (const cmd of functionCommands) {
+				await this.sendCommand(cmd);
+				await new Promise((resolve) => setTimeout(resolve, 150)); // Increased delay
+			}
+			console.log("✅ Funções do jogo configuradas com sucesso!");
+		} catch (error) {
+			console.error("❌ Erro ao configurar funções:", error);
+			throw new Error(`Falha na configuração das funções: ${error}`);
 		}
 	}
 
 	async startGame() {
 		if (this.isGameRunning) {
-			console.log("Game já está rodando");
+			console.log("⚠️ Game já está rodando");
 			return;
 		}
 
@@ -147,32 +164,60 @@ export class GameController {
 
 		try {
 			await this.setupGame();
-			this.isGameRunning = true;
 
 			const micropythonCommands = toMicropython(json);
 
+			console.log("📤 Enviando comandos do jogo...");
 			for (const command of micropythonCommands) {
-				await this.sendCommand(command);
-				await new Promise((resolve) => setTimeout(resolve, 100));
+				if (command.trim()) { // Skip empty commands
+					await this.sendCommand(command);
+					await new Promise((resolve) => setTimeout(resolve, 200)); // Increased delay
+				}
 			}
-			console.log("Jogo iniciado com sucesso!");
+
+			this.isGameRunning = true;
+			console.log("✅ Jogo iniciado com sucesso!");
 		} catch (error) {
-			console.error("Erro ao iniciar jogo:", error);
+			console.error("❌ Erro ao iniciar jogo:", error);
 			this.isGameRunning = false;
-			throw error;
+			throw new Error(`Falha ao iniciar o jogo: ${error}`);
 		}
 	}
 
 	async stopGame() {
 		try {
+			console.log("🛑 Parando jogo...");
 			await this.sendCommand("\x03\r\n"); // Ctrl+C para parar
+			await new Promise((resolve) => setTimeout(resolve, 500));
+
+			await this.sendCommand("game_running = False");
+			await new Promise((resolve) => setTimeout(resolve, 200));
+
 			await this.sendCommand("clear_all()");
+			await new Promise((resolve) => setTimeout(resolve, 200));
+
 			await this.sendCommand("print('Jogo parado')");
+
 			this.isGameRunning = false;
-			console.log("Jogo parado com sucesso!");
+			console.log("✅ Jogo parado com sucesso!");
 		} catch (error) {
-			console.error("Erro ao parar jogo:", error);
-			throw error;
+			console.error("❌ Erro ao parar jogo:", error);
+			throw new Error(`Falha ao parar o jogo: ${error}`);
+		}
+	}
+
+	async continueGame() {
+		if (!this.isGameRunning) {
+			console.log("⚠️ Jogo não está rodando");
+			return;
+		}
+
+		try {
+			await this.sendCommand("run_game_cycle()");
+			console.log("🔄 Ciclo do jogo executado");
+		} catch (error) {
+			console.error("❌ Erro ao continuar jogo:", error);
+			throw new Error(`Falha ao continuar o jogo: ${error}`);
 		}
 	}
 

@@ -1,6 +1,6 @@
 export function interpreterGame(data: { isStarted: boolean }): string[] {
 	if (!data.isStarted) {
-		return ["# Game not started"];
+		return [""];
 	}
 
 	return [
