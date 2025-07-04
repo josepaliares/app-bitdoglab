@@ -6,8 +6,8 @@ export function interpreterBuzzer(data: BuzzersData): string[] {
   if (data.isPressed && data.frequency) {
     
     commands.push(`buzzer.freq(${data.frequency})`);
-    commands.push(`buzzer.duty_u16(70)`);
-    commands.push(`buzzerAux.duty_u16(30)`);
+    commands.push(`buzzer.duty_u16(700)`);
+    commands.push(`buzzerAux.duty_u16(300)`);
     commands.push(`print('Buzzers ligados - Frequência: ${data.frequency}Hz')`);
     
   } 
