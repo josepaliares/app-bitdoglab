@@ -5,14 +5,16 @@ import Slider from "@/components/Slider";
 import { useBuzzers } from "@/hooks/useBuzzers";
 import Piano from "@/components/Piano";
 import { playbackBuzzerSequence } from "@/utils/playbackBuzzer";
-import SaveManagerModal from "@/components/SaveManagerModal";
-import { Play, Square, Music } from "lucide-react";
+import SaveModal from "@/components/SaveModal";
+import LoadManageModal from "@/components/LoadManageModal";
+import { Square, Music } from "lucide-react";
+import { Button } from "@/components/ui/button"
 
 export default function Buzzers() {
   const { sendCommand } = useConnection();
   const [isRecording, setIsRecording] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalMode, setModalMode] = useState<'save' | 'load' | 'manage'>('save');
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
+  const [loadManageModalOpen, setLoadManageModalOpen] = useState(false);
   const [recordingBuffer, setRecordingBuffer] = useState<any>(null);
 
   const { octave, setOctave, handleNotePress, handleNoteRelease, getRecordingBuffer, buzzersController } = useBuzzers(sendCommand, isRecording);
@@ -29,8 +31,7 @@ export default function Buzzers() {
       // Salvar o buffer e abrir modal para salvar
       if (buffer && buffer.length > 0) {
         setRecordingBuffer(buffer);
-        setModalMode('save');
-        setModalOpen(true);
+        setSaveModalOpen(true);
       } else {
         alert('Nenhuma nota foi gravada!');
       }
@@ -42,14 +43,8 @@ export default function Buzzers() {
     setIsRecording((prev) => !prev);
   };
 
-  const handleLoad = () => {
-    setModalMode('load');
-    setModalOpen(true);
-  };
-
-  const handleManage = () => {
-    setModalMode('manage');
-    setModalOpen(true);
+  const handleOpenLoadManage = () => {
+    setLoadManageModalOpen(true);
   };
 
   // Função para executar música carregada
@@ -69,12 +64,12 @@ export default function Buzzers() {
 
   // Método para renderizar o botão de gravar
   const renderRecordButton = () => {
-    const buttonClasses = `px-4 py-2 rounded-full font-semibold text-white shadow-lg transition-all duration-200 flex items-center gap-2 ${
-      isRecording ? "bg-red-600 animate-pulse" : "bg-primary hover:opacity-90"
+    const buttonClasses = `px-4 py-2 flex items-center gap-2 ${
+      isRecording ? "animate-pulse" : ""
     }`;
 
     return (
-      <button onClick={handleRecord} className={buttonClasses}>
+      <Button variant="secondary" onClick={handleRecord} className={buttonClasses}>
         {isRecording ? (
           <>
             <Square className="w-4 h-4" />
@@ -86,32 +81,23 @@ export default function Buzzers() {
             Gravar
           </>
         )}
-      </button>
+      </Button>
     );
   };
 
-  // Método para renderizar botões de ação (carregar e gravações)
-  const renderActionButtons = () => {
+  // Método para renderizar botão de gravações (carregar/gerenciar)
+  const renderActionButton = () => {
     if (isRecording) return null;
 
     return (
-      <>
-        <button
-          onClick={handleLoad}
-          className="px-4 py-2 rounded-full font-semibold text-white bg-green-600 hover:bg-green-700 shadow-lg transition-all duration-200 flex items-center gap-2"
-        >
-          <Play className="w-4 h-4" />
-          Carregar
-        </button>
-
-        <button
-          onClick={handleManage}
-          className="px-4 py-2 rounded-full font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-all duration-200 flex items-center gap-2"
-        >
-          <Music className="w-4 h-4" />
-          Gravações
-        </button>
-      </>
+      <Button
+        onClick={handleOpenLoadManage}
+        className="px-4 py-2 flex items-center gap-2"
+        variant="whiteSecondary"
+      >
+        <Music className="w-4 h-4" />
+        Gravações
+      </Button>
     );
   };
 
@@ -120,7 +106,7 @@ export default function Buzzers() {
     return (
       <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2">
         {renderRecordButton()}
-        {renderActionButtons()}
+        {renderActionButton()}
       </div>
     );
   };
@@ -152,12 +138,20 @@ export default function Buzzers() {
         {renderControlButtons()}
       </div>
 
-      <SaveManagerModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        mode={modalMode}
+      {/* Modal para salvar gravação */}
+      <SaveModal
+        isOpen={saveModalOpen}
+        onClose={() => setSaveModalOpen(false)}
         storageKey="buzzer-recordings"
         currentData={recordingBuffer}
+        title="Salvar Gravação"
+      />
+
+      {/* Modal para carregar e gerenciar gravações */}
+      <LoadManageModal
+        isOpen={loadManageModalOpen}
+        onClose={() => setLoadManageModalOpen(false)}
+        storageKey="buzzer-recordings"
         onLoad={handleLoadMusic}
         title="Gravações de Música"
       />
