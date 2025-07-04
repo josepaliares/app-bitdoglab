@@ -141,7 +141,7 @@ export default function Connection() {
   }, [state.loading, state.selectedConnectionType, isConnected]);
 
   const renderConnectionTypeSelector = () => (
-    <div className="mb-4">
+    <div className="mb-4 my-2">
       <h2 className="text-ubuntu font-medium mb-2">{MESSAGES.connectionMethod}</h2>
       <div className="flex gap-4">
         <label className="flex items-center">
@@ -203,12 +203,12 @@ export default function Connection() {
           onClick={handleScan}
           disabled={state.scanning}
           variant="outline"
-          className="text-sm"
+          className="text-sm my-2"
         >
           {state.scanning ? MESSAGES.buttons.scanning : MESSAGES.buttons.scan}
         </Button>
         {state.scanning && (
-          <span className="text-ubuntu text-sm text-gray-500">
+          <span className="text-ubuntu text-sm text-gray-500 my-2">
             {MESSAGES.scanningHint}
           </span>
         )}
@@ -240,7 +240,7 @@ export default function Connection() {
     <div className="h-screen flex flex-col bg-background">
       <Header title="" showIdeaButton={false} />
       <div className="h-screen flex flex-col items-center justify-center gap-3.5 p-4">
-        <h1 className="text-ubuntu px-8 font-medium text-lg text-center">
+        <h1 className="text-ubuntu px-8 font-medium text-lg text-center my-2">
           {isConnected ? MESSAGES.connected : MESSAGES.disconnected}
         </h1>
 

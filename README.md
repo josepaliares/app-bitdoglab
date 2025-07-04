@@ -14,6 +14,7 @@ Para mais detalhes sobre o hardware, acesse a [documentação oficial do BitDogL
 - **npm**: `v10.9.2`  
 - **Java JDK** : `v17.0.14`
 - **Android Studio**: `2024.3.1.14`
+- **BitDogLab**: [firmware](https://github.com/datasci4citizens/BitDogLab/tree/835b8e69c802e31947bd0ab88babf2baecf98310/Firmware)
 
 ## 🚀 Instalação
 

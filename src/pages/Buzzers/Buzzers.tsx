@@ -8,7 +8,7 @@ import { playbackBuzzerSequence } from "@/utils/playbackBuzzer";
 import SaveModal from "@/components/SaveModal";
 import LoadManageModal from "@/components/LoadManageModal";
 import { Square, Music } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 
 export default function Buzzers() {
   const { sendCommand } = useConnection();
