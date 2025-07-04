@@ -6,7 +6,7 @@ import { useBuzzers } from "@/hooks/useBuzzers";
 import Piano from "@/components/Piano";
 import { playbackBuzzerSequence } from "@/utils/playbackBuzzer";
 import SaveManagerModal from "@/components/SaveManagerModal";
-import { Play, Square, FolderOpen, Music } from "lucide-react";
+import { Play, Square, Music } from "lucide-react";
 
 export default function Buzzers() {
   const { sendCommand } = useConnection();
