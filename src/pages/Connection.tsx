@@ -196,8 +196,9 @@ export default function Connection() {
   );
 
   const renderBluetoothSection = () => (
-    <div className="mb-4">
-      <div className="flex items-center gap-2 mb-2">
+    <div className="mb-4 gap-2">
+      <p className="text-ubuntu text-text justify-center font-medium text-md mb-1 mx-2">Antes de você clicar em buscar dispositivo, você deve ter pareado o bluetooth com o celular, só assim a opção aparecera aqui</p>
+      <div className="flex items-center justify-center gap-2 mb-2">
         <Button
           onClick={handleScan}
           disabled={state.scanning}
@@ -207,7 +208,7 @@ export default function Connection() {
           {state.scanning ? MESSAGES.buttons.scanning : MESSAGES.buttons.scan}
         </Button>
         {state.scanning && (
-          <span className="text-sm text-gray-500">
+          <span className="text-ubuntu text-sm text-gray-500">
             {MESSAGES.scanningHint}
           </span>
         )}
