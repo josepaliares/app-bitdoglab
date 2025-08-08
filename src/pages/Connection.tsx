@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { useNavigate } from "react-router-dom";
 import { useConnection } from "../contexts/ConnectionContext";
 
-type ConnectionType = "cable" | "bluetooth";
+type ConnectionType = "cable" | "bluetooth" | "ble"; // Adiciona "ble"
 
 interface ConnectionState {
   loading: boolean;
@@ -25,14 +25,14 @@ const INITIAL_STATE: ConnectionState = {
 const MESSAGES = {
   connected: "Você está conectado à placa",
   disconnected: "Antes de começar, primeiro conecte-se com a placa",
-  selectDevice: "Selecione um dispositivo Bluetooth",
+  selectDevice: "Selecione um dispositivo",
   scanningHint: "Isso pode levar alguns segundos...",
   noDevices: "Nenhum dispositivo encontrado",
   availableDevices: "Dispositivos disponíveis:",
   connectionMethod: "Escolha o método de conexão:",
   continue: "Continuar para Componentes",
   errors: {
-    scanFailed: "Falha ao buscar dispositivos Bluetooth",
+    scanFailed: "Falha ao buscar dispositivos",
     disconnectFailed: "Falha ao desconectar",
     connectFailed: "Falha ao conectar",
   },
@@ -43,11 +43,17 @@ const MESSAGES = {
     scan: "Buscar dispositivos",
     connectCable: "Conectar via cabo",
     connectBluetooth: "Conectar via Bluetooth",
+    connectBLE: "Conectar via BLE", // Nova opção
   },
   connectionTypes: {
     cable: "Conexão via cabo",
-    bluetooth: "Conexão Bluetooth",
+    bluetooth: "Conexão Bluetooth (HC-05)",
+    ble: "Conexão BLE (Pico 2W)", // Nova opção
   },
+  instructions: {
+    bluetooth: "Antes de você clicar em buscar dispositivo, você deve ter pareado o bluetooth com o celular, só assim a opção aparecera aqui",
+    ble: "Para conectar via BLE, certifique-se que a Raspberry Pi Pico 2W está ligada e executando o código BLE. O dispositivo deve aparecer como 'Pico2W' nas opções.", // Nova instrução
+  }
 } as const;
 
 export default function Connection() {
@@ -56,9 +62,12 @@ export default function Connection() {
     isConnected,
     connectCable,
     connectBluetooth,
+    connectBLE, // Nova função
     disconnect,
     scanBluetoothDevices,
+    scanBLEDevices, // Nova função
     availableDevices,
+    availableBLEDevices, // Nova lista
   } = useConnection();
 
   const [state, setState] = useState<ConnectionState>(INITIAL_STATE);
@@ -71,16 +80,24 @@ export default function Connection() {
     updateState({ error: null });
   }, [updateState]);
 
+  // **FUNÇÃO UNIFICADA DE ESCANEAMENTO**
   const handleScan = useCallback(async () => {
     try {
       updateState({ scanning: true, error: null });
-      await scanBluetoothDevices();
+      
+      // Chama a função de escaneamento apropriada baseada no tipo selecionado
+      if (state.selectedConnectionType === "bluetooth") {
+        await scanBluetoothDevices();
+      } else if (state.selectedConnectionType === "ble") {
+        await scanBLEDevices();
+      }
+      
     } catch (err: any) {
       updateState({ error: err.message || MESSAGES.errors.scanFailed });
     } finally {
       updateState({ scanning: false });
     }
-  }, [scanBluetoothDevices, updateState]);
+  }, [state.selectedConnectionType, scanBluetoothDevices, scanBLEDevices, updateState]);
 
   const handleDisconnect = useCallback(async () => {
     try {
@@ -94,18 +111,28 @@ export default function Connection() {
     }
   }, [disconnect, clearError, updateState]);
 
+  // **FUNÇÃO UNIFICADA DE CONEXÃO**
   const handleConnect = useCallback(async () => {
     try {
       updateState({ loading: true, error: null });
 
       if (state.selectedConnectionType === "cable") {
         await connectCable();
-      } else {
+        
+      } else if (state.selectedConnectionType === "bluetooth") {
         if (!state.selectedDevice) {
           updateState({ error: MESSAGES.selectDevice, loading: false });
           return;
         }
         await connectBluetooth(state.selectedDevice);
+        
+      } else if (state.selectedConnectionType === "ble") {
+        // **NOVA LÓGICA PARA BLE**
+        if (!state.selectedDevice) {
+          updateState({ error: MESSAGES.selectDevice, loading: false });
+          return;
+        }
+        await connectBLE(state.selectedDevice);
       }
 
       navigate("/components");
@@ -114,7 +141,7 @@ export default function Connection() {
     } finally {
       updateState({ loading: false });
     }
-  }, [state.selectedConnectionType, state.selectedDevice, connectCable, connectBluetooth, navigate, updateState]);
+  }, [state.selectedConnectionType, state.selectedDevice, connectCable, connectBluetooth, connectBLE, navigate, updateState]);
 
   const handleConnection = useCallback(() => {
     return isConnected ? handleDisconnect() : handleConnect();
@@ -129,21 +156,28 @@ export default function Connection() {
   }, [updateState]);
 
   const isConnectDisabled = useCallback(() => {
-    return state.loading || (state.selectedConnectionType === "bluetooth" && !state.selectedDevice && !isConnected);
+    const requiresDevice = state.selectedConnectionType === "bluetooth" || state.selectedConnectionType === "ble";
+    return state.loading || (requiresDevice && !state.selectedDevice && !isConnected);
   }, [state.loading, state.selectedConnectionType, state.selectedDevice, isConnected]);
 
   const getConnectButtonText = useCallback(() => {
     if (state.loading) return MESSAGES.buttons.processing;
     if (isConnected) return MESSAGES.buttons.disconnect;
-    return state.selectedConnectionType === "cable" 
-      ? MESSAGES.buttons.connectCable 
-      : MESSAGES.buttons.connectBluetooth;
+    
+    // Retorna o texto apropriado baseado no tipo de conexão
+    switch (state.selectedConnectionType) {
+      case "cable": return MESSAGES.buttons.connectCable;
+      case "bluetooth": return MESSAGES.buttons.connectBluetooth;
+      case "ble": return MESSAGES.buttons.connectBLE;
+      default: return MESSAGES.buttons.connectCable;
+    }
   }, [state.loading, state.selectedConnectionType, isConnected]);
 
+  // **SELETOR DE TIPO DE CONEXÃO ATUALIZADO**
   const renderConnectionTypeSelector = () => (
     <div className="mb-4 my-2">
       <h2 className="text-ubuntu font-medium mb-2">{MESSAGES.connectionMethod}</h2>
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-2">
         <label className="flex items-center">
           <input
             type="radio"
@@ -164,40 +198,67 @@ export default function Connection() {
           />
           {MESSAGES.connectionTypes.bluetooth}
         </label>
+        {/* **NOVA OPÇÃO BLE** */}
+        <label className="flex items-center">
+          <input
+            type="radio"
+            name="connectionType"
+            checked={state.selectedConnectionType === "ble"}
+            onChange={() => handleConnectionTypeChange("ble")}
+            className="mr-2"
+          />
+          {MESSAGES.connectionTypes.ble}
+        </label>
       </div>
     </div>
   );
 
-  const renderBluetoothDeviceList = () => (
-    <div className="mt-2 border rounded-md p-2 max-h-32 overflow-y-auto">
-      <h3 className="text-sm font-semibold mb-1">{MESSAGES.availableDevices}</h3>
-      {availableDevices.length === 0 ? (
-        <p className="text-sm text-gray-500">{MESSAGES.noDevices}</p>
-      ) : (
-        <ul className="space-y-1">
-          {availableDevices.map((device) => (
-            <li key={device.address} className="flex items-center">
-              <label className="flex items-center text-sm">
-                <input
-                  type="radio"
-                  name="bluetoothDevice"
-                  value={device.address}
-                  checked={state.selectedDevice === device.address}
-                  onChange={() => handleDeviceSelect(device.address)}
-                  className="mr-2"
-                />
-                {device.name || device.id}
-              </label>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+  // **LISTA DE DISPOSITIVOS UNIFICADA**
+  const renderDeviceList = () => {
+    // Escolhe a lista de dispositivos baseada no tipo selecionado
+    const devices = state.selectedConnectionType === "ble" 
+      ? availableBLEDevices.map(d => ({ address: d.id, name: d.name, id: d.id }))
+      : availableDevices;
+      
+    return (
+      <div className="mt-2 border rounded-md p-2 max-h-32 overflow-y-auto">
+        <h3 className="text-sm font-semibold mb-1">{MESSAGES.availableDevices}</h3>
+        {devices.length === 0 ? (
+          <p className="text-sm text-gray-500">{MESSAGES.noDevices}</p>
+        ) : (
+          <ul className="space-y-1">
+            {devices.map((device) => (
+              <li key={device.address} className="flex items-center">
+                <label className="flex items-center text-sm">
+                  <input
+                    type="radio"
+                    name="device"
+                    value={device.address}
+                    checked={state.selectedDevice === device.address}
+                    onChange={() => handleDeviceSelect(device.address)}
+                    className="mr-2"
+                  />
+                  {device.name || device.id}
+                </label>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
+  };
 
-  const renderBluetoothSection = () => (
+  // **SEÇÃO UNIFICADA PARA BLUETOOTH E BLE**
+  const renderWirelessSection = () => (
     <div className="mb-4 gap-2">
-      <p className="text-ubuntu text-text justify-center font-medium text-md mb-1 mx-2">Antes de você clicar em buscar dispositivo, você deve ter pareado o bluetooth com o celular, só assim a opção aparecera aqui</p>
+      {/* Instrução específica baseada no tipo */}
+      <p className="text-ubuntu text-text justify-center font-medium text-md mb-1 mx-2">
+        {state.selectedConnectionType === "bluetooth" 
+          ? MESSAGES.instructions.bluetooth
+          : MESSAGES.instructions.ble
+        }
+      </p>
+      
       <div className="flex items-center justify-center gap-2 mb-2">
         <Button
           onClick={handleScan}
@@ -213,7 +274,7 @@ export default function Connection() {
           </span>
         )}
       </div>
-      {renderBluetoothDeviceList()}
+      {renderDeviceList()}
     </div>
   );
 
@@ -226,7 +287,10 @@ export default function Connection() {
   const renderConnectionForm = () => !isConnected && (
     <div className="w-full max-w-md">
       {renderConnectionTypeSelector()}
-      {state.selectedConnectionType === "bluetooth" && renderBluetoothSection()}
+      {/* Mostra seção wireless para bluetooth ou ble */}
+      {(state.selectedConnectionType === "bluetooth" || state.selectedConnectionType === "ble") && 
+        renderWirelessSection()
+      }
     </div>
   );
 

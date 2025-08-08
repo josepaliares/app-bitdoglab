@@ -2,7 +2,8 @@ import React, { createContext, useState, useContext, useEffect, useCallback } fr
 
 export enum ConnectionType {
   CABLE = "cable",
-  BLUETOOTH = "bluetooth",
+  BLUETOOTH = "bluetooth", 
+  BLE = "ble", // Nova opção BLE
   NONE = "none",
 }
 
@@ -12,16 +13,26 @@ interface BluetoothDevice {
   address: string;
 }
 
+// Nova interface para dispositivos BLE
+interface BLEDevice {
+  id: string;
+  name: string;
+  device?: any; // Referência ao dispositivo nativo (tipo genérico para compatibilidade)
+}
+
 interface ConnectionContextType {
   isConnected: boolean;
   connectionType: ConnectionType;
   serialPort: any;
   availableDevices: BluetoothDevice[];
+  availableBLEDevices: BLEDevice[]; // Nova propriedade
   connectCable: () => Promise<void>;
   connectBluetooth: (deviceId: string) => Promise<void>;
+  connectBLE: (deviceId: string) => Promise<void>; // Nova função
   disconnect: () => Promise<void>;
   sendCommand: (command: string) => Promise<void>;
   scanBluetoothDevices: () => Promise<void>;
+  scanBLEDevices: () => Promise<void>; // Nova função
 }
 
 const BAUD_RATE = 9600;
@@ -29,6 +40,10 @@ const COMMAND_TERMINATOR = "\r\n";
 const BLUETOOTH_DELIMITER = "\n";
 const CONNECTION_CHECK_INTERVAL = 5000;
 const BLUETOOTH_ERRORS = ["bt socket closed", "read return: -1", "IOException", "disconnected", "Connection lost", "Device not connected"];
+
+// UUIDs para o serviço BLE customizado da Pico 2 W
+const BLE_SERVICE_UUID = "12345678-1234-1234-1234-123456789abc";
+const BLE_CHARACTERISTIC_UUID = "87654321-4321-4321-4321-cba987654321";
 
 const ConnectionContext = createContext<ConnectionContextType | undefined>(undefined);
 
@@ -38,6 +53,11 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [serialPort, setSerialPort] = useState<any>(null);
   const [reader, setReader] = useState<any>(null);
   const [availableDevices, setAvailableDevices] = useState<BluetoothDevice[]>([]);
+  
+  // Estados para BLE
+  const [availableBLEDevices, setAvailableBLEDevices] = useState<BLEDevice[]>([]);
+  const [bleDevice, setBLEDevice] = useState<any | null>(null);
+  const [bleCharacteristic, setBLECharacteristic] = useState<any | null>(null);
 
   const promisifyBluetooth = useCallback(<T,>(fn: (...args: any[]) => void, ...args: any[]): Promise<T> => 
     new Promise((resolve, reject) => fn(...args, resolve, reject)), []);
@@ -45,12 +65,138 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const resetConnection = useCallback(() => {
     setIsConnected(false);
     setConnectionType(ConnectionType.NONE);
+    setBLEDevice(null);
+    setBLECharacteristic(null);
   }, []);
 
   const isBluetoothError = useCallback((error: any): boolean => {
     const errorStr = error?.toString?.() || JSON.stringify(error) || "";
     return BLUETOOTH_ERRORS.some(keyword => errorStr.includes(keyword));
   }, []);
+
+  // **NOVA FUNÇÃO: Escaneamento BLE**
+  const scanBLEDevices = useCallback(async () => {
+    try {
+      // Verifica se o navegador suporta Web Bluetooth
+      if (!('bluetooth' in navigator)) {
+        throw new Error("Web Bluetooth API não é suportada neste navegador");
+      }
+
+      console.log("🔍 Iniciando escaneamento BLE...");
+      
+      // Solicita permissão e escaneia dispositivos BLE
+      // Procura por dispositivos que anunciem nosso serviço customizado
+      const device = await (navigator as any).bluetooth.requestDevice({
+        filters: [
+          { services: [BLE_SERVICE_UUID] }, // Procura pelo nosso serviço
+          { namePrefix: "Pico2W" } // Ou dispositivos que começam com "Pico2W"
+        ],
+        optionalServices: [BLE_SERVICE_UUID] // Serviços opcionais
+      });
+
+      const bleDevices: BLEDevice[] = [{
+        id: device.id || device.name || "unknown",
+        name: device.name || "Dispositivo BLE Desconhecido",
+        device: device
+      }];
+
+      setAvailableBLEDevices(bleDevices);
+      console.log("✅ Dispositivos BLE encontrados:", bleDevices.length);
+      
+    } catch (error: any) {
+      console.error("❌ Erro no escaneamento BLE:", error);
+      if (error.name === 'NotFoundError') {
+        throw new Error("Nenhum dispositivo BLE compatível encontrado");
+      }
+      throw new Error("Falha ao buscar dispositivos BLE: " + error.message);
+    }
+  }, []);
+
+  // **NOVA FUNÇÃO: Conexão BLE**
+  const connectBLE = useCallback(async (deviceId: string) => {
+    try {
+      console.log("🔗 Iniciando conexão BLE com dispositivo:", deviceId);
+      
+      if (isConnected) {
+        // Chama disconnect inline para evitar dependência circular
+        try {
+          if (connectionType === ConnectionType.CABLE) {
+            if (reader) {
+              await reader.cancel();
+              reader.releaseLock();
+            }
+            if (serialPort) await serialPort.close();
+            setSerialPort(null);
+            setReader(null);
+            
+          } else if (connectionType === ConnectionType.BLUETOOTH) {
+            try { await promisifyBluetooth(window.bluetoothSerial.unsubscribe); } catch {}
+            await promisifyBluetooth(window.bluetoothSerial.disconnect);
+            
+          } else if (connectionType === ConnectionType.BLE) {
+            if (bleCharacteristic) {
+              try {
+                await bleCharacteristic.stopNotifications();
+              } catch (e) {
+                console.warn("Erro ao parar notificações BLE:", e);
+              }
+            }
+            if (bleDevice && bleDevice.gatt && bleDevice.gatt.connected) {
+              bleDevice.gatt.disconnect();
+            }
+          }
+          resetConnection();
+        } catch (error) {
+          console.error("Erro ao desconectar:", error);
+        }
+      }
+
+      // Encontra o dispositivo na lista
+      const targetDevice = availableBLEDevices.find(d => d.id === deviceId);
+      if (!targetDevice || !targetDevice.device) {
+        throw new Error("Dispositivo BLE não encontrado");
+      }
+
+      const device = targetDevice.device;
+      
+      // **PASSO 1: Conecta ao GATT Server**
+      console.log("📡 Conectando ao servidor GATT...");
+      const server = await device.gatt.connect();
+      
+      // **PASSO 2: Obtém o serviço primário**
+      console.log("🔧 Obtendo serviço primário...");
+      const service = await server.getPrimaryService(BLE_SERVICE_UUID);
+      
+      // **PASSO 3: Obtém a característica de comunicação**
+      console.log("📝 Obtendo característica de comunicação...");
+      const characteristic = await service.getCharacteristic(BLE_CHARACTERISTIC_UUID);
+      
+      // **PASSO 4: Configura notificações para receber dados**
+      console.log("🔔 Configurando notificações...");
+      await characteristic.startNotifications();
+      
+      // **PASSO 5: Define callback para dados recebidos**
+      characteristic.addEventListener('characteristicvaluechanged', (event: any) => {
+        const value = event.target.value;
+        const decoder = new TextDecoder();
+        const receivedData = decoder.decode(value);
+        console.log("📩 Dados recebidos via BLE:", receivedData);
+      });
+
+      // **PASSO 6: Salva referências e atualiza estado**
+      setBLEDevice(device);
+      setBLECharacteristic(characteristic);
+      setConnectionType(ConnectionType.BLE);
+      setIsConnected(true);
+      
+      console.log("✅ Conexão BLE estabelecida com sucesso!");
+      
+    } catch (error: any) {
+      console.error("❌ Erro na conexão BLE:", error);
+      resetConnection();
+      throw new Error("Falha ao conectar dispositivo BLE: " + error.message);
+    }
+  }, [isConnected, availableBLEDevices, resetConnection, connectionType, reader, serialPort, bleCharacteristic, bleDevice, promisifyBluetooth]);
 
   const ensureBluetoothEnabled = useCallback(async () => {
     try {
@@ -73,10 +219,10 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, [isBluetoothError, resetConnection]);
 
   const connectCable = useCallback(async () => {
-    if (!navigator.serial) throw new Error("Web Serial API não é suportada neste navegador");
+    if (!('serial' in navigator)) throw new Error("Web Serial API não é suportada neste navegador");
     
     try {
-      const port = await navigator.serial.requestPort();
+      const port = await (navigator as any).serial.requestPort();
       await port.open({ baudRate: BAUD_RATE });
       
       setSerialPort(port);
@@ -125,7 +271,40 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const connectBluetooth = useCallback(async (deviceId: string) => {
     try {
-      if (isConnected) await disconnect();
+      if (isConnected) {
+        // Chama disconnect inline para evitar dependência circular
+        try {
+          if (connectionType === ConnectionType.CABLE) {
+            if (reader) {
+              await reader.cancel();
+              reader.releaseLock();
+            }
+            if (serialPort) await serialPort.close();
+            setSerialPort(null);
+            setReader(null);
+            
+          } else if (connectionType === ConnectionType.BLUETOOTH) {
+            try { await promisifyBluetooth(window.bluetoothSerial.unsubscribe); } catch {}
+            await promisifyBluetooth(window.bluetoothSerial.disconnect);
+            
+          } else if (connectionType === ConnectionType.BLE) {
+            if (bleCharacteristic) {
+              try {
+                await bleCharacteristic.stopNotifications();
+              } catch (e) {
+                console.warn("Erro ao parar notificações BLE:", e);
+              }
+            }
+            if (bleDevice && bleDevice.gatt && bleDevice.gatt.connected) {
+              bleDevice.gatt.disconnect();
+            }
+          }
+          resetConnection();
+        } catch (error) {
+          console.error("Erro ao desconectar:", error);
+        }
+      }
+      
       await ensureBluetoothEnabled();
       
       await promisifyBluetooth(window.bluetoothSerial.connect, deviceId);
@@ -142,7 +321,7 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       console.error("Erro na conexão Bluetooth:", error);
       throw new Error("Falha ao conectar ao dispositivo Bluetooth");
     }
-  }, [isConnected, ensureBluetoothEnabled, promisifyBluetooth, handleBluetoothError]);
+  }, [isConnected, ensureBluetoothEnabled, promisifyBluetooth, handleBluetoothError, connectionType, reader, serialPort, bleCharacteristic, bleDevice, resetConnection]);
 
   const disconnect = useCallback(async () => {
     try {
@@ -154,16 +333,31 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         if (serialPort) await serialPort.close();
         setSerialPort(null);
         setReader(null);
+        
       } else if (connectionType === ConnectionType.BLUETOOTH) {
         try { await promisifyBluetooth(window.bluetoothSerial.unsubscribe); } catch {}
         await promisifyBluetooth(window.bluetoothSerial.disconnect);
+        
+      } else if (connectionType === ConnectionType.BLE) {
+        // **DESCONEXÃO BLE**
+        if (bleCharacteristic) {
+          try {
+            await bleCharacteristic.stopNotifications();
+          } catch (e) {
+            console.warn("Erro ao parar notificações BLE:", e);
+          }
+        }
+        if (bleDevice && bleDevice.gatt && bleDevice.gatt.connected) {
+          bleDevice.gatt.disconnect();
+        }
       }
+      
       resetConnection();
     } catch (error) {
       console.error("Erro ao desconectar:", error);
       throw new Error("Falha ao desconectar do dispositivo");
     }
-  }, [connectionType, reader, serialPort, promisifyBluetooth, resetConnection]);
+  }, [connectionType, reader, serialPort, promisifyBluetooth, resetConnection, bleCharacteristic, bleDevice]);
 
   const sendCommand = useCallback(async (command: string) => {
     if (!isConnected) throw new Error("Não conectado a nenhum dispositivo");
@@ -178,15 +372,35 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         } finally {
           writer.releaseLock();
         }
+        
       } else if (connectionType === ConnectionType.BLUETOOTH) {
         await promisifyBluetooth(window.bluetoothSerial.write, fullCommand);
+        
+      } else if (connectionType === ConnectionType.BLE) {
+        // **ENVIO DE COMANDO VIA BLE**
+        if (!bleCharacteristic) {
+          throw new Error("Característica BLE não disponível");
+        }
+        
+        console.log("📤 Enviando comando via BLE:", fullCommand);
+        const encoder = new TextEncoder();
+        const data = encoder.encode(fullCommand);
+        
+        // Escreve o comando na característica
+        await bleCharacteristic.writeValue(data);
       }
+      
     } catch (error) {
       console.error("Erro ao enviar comando:", error);
-      if (connectionType === ConnectionType.BLUETOOTH) handleBluetoothError(error);
+      if (connectionType === ConnectionType.BLUETOOTH) {
+        handleBluetoothError(error);
+      } else if (connectionType === ConnectionType.BLE) {
+        // Para BLE, reconecta se necessário
+        resetConnection();
+      }
       throw new Error("Falha ao enviar comando ao dispositivo");
     }
-  }, [isConnected, connectionType, serialPort, promisifyBluetooth, handleBluetoothError]);
+  }, [isConnected, connectionType, serialPort, promisifyBluetooth, handleBluetoothError, bleCharacteristic, resetConnection]);
 
   // Cleanup e verificação periódica
   useEffect(() => {
@@ -194,23 +408,48 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, [isConnected, disconnect]);
 
   useEffect(() => {
-    if (!isConnected || connectionType !== ConnectionType.BLUETOOTH) return;
+    if (!isConnected) return;
     
-    const interval = setInterval(async () => {
-      try {
-        await promisifyBluetooth(window.bluetoothSerial.isConnected);
-      } catch (error) {
-        handleBluetoothError(error);
-      }
-    }, CONNECTION_CHECK_INTERVAL);
+    // Verificação específica para Bluetooth clássico
+    if (connectionType === ConnectionType.BLUETOOTH) {
+      const interval = setInterval(async () => {
+        try {
+          await promisifyBluetooth(window.bluetoothSerial.isConnected);
+        } catch (error) {
+          handleBluetoothError(error);
+        }
+      }, CONNECTION_CHECK_INTERVAL);
+      
+      return () => clearInterval(interval);
+    }
     
-    return () => clearInterval(interval);
-  }, [isConnected, connectionType, promisifyBluetooth, handleBluetoothError]);
+    // Verificação para BLE
+    if (connectionType === ConnectionType.BLE && bleDevice) {
+      const interval = setInterval(() => {
+        if (bleDevice.gatt && !bleDevice.gatt.connected) {
+          console.warn("⚠️ Conexão BLE perdida");
+          resetConnection();
+        }
+      }, CONNECTION_CHECK_INTERVAL);
+      
+      return () => clearInterval(interval);
+    }
+  }, [isConnected, connectionType, promisifyBluetooth, handleBluetoothError, bleDevice, resetConnection]);
 
   return (
     <ConnectionContext.Provider value={{
-      isConnected, connectionType, serialPort, availableDevices,
-      connectCable, connectBluetooth, disconnect, sendCommand, scanBluetoothDevices,
+      isConnected, 
+      connectionType, 
+      serialPort, 
+      availableDevices,
+      availableBLEDevices, // Nova propriedade
+      connectCable, 
+      connectBluetooth, 
+      connectBLE, // Nova função
+      disconnect, 
+      sendCommand, 
+      scanBluetoothDevices,
+      scanBLEDevices, // Nova função
     }}>
       {children}
     </ConnectionContext.Provider>
