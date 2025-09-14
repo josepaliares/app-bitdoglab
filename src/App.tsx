@@ -48,6 +48,8 @@ import LedRGBInfo2 from "./pages/LedRGB/LedRGBInfo2";
 import LedRGBInfo4 from "./pages/LedRGB/LedRGBInfo4";
 //import EmConstrucao from "./pages/EmConstrucao";
 
+import Snake from "./pages/Snake";
+
 export function App() {
   useEffect(() => {
     ScreenOrientation.lock({ orientation: "portrait" });
@@ -67,6 +69,10 @@ export function App() {
           <Route path="/components">
             <Route index element={<Components />} />
 
+            <Route path="snake">
+              <Route index element={<Snake />} />
+            </Route>
+            
             <Route path="botoes">
               <Route index element={<Botoes />} />
               <Route path="info" element={<BotoesInfo />} />
@@ -111,7 +117,6 @@ export function App() {
               <Route path="rgb-info" element={<RGBInfo />} />
             </Route>
           </Route>
-
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

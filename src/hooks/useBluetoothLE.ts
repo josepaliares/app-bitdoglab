@@ -12,6 +12,7 @@ export function useBluetoothLE() {
   const [connectedDevice, setConnectedDevice] = useState<BleDevice | undefined>();
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mtu, setMtu] = useState<number>(23); // MTU padrão, será atualizado após conexão
 
   // useRef para manter referências que não precisam causar re-render
   const deviceObjectRef = useRef<BleDevice | undefined>(undefined);
@@ -22,6 +23,7 @@ export function useBluetoothLE() {
     console.log(`device ${deviceId} disconnected`);
     setIsConnected(false);
     setConnectedDevice(undefined);
+    setMtu(23); // Reset MTU para valor padrão
     deviceObjectRef.current = undefined;
   }, []);
 
@@ -83,10 +85,20 @@ export function useBluetoothLE() {
       
       await BleClient.connect(device.deviceId, (deviceId) => onDisconnect(deviceId));
       console.log('connected to device', device.name);
+      
+      // Obtém o MTU real da conexão
+      try {
+        const deviceMtu = await BleClient.getMtu(device.deviceId);
+        setMtu(deviceMtu);
+        console.log(`📡 MTU obtido: ${deviceMtu} bytes`);
+      } catch (mtuError) {
+        console.warn('Não foi possível obter MTU, usando padrão:', mtuError);
+        setMtu(23); // Fallback para MTU padrão
+      }
+      
       setConnectedDevice(device);
       setIsConnected(true);
       deviceObjectRef.current = device;
-      
       
       return true;
     } catch (error) {
@@ -117,7 +129,7 @@ export function useBluetoothLE() {
     }
   }, []);
 
-  // Função de envio de dados
+  // Função de envio de dados OTIMIZADA com MTU real
   const writeData = useCallback(async (data: string): Promise<boolean> => {
     if (!deviceObjectRef.current || !isConnected) {
       const errorMsg = "Nenhum dispositivo conectado para enviar dados.";
@@ -126,18 +138,52 @@ export function useBluetoothLE() {
       return false;
     }
 
-    // Define o tamanho máximo de cada pedaço e o sinal de fim de transmissão
-    const CHUNK_SIZE = 20;
+    // Calcula o tamanho do chunk baseado no MTU real
+    // Reserva alguns bytes para overhead do protocolo BLE
+    const PROTOCOL_OVERHEAD = 3; // ATT header overhead
+    const CHUNK_SIZE = Math.max(mtu - PROTOCOL_OVERHEAD, 20); // Mínimo de 20 para compatibilidade
     const END_OF_TRANSMISSION_SIGNAL = "_EOT_";
 
     try {
       setError(null);
-      console.log(`Enviando comando (${data.length} bytes)...`);
+      console.log(`📤 Enviando comando (${data.length} bytes) usando chunks de ${CHUNK_SIZE} bytes (MTU: ${mtu})`);
 
-      // Loop para enviar a string em pedaços
+      // Se o comando for pequeno o suficiente, envia de uma vez
+      if (data.length <= CHUNK_SIZE) {
+        console.log('📦 Comando pequeno - enviando em pacote único');
+        
+        const dataToSend = textToDataView(data);
+        await BleClient.write(
+          deviceObjectRef.current.deviceId,
+          PICO_SERVICE_UUID,
+          COMMAND_CHAR_UUID,
+          dataToSend
+        );
+
+        // Sinal de fim (sempre necessário para o firmware)
+        await new Promise(resolve => setTimeout(resolve, 10)); // Pequeno delay
+        const finalSignal = textToDataView(END_OF_TRANSMISSION_SIGNAL);
+        await BleClient.write(
+          deviceObjectRef.current.deviceId,
+          PICO_SERVICE_UUID,
+          COMMAND_CHAR_UUID,
+          finalSignal
+        );
+
+        console.log('✅ Comando enviado com sucesso em pacote único.');
+        return true;
+      }
+
+      // Para comandos maiores, quebra em chunks otimizados
+      console.log('📦 Comando grande - enviando em múltiplos chunks');
+      const totalChunks = Math.ceil(data.length / CHUNK_SIZE);
+      
       for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+        const chunkIndex = Math.floor(i / CHUNK_SIZE) + 1;
         const chunk = data.substring(i, i + CHUNK_SIZE);
         const dataToSend = textToDataView(chunk);
+
+        console.log(`📤 Enviando chunk ${chunkIndex}/${totalChunks} (${chunk.length} bytes)`);
 
         await BleClient.write(
           deviceObjectRef.current.deviceId,
@@ -146,11 +192,12 @@ export function useBluetoothLE() {
           dataToSend
         );
         
-        // Pequena pausa para garantir a entrega do pacote
-        await new Promise(resolve => setTimeout(resolve, 20));
+        // Delay menor devido ao MTU maior
+        await new Promise(resolve => setTimeout(resolve, 2));
       }
 
-      // Após enviar todos os pedaços, envia o sinal de que a transmissão acabou
+      // Após enviar todos os pedaços, envia o sinal de fim
+      console.log('📤 Enviando sinal de fim de transmissão');
       const finalSignal = textToDataView(END_OF_TRANSMISSION_SIGNAL);
       await BleClient.write(
         deviceObjectRef.current.deviceId,
@@ -159,14 +206,14 @@ export function useBluetoothLE() {
         finalSignal
       );
 
-      console.log('Comando enviado com sucesso.');
+      console.log('✅ Comando enviado com sucesso em múltiplos chunks.');
       return true;
     } catch (error) {
-      console.error('Falha ao enviar comando', error);
+      console.error('❌ Falha ao enviar comando', error);
       setError(error instanceof Error ? error.message : 'Erro desconhecido no envio');
       return false;
     }
-  }, [isConnected]);
+  }, [isConnected, mtu]);
 
   // 🧹 Cleanup quando o componente é desmontado
   useEffect(() => {
@@ -196,6 +243,7 @@ export function useBluetoothLE() {
     connectedDevice,
     isScanning,
     error,
+    mtu, // Exposição do MTU para debug/info
     
     // Funções
     scan,

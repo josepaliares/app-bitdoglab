@@ -13,3 +13,6 @@ project(':capacitor-dialog').projectDir = new File('../node_modules/@capacitor/d
 
 include ':capacitor-screen-orientation'
 project(':capacitor-screen-orientation').projectDir = new File('../node_modules/@capacitor/screen-orientation/android')
+
+include ':capacitor-tcp-socket'
+project(':capacitor-tcp-socket').projectDir = new File('../node_modules/capacitor-tcp-socket/android')

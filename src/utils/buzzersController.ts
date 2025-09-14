@@ -9,6 +9,7 @@ export interface BuzzersData {
 export class BuzzersController {
 	private sendCommand: (command: string) => Promise<void>;
 	private isSetupDone: boolean = false;
+	private isPlaying: boolean = false; // Controle de estado para evitar comandos desnecessários
 
 	constructor(sendCommand: (command: string) => Promise<void>) {
 		this.sendCommand = sendCommand;
@@ -37,6 +38,12 @@ export class BuzzersController {
 	}
 
 	async startBuzzer(frequency: number) {
+		// Evita enviar comando se já estiver tocando
+		if (this.isPlaying) {
+			console.log("⚠️ Buzzer já está tocando, ignorando comando duplicado");
+			return;
+		}
+
 		const data: BuzzersData = {
 			isPressed: true,
 			frequency: Number(frequency.toFixed(0))
@@ -53,6 +60,8 @@ export class BuzzersController {
 				await this.sendCommand(command);
 				await new Promise((resolve) => setTimeout(resolve, 50));
 			}
+			
+			this.isPlaying = true; // Marca como tocando
 			console.log("Buzzer iniciado com sucesso!");
 		} catch (error) {
 			console.error("Erro ao iniciar buzzer:", error);
@@ -60,14 +69,20 @@ export class BuzzersController {
 		}
 	}
 
-	async stopBuzzer(duration: number) {
+	async stopBuzzer(duration: number = 0) {
+		// Evita enviar comando se já estiver parado
+		if (!this.isPlaying) {
+			console.log("⚠️ Buzzer já está parado, ignorando comando");
+			return;
+		}
+
 		const data: BuzzersData = {
 			isPressed: false,
 			duration: duration
 		};
 
 		const json = JSON.stringify({ buzzer: data }, null, 2);
-		console.log("Parando buzzer:", json);
+		console.log("🔇 Parando buzzer:", json);
 
 		try {
 			const micropythonCommands = toMicropython(json);
@@ -76,6 +91,8 @@ export class BuzzersController {
 				await this.sendCommand(command);
 				await new Promise((resolve) => setTimeout(resolve, 50));
 			}
+			
+			this.isPlaying = false; // Marca como parado
 			console.log("Buzzer parado com sucesso!");
 		} catch (error) {
 			console.error("Erro ao parar buzzer:", error);
@@ -83,7 +100,13 @@ export class BuzzersController {
 		}
 	}
 
+	// Método para verificar se está tocando
+	getIsPlaying(): boolean {
+		return this.isPlaying;
+	}
+
 	resetSetup() {
 		this.isSetupDone = false;
+		this.isPlaying = false; // Reset do estado de reprodução também
 	}
 }
